@@ -1,24 +1,45 @@
-import React, { useState } from 'react'
-import { Layout, Menu, Avatar, Badge, Dropdown } from 'antd'
 import {
-  DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
-  UserOutlined,
   BellOutlined,
-  SettingOutlined
+  DesktopOutlined,
+  ExclamationCircleOutlined,
+  HistoryOutlined,
+  LogoutOutlined,
+  PieChartOutlined,
+  SettingOutlined,
+  SnippetsOutlined,
+  TeamOutlined,
+  UserOutlined
 } from '@ant-design/icons'
-import ClientList from '../ClientList'
+import { Avatar, Badge, Dropdown, Layout, Menu, Modal } from 'antd'
+import { useState } from 'react'
 import Logo from '../../assets/Logo.png'
+import DashboardPage from '../pages/DashboardPage'
+import { useAuth } from '@/contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const { Header, Content, Footer, Sider } = Layout
 const { SubMenu } = Menu
 
-const AdminLayout = () => {
+const AdminLayout = ({ children }: any) => {
   const [collapsed, setCollapsed] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState(['1'])
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
 
+  const handleLogout = () => {
+    Modal.confirm({
+      title: 'Xác nhận đăng xuất',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Bạn có chắc chắn muốn đăng xuất?',
+      okText: 'Đăng xuất',
+      cancelText: 'Hủy',
+      onOk() {
+        logout()
+        navigate('/login')
+      },
+      okButtonProps: { danger: true }
+    })
+  }
   return (
     <div className='flex min-h-screen bg-white'>
       {/* Sidebar - Fixed position */}
@@ -26,7 +47,7 @@ const AdminLayout = () => {
         collapsible
         collapsed={collapsed}
         onCollapse={setCollapsed}
-        className='bg-white shadow-md'
+        className='bg-white shadow-md  custom-sider'
         style={{
           height: '100vh',
           position: 'fixed',
@@ -61,7 +82,7 @@ const AdminLayout = () => {
             '
           >
             <PieChartOutlined />
-            <span>Option 1</span>
+            <span>Dashboard</span>
           </Menu.Item>
 
           <Menu.Item
@@ -78,8 +99,8 @@ const AdminLayout = () => {
               duration-300
             '
           >
-            <DesktopOutlined />
-            <span>Option 2</span>
+            <HistoryOutlined />
+            <span>Lịch sử giao dịch</span>
           </Menu.Item>
 
           <SubMenu
@@ -87,7 +108,7 @@ const AdminLayout = () => {
             title={
               <span>
                 <UserOutlined />
-                <span>User</span>
+                <span>Quản lí tài khoản</span>
               </span>
             }
             className='
@@ -115,7 +136,7 @@ const AdminLayout = () => {
                 duration-300
               '
             >
-              Tom
+              Bác sĩ
             </Menu.Item>
             <Menu.Item
               key='4'
@@ -130,7 +151,7 @@ const AdminLayout = () => {
                 duration-300
               '
             >
-              Bill
+              Nhà cung cấp nội dung
             </Menu.Item>
             <Menu.Item
               key='5'
@@ -145,7 +166,22 @@ const AdminLayout = () => {
                 duration-300
               '
             >
-              Alex
+              Người thân
+            </Menu.Item>
+            <Menu.Item
+              key='6'
+              className='
+                ant-menu-item-gradient
+                [&.ant-menu-item-selected]:text-white
+                [&.ant-menu-item-selected]:bg-gradient-to-r
+                [&.ant-menu-item-selected]:from-[#ec4899]
+                [&.ant-menu-item-selected]:to-[#ff7d47]
+                hover:text-[#ec4899]
+                transition-all
+                duration-300
+              '
+            >
+              Người dùng
             </Menu.Item>
           </SubMenu>
 
@@ -153,8 +189,8 @@ const AdminLayout = () => {
             key='sub2'
             title={
               <span>
-                <TeamOutlined />
-                <span>Team</span>
+                <DesktopOutlined />
+                <span>Nội dung</span>
               </span>
             }
             className='
@@ -170,7 +206,7 @@ const AdminLayout = () => {
             '
           >
             <Menu.Item
-              key='6'
+              key='7'
               className='
                 ant-menu-item-gradient
                 [&.ant-menu-item-selected]:text-white
@@ -182,7 +218,7 @@ const AdminLayout = () => {
                 duration-300
               '
             >
-              Team 1
+              Bài tập
             </Menu.Item>
             <Menu.Item
               key='8'
@@ -197,12 +233,27 @@ const AdminLayout = () => {
                 duration-300
               '
             >
-              Team 2
+              Sách
+            </Menu.Item>
+            <Menu.Item
+              key='9'
+              className='
+                ant-menu-item-gradient
+                [&.ant-menu-item-selected]:text-white
+                [&.ant-menu-item-selected]:bg-gradient-to-r
+                [&.ant-menu-item-selected]:from-[#ec4899]
+                [&.ant-menu-item-selected]:to-[#ff7d47]
+                hover:text-[#ec4899]
+                transition-all
+                duration-300
+              '
+            >
+              Nhạc
             </Menu.Item>
           </SubMenu>
 
           <Menu.Item
-            key='9'
+            key='10'
             className='
               ant-menu-item-gradient
               [&.ant-menu-item-selected]:text-white
@@ -215,7 +266,11 @@ const AdminLayout = () => {
               duration-300
             '
           >
-            <FileOutlined />
+            <span>
+              <SnippetsOutlined />
+
+              <span> Gói sử dụng</span>
+            </span>
           </Menu.Item>
         </Menu>
       </Sider>
@@ -251,29 +306,44 @@ const AdminLayout = () => {
           <Dropdown
             overlay={
               <Menu>
-                <Menu.Item key='profile' style={{ color: '#ec4899' }}>
-                  Profile
+                <Menu.Item key='user-info' disabled style={{ cursor: 'default' }}>
+                  <p style={{ color: '#666' }}>Xin chào!</p>
+                  <p className='text-[#ec4899] font-bold'>{user?.fullName || 'User'}</p>
                 </Menu.Item>
-                <Menu.Item key='logout' style={{ color: '#ec4899' }}>
-                  Logout
+                <Menu.Divider />
+                <Menu.Item key='profile'>
+                  <span>
+                    <UserOutlined />
+
+                    <span> Hồ sơ người dùng</span>
+                  </span>
+                </Menu.Item>
+                <Menu.Item key='logout' style={{ color: '#ec4849' }} onClick={handleLogout}>
+                  <span>
+                    <LogoutOutlined />
+
+                    <span> Đăng xuất</span>
+                  </span>
                 </Menu.Item>
               </Menu>
             }
           >
             <Avatar
               style={{
-                background: 'linear-gradient(135deg, #ec4899, #ff7d47)',
+                background: user?.avatar ? 'transparent' : 'linear-gradient(135deg, #ec4899, #ff7d47)',
                 cursor: 'pointer',
                 color: 'white'
               }}
+              src={user?.avatar} // Hiển thị avatar từ user data
+              icon={!user?.avatar && <UserOutlined />} // Hiển thị icon nếu không có avatar
             >
-              U
+              {!user?.avatar && user?.fullName?.charAt(0).toUpperCase()}
             </Avatar>
           </Dropdown>
         </Header>
 
         {/* Content */}
-        <Content
+        {/* <Content
           className='p-5 bg-white flex-1'
           style={{
             overflowY: 'auto',
@@ -284,8 +354,10 @@ const AdminLayout = () => {
             Bill is a cat.
           </div>
           <ClientList />
+        </Content> */}
+        <Content className='p-5 bg-white flex-1' style={{ overflowY: 'auto' }}>
+          {children || 'This is default page'}
         </Content>
-
         {/* Footer */}
         <Footer className='text-center bg-white py-4' style={{ color: '#ec4899' }}>
           Ant Design ©2018 Created by Ant UED

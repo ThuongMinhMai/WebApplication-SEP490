@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
-import { Button, Form, Input, message } from 'antd'
+import logoImage from '@/assets/Logo.png' // Thay bằng đường dẫn ảnh của bạn
+import happyImage from '@/assets/happy.jpg' // Thay bằng đường dẫn ảnh của bạn
 import { useAuth } from '@/contexts/AuthContext'
+import { Button, Form, Input, message } from 'antd'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 interface LoginFormValues {
@@ -17,48 +19,79 @@ const LoginPage: React.FC = () => {
     setLoading(true)
     try {
       await login(values.email, values.password)
-      message.success('Login successful')
-      navigate('/') // Chuyển hướng sau khi đăng nhập thành công
+      message.success('Đăng nhập thành công')
+      navigate('/')
     } catch (err) {
-      message.error(error || 'Login failed')
+      // message.error(error || 'Đăng nhập thất bại')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className='flex items-center justify-center h-screen bg-gray-100'>
-      <div className='w-full max-w-md p-8 bg-white rounded-lg shadow-md'>
-        <h1 className='text-2xl font-bold text-center mb-6'>Login</h1>
-        <Form<LoginFormValues> name='login' initialValues={{ remember: true }} onFinish={onFinish} layout='vertical'>
-          <Form.Item
-            label='Email'
-            name='email'
-            rules={[
-              { required: true, message: 'Please input your email!' },
-              { type: 'email', message: 'Please enter a valid email address!' }
-            ]}
-          >
-            <Input placeholder='Enter your email' />
-          </Form.Item>
+    <div className='flex h-screen bg-white'>
+      {/* Cột ảnh bên trái */}
+      <div className='hidden md:flex md:w-1/2 h-full overflow-hidden'>
+        <img src={happyImage} alt='Login Illustration' className='object-cover w-full h-full' />
+      </div>
 
-          <Form.Item
-            label='Password'
-            name='password'
-            rules={[
-              { required: true, message: 'Please input your password!' },
-              { min: 6, message: 'Password must be at least 6 characters!' }
-            ]}
-          >
-            <Input.Password placeholder='Enter your password' />
-          </Form.Item>
+      {/* Cột form bên phải */}
+      <div className='w-full md:w-1/2 lg:w-2/5 flex items-center justify-center p-8 mx-auto'>
+        <div className='w-full max-w-md '>
+          <div className='text-center mb-8'>
+            <img
+              src={logoImage} // Thay bằng logo của bạn
+              alt='Logo'
+              className='h-16 mx-auto mb-4'
+            />
+            <h1 className='text-3xl font-bold text-gray-800'>Chào mừng bạn đến với</h1>
+            <h2 className='text-3xl font-bold text-[#ec4899] mt-1 mb-5'>Tiện ích người già</h2>
+            <p className='text-gray-600'>Vui lòng nhập thông tin để đăng nhập</p>
+          </div>
 
-          <Form.Item>
-            <Button type='primary' htmlType='submit' loading={loading} className='w-full' size='large'>
-              Log in
-            </Button>
-          </Form.Item>
-        </Form>
+          <Form<LoginFormValues>
+            name='login'
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            layout='vertical'
+            className='w-full'
+          >
+            <Form.Item
+              label='Địa chỉ Email'
+              name='email'
+              rules={[
+                { required: true, message: 'Vui lòng nhập email!' },
+                { type: 'email', message: 'Vui lòng nhập địa chỉ email hợp lệ!' }
+              ]}
+            >
+              <Input placeholder='Vui lòng nhập email' size='large' className='py-2' />
+            </Form.Item>
+
+            <Form.Item
+              className='mt-10'
+              label='Mật khẩu'
+              name='password'
+              rules={[
+                { required: true, message: 'Vui lòng nhập mật khẩu của bạn!' },
+                { min: 6, message: 'Mật khẩu phải có ít nhất 6 ký tự!' }
+              ]}
+            >
+              <Input.Password placeholder='Nhập mật khẩu của bạn' size='large' className='py-2' />
+            </Form.Item>
+
+            <Form.Item className='mt-16'>
+              <Button
+                type='primary'
+                htmlType='submit'
+                loading={loading}
+                className='w-full h-12 text-lg font-medium'
+                style={{ background: 'linear-gradient(135deg, #ec4899, #ff7d47)' }}
+              >
+                Đăng nhập
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
       </div>
     </div>
   )

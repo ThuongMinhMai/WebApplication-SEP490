@@ -15,7 +15,16 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.custom-sider .ant-layout-sider-trigger {
+  color: #ec4899 !important; /* Màu icon hồng */
+  background: white !important; /* Nền trắng */
+  border: 1px solid #f0f0f0 !important; /* Viền nhẹ */
+}
 
+.custom-sider .ant-layout-sider-trigger:hover {
+  color: #ff7d47 !important; /* Màu hover cam */
+  background: #f5f5f5 !important;
+}
 
 
 @layer base {
