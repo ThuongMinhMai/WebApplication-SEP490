@@ -1,44 +1,63 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Table, Input, Button, Layout } from 'antd'
-import { SearchOutlined } from '@ant-design/icons'
+import { Table, Input, Button, Layout, Avatar, Tag } from 'antd'
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import type { TablePaginationConfig, ColumnType } from 'antd/es/table'
 import type { InputRef } from 'antd'
 
 const { Content } = Layout
 
-interface Name {
-  first: string
-  last: string
+interface User {
+  accountId: number
+  roleId: number
+  email: string
+  fullName: string
+  avatar: string
+  gender: string
+  phoneNumber: string
+  status: string
+  // ... các trường khác nếu cần
 }
 
-interface User {
-  login: {
-    uuid: string
-  }
-  name: Name
-  gender: string
-  email: string
+interface ApiResponse {
+  status: number
+  message: string
+  data: User[]
 }
 
 const DoctorsPage = () => {
   const [data, setData] = useState<User[]>([])
   const [filteredData, setFilteredData] = useState<User[]>([])
-  const [pagination, setPagination] = useState<TablePaginationConfig>({})
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '20', '50', '100']
+  })
   const [tableLoading, setTableLoading] = useState(false)
   const searchInput = useRef<InputRef>(null)
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [pagination.current, pagination.pageSize])
 
   const fetchData = async () => {
     setTableLoading(true)
     try {
-      const response = await fetch('https://randomuser.me/api/?results=10')
-      const result = await response.json()
-      setData(result.results)
-      setFilteredData(result.results)
-      setPagination({ total: result.results.length })
+      const response = await fetch('https://api.diavan-valuation.asia/account-management/4')
+      const result: ApiResponse = await response.json()
+      if (result.status === 1) {
+        const startIndex = (pagination.current! - 1) * pagination.pageSize!
+        const endIndex = startIndex + pagination.pageSize!
+        const paginatedData = result.data.slice(startIndex, endIndex)
+
+        setData(result.data)
+        setFilteredData(paginatedData)
+        setPagination({
+          ...pagination,
+          total: result.data.length
+        })
+      }
       setTableLoading(false)
     } catch (error) {
       console.error('Fetch error:', error)
@@ -64,22 +83,18 @@ const DoctorsPage = () => {
           size='small'
           style={{ width: 90, marginRight: 8 }}
         >
-          Search
+          Tìm kiếm
         </Button>
         <Button onClick={() => handleReset(clearFilters)} size='small' style={{ width: 90 }}>
-          Reset
+          Đặt lại
         </Button>
       </div>
     ),
-    filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+    filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? '#ec4839' : undefined }} />,
     onFilter: (value, record) => {
       const searchValue = value.toString().toLowerCase()
-      if (dataIndex === 'name') {
-        return (
-          record.name.first.toLowerCase().includes(searchValue) || record.name.last.toLowerCase().includes(searchValue)
-        )
-      }
-      return record[dataIndex]?.toString().toLowerCase().includes(searchValue)
+      const recordValue = record[dataIndex]?.toString().toLowerCase()
+      return recordValue ? recordValue.includes(searchValue) : false
     },
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -92,9 +107,6 @@ const DoctorsPage = () => {
     confirm()
     const searchText = selectedKeys[0].toLowerCase()
     const filtered = data.filter((item) => {
-      if (dataIndex === 'name') {
-        return item.name.first.toLowerCase().includes(searchText) || item.name.last.toLowerCase().includes(searchText)
-      }
       return item[dataIndex]?.toString().toLowerCase().includes(searchText)
     })
     setFilteredData(filtered)
@@ -105,60 +117,131 @@ const DoctorsPage = () => {
     setFilteredData(data)
   }
 
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination)
+  const handleTableChange = (newPagination: TablePaginationConfig) => {
+    setPagination({
+      ...pagination,
+      ...newPagination
+    })
+
+    const startIndex = (newPagination.current! - 1) * newPagination.pageSize!
+    const endIndex = startIndex + newPagination.pageSize!
+    const paginatedData = data.slice(startIndex, endIndex)
+
+    setFilteredData(paginatedData)
   }
+
   const components = {
     header: {
       cell: (props: any) => (
         <th
           {...props}
           style={{
-            backgroundColor: '#ffd6e7', // Màu hồng nhạt
-            fontWeight: 'bold',
+            backgroundColor: '#fff0f5',
             color: '#ec4899'
           }}
         />
       )
     }
   }
+  const getGenderLabel = (gender: string) => {
+    return gender === 'Male' ? 'Nam' : 'Nữ'
+  }
   const columns: ColumnType<User>[] = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      sorter: (a, b) => a.name.first.localeCompare(b.name.first),
-      render: (_, record) => `${record.name.first} ${record.name.last}`,
-      width: '30%',
-      ...getColumnSearchProps('name')
+      title: 'Ảnh đại diện',
+      dataIndex: 'avatar',
+      key: 'avatar',
+      width: '10%',
+      render: (avatar: string, record: User) => (
+        <Avatar
+          src={avatar || 'https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png'}
+          alt={record.fullName}
+          size='large'
+        />
+      )
     },
     {
-      title: 'Gender',
+      title: 'Tên đầy đủ',
+      dataIndex: 'fullName',
+      key: 'fullName',
+      width: '25%',
+      sorter: (a, b) => a.fullName.localeCompare(b.fullName),
+      ...getColumnSearchProps('fullName'),
+      render: (text: string) => <strong>{text}</strong>
+    },
+    {
+      title: 'Giới tính',
       dataIndex: 'gender',
+      key: 'gender',
+      width: '15%',
+      // filters: [
+      //   { text: 'Male', value: 'Male' },
+      //   { text: 'Female', value: 'Female' }
+      // ],
+      // onFilter: (value, record) => record.gender === value,
+      // render: (gender: string) => <Tag color={gender === 'Male' ? 'blue' : 'pink'}>{gender}</Tag>
       filters: [
-        { text: 'Male', value: 'male' },
-        { text: 'Female', value: 'female' }
+        { text: 'Nam', value: 'Male' },
+        { text: 'Nữ', value: 'Female' }
       ],
       onFilter: (value, record) => record.gender === value,
-      width: '20%'
+      render: (gender: string) => <Tag color={gender === 'Male' ? 'blue' : 'pink'}>{getGenderLabel(gender)}</Tag>
+    },
+    {
+      title: 'Số điện thoại',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
+      width: '20%',
+      ...getColumnSearchProps('phoneNumber'),
+      render: (phone: string) => <a href={`tel:${phone}`}>{phone}</a>
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      key: 'status',
+      width: '15%',
+      filters: [
+        { text: 'Active', value: 'Active' },
+        { text: 'Inactive', value: 'Inactive' }
+      ],
+      onFilter: (value, record) => record.status === value,
+      render: (status: string) => <Tag color={status === 'Active' ? 'green' : 'red'}>{status}</Tag>
     },
     {
       title: 'Email',
       dataIndex: 'email',
-      width: '50%',
-      ...getColumnSearchProps('email')
+      key: 'email',
+      width: '25%',
+      ...getColumnSearchProps('email'),
+      render: (email: string) => <a href={`mailto:${email}`}>{email}</a>
     }
   ]
 
   return (
     <Content style={{ padding: '50px 50px' }}>
+      <div className='flex justify-between items-center mb-5'>
+        <h2 className='text-2xl font-bold text-pink-600 m-0'>Danh sách bác sĩ</h2>
+        <Button
+          type='primary'
+          className='bg-pink-600 border-pink-600 font-bold hover:bg-pink-700 hover:border-pink-700'
+          onClick={() => {
+            // Xử lý khi click nút thêm bác sĩ
+            console.log('Thêm bác sĩ')
+          }}
+          icon={<PlusOutlined />}
+        >
+          Thêm bác sĩ
+        </Button>
+      </div>
       <Table
         columns={columns}
-        rowKey={(record) => record?.login?.uuid || record?.email}
+        rowKey={(record) => record.accountId.toString()}
         dataSource={filteredData}
         pagination={pagination}
         loading={tableLoading}
         onChange={handleTableChange}
         components={components}
+        bordered
       />
     </Content>
   )

@@ -60,8 +60,11 @@ function ProtectedRoutes() {
       {/* Protected Content Provider Routes */}
       {isAuthenticated && isContentProvider ? (
         <Route path='/content-provider/*' element={<ContentProviderLayout />}>
-          <Route index element={<ContentPage />} />
-          <Route path='dashboard' element={<DashboardPage />} />
+          <Route index element={<DashboardPage />} />
+          <Route path='dashboard' element={<ContentPage />} />
+          <Route path='exercises' element={<ContentPage />} />
+          <Route path='books' element={<ContentPage />} />
+          <Route path='music' element={<ContentPage />} />
           <Route path='*' element={<Navigate to='/content-provider/dashboard' replace />} /> {/* Điều hướng sai URL */}
         </Route>
       ) : (

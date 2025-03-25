@@ -11,7 +11,7 @@ import {
   UserOutlined
 } from '@ant-design/icons'
 import { Avatar, Badge, Dropdown, Layout, Menu, Modal } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Logo from '../../assets/Logo.png'
 import DashboardPage from '../pages/DashboardPage'
 import { useAuth } from '@/contexts/AuthContext'
@@ -22,7 +22,33 @@ const { SubMenu } = Menu
 
 const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false)
-  const [selectedKeys, setSelectedKeys] = useState(['1'])
+  // const [selectedKeys, setSelectedKeys] = useState(['1'])
+  // Hàm ánh xạ route sang menu key
+  const getSelectedKeyFromPath = (pathname: string): string => {
+    const path = pathname.split('/').pop() || 'dashboard'
+
+    const routeToKeyMap: Record<string, string> = {
+      dashboard: '1',
+      'transaction-history': '2',
+      doctors: '3',
+      'content-providers': '4',
+      'family-members': '5',
+      users: '6',
+      exercises: '7',
+      books: '8',
+      music: '9',
+      'subscription-packages': '10'
+    }
+
+    return routeToKeyMap[path] || '1'
+  }
+
+  const [selectedKeys, setSelectedKeys] = useState([getSelectedKeyFromPath(location.pathname)])
+
+  // Theo dõi thay đổi route
+  useEffect(() => {
+    setSelectedKeys([getSelectedKeyFromPath(location.pathname)])
+  }, [location.pathname])
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const handleMenuClick = (key: any) => {
