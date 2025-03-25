@@ -1,23 +1,24 @@
 // src/layouts/ContentProviderLayout.js
-import React, { useState } from 'react'
-import { Avatar, Badge, Dropdown, Layout, Menu, Modal } from 'antd'
-import {
-  FileOutlined,
-  UploadOutlined,
-  DashboardOutlined,
-  UserOutlined,
-  BellOutlined,
-  SettingOutlined,
-  LogoutOutlined,
-  ExclamationCircleOutlined
-} from '@ant-design/icons'
-import Logo from '../../assets/Logo.png'
 import { useAuth } from '@/contexts/AuthContext'
+import {
+  BellOutlined,
+  CustomerServiceOutlined,
+  DeploymentUnitOutlined,
+  ExclamationCircleOutlined,
+  LogoutOutlined,
+  PieChartOutlined,
+  ReadOutlined,
+  SettingOutlined,
+  UserOutlined
+} from '@ant-design/icons'
+import { Avatar, Badge, Dropdown, Layout, Menu, Modal } from 'antd'
+import { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
+import Logo from '../../assets/Logo.png'
 
 const { Header, Content, Footer, Sider } = Layout
 
-export default function ContentProviderLayout({ children }: any) {
+export default function ContentProviderLayout() {
   const [collapsed, setCollapsed] = useState(false)
   const { user, logout } = useAuth()
   const navigate = useNavigate()
@@ -56,17 +57,17 @@ export default function ContentProviderLayout({ children }: any) {
         </div>
 
         <Menu theme='light' mode='inline' defaultSelectedKeys={['1']}>
-          <Menu.Item key='1' icon={<DashboardOutlined />}>
+          <Menu.Item key='1' icon={<PieChartOutlined />}>
             Dashboard
           </Menu.Item>
-          <Menu.Item key='2' icon={<UploadOutlined />}>
-            Upload Content
+          <Menu.Item key='2' icon={<DeploymentUnitOutlined />}>
+            Bài tập
           </Menu.Item>
-          <Menu.Item key='3' icon={<FileOutlined />}>
-            My Contents
+          <Menu.Item key='3' icon={<ReadOutlined />}>
+            Sách
           </Menu.Item>
-          <Menu.Item key='4' icon={<UserOutlined />}>
-            Profile
+          <Menu.Item key='4' icon={<CustomerServiceOutlined />}>
+            Âm Nhạc
           </Menu.Item>
         </Menu>
       </Sider>
@@ -139,7 +140,7 @@ export default function ContentProviderLayout({ children }: any) {
         <Content className='p-5 bg-white flex-1'>
           <Outlet />
         </Content>
-        <Footer className='text-center bg-white py-4'>Content Provider Portal ©2023</Footer>
+        <Footer className='text-center bg-white py-4'> Senior Essentials Design ©2025 Created by LUXDEN</Footer>
       </div>
     </div>
   )

@@ -20,12 +20,48 @@ import { Outlet, useNavigate } from 'react-router-dom'
 const { Header, Content, Footer, Sider } = Layout
 const { SubMenu } = Menu
 
-const AdminLayout = ({ children }: any) => {
+const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState(['1'])
   const { user, logout } = useAuth()
   const navigate = useNavigate()
-
+  const handleMenuClick = (key: any) => {
+    setSelectedKeys([key])
+    switch (key) {
+      case '1':
+        navigate('/admin/dashboard')
+        break
+      case '2':
+        navigate('/admin/transaction-history')
+        break
+      case '3':
+        navigate('/admin/doctors')
+        break
+      case '4':
+        navigate('/admin/content-providers')
+        break
+      case '5':
+        navigate('/admin/family-members')
+        break
+      case '6':
+        navigate('/admin/users')
+        break
+      case '7':
+        navigate('/admin/exercises')
+        break
+      case '8':
+        navigate('/admin/books')
+        break
+      case '9':
+        navigate('/admin/music')
+        break
+      case '10':
+        navigate('/admin/subscription-packages')
+        break
+      default:
+        navigate('/admin/dashboard')
+    }
+  }
   const handleLogout = () => {
     Modal.confirm({
       title: 'Xác nhận đăng xuất',
@@ -80,6 +116,7 @@ const AdminLayout = ({ children }: any) => {
               transition-all
               duration-300
             '
+            onClick={({ key }) => handleMenuClick(key)}
           >
             <PieChartOutlined />
             <span>Dashboard</span>
@@ -98,6 +135,7 @@ const AdminLayout = ({ children }: any) => {
               transition-all
               duration-300
             '
+            onClick={({ key }) => handleMenuClick(key)}
           >
             <HistoryOutlined />
             <span>Lịch sử giao dịch</span>
@@ -122,6 +160,7 @@ const AdminLayout = ({ children }: any) => {
               transition-all
               duration-300
             '
+            onClick={({ key }) => handleMenuClick(key)}
           >
             <Menu.Item
               key='3'
@@ -135,6 +174,7 @@ const AdminLayout = ({ children }: any) => {
                 transition-all
                 duration-300
               '
+              onClick={({ key }) => handleMenuClick(key)}
             >
               Bác sĩ
             </Menu.Item>
@@ -150,6 +190,7 @@ const AdminLayout = ({ children }: any) => {
                 transition-all
                 duration-300
               '
+              onClick={({ key }) => handleMenuClick(key)}
             >
               Nhà cung cấp nội dung
             </Menu.Item>
@@ -165,6 +206,7 @@ const AdminLayout = ({ children }: any) => {
                 transition-all
                 duration-300
               '
+              onClick={({ key }) => handleMenuClick(key)}
             >
               Người thân
             </Menu.Item>
@@ -180,6 +222,7 @@ const AdminLayout = ({ children }: any) => {
                 transition-all
                 duration-300
               '
+              onClick={({ key }) => handleMenuClick(key)}
             >
               Người dùng
             </Menu.Item>
@@ -204,6 +247,7 @@ const AdminLayout = ({ children }: any) => {
               transition-all
               duration-300
             '
+            onClick={({ key }) => handleMenuClick(key)}
           >
             <Menu.Item
               key='7'
@@ -217,6 +261,7 @@ const AdminLayout = ({ children }: any) => {
                 transition-all
                 duration-300
               '
+              onClick={({ key }) => handleMenuClick(key)}
             >
               Bài tập
             </Menu.Item>
@@ -232,6 +277,7 @@ const AdminLayout = ({ children }: any) => {
                 transition-all
                 duration-300
               '
+              onClick={({ key }) => handleMenuClick(key)}
             >
               Sách
             </Menu.Item>
@@ -247,8 +293,9 @@ const AdminLayout = ({ children }: any) => {
                 transition-all
                 duration-300
               '
+              onClick={({ key }) => handleMenuClick(key)}
             >
-              Nhạc
+              Âm Nhạc
             </Menu.Item>
           </SubMenu>
 
@@ -265,6 +312,7 @@ const AdminLayout = ({ children }: any) => {
               transition-all
               duration-300
             '
+            onClick={({ key }) => handleMenuClick(key)}
           >
             <span>
               <SnippetsOutlined />
@@ -357,11 +405,11 @@ const AdminLayout = ({ children }: any) => {
         </Content> */}
         <Content className='p-5 bg-white flex-1' style={{ overflowY: 'auto' }}>
           {/* {children || 'This is default page'} */}
-          <Outlet/>
+          <Outlet />
         </Content>
         {/* Footer */}
         <Footer className='text-center bg-white py-4' style={{ color: '#ec4899' }}>
-          Ant Design ©2018 Created by Ant UED
+          Senior Essentials Design ©2025 Created by LUXDEN
         </Footer>
       </div>
     </div>
