@@ -15,7 +15,7 @@ import { useState } from 'react'
 import Logo from '../../assets/Logo.png'
 import DashboardPage from '../pages/DashboardPage'
 import { useAuth } from '@/contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 const { Header, Content, Footer, Sider } = Layout
 const { SubMenu } = Menu
@@ -356,7 +356,8 @@ const AdminLayout = ({ children }: any) => {
           <ClientList />
         </Content> */}
         <Content className='p-5 bg-white flex-1' style={{ overflowY: 'auto' }}>
-          {children || 'This is default page'}
+          {/* {children || 'This is default page'} */}
+          <Outlet/>
         </Content>
         {/* Footer */}
         <Footer className='text-center bg-white py-4' style={{ color: '#ec4899' }}>

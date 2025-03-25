@@ -13,7 +13,7 @@ import {
 } from '@ant-design/icons'
 import Logo from '../../assets/Logo.png'
 import { useAuth } from '@/contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -135,7 +135,10 @@ export default function ContentProviderLayout({ children }: any) {
             </Avatar>
           </Dropdown>
         </Header>
-        <Content className='p-5 bg-white flex-1'>{children}</Content>
+        {/* <Content className='p-5 bg-white flex-1'>{children}</Content> */}
+        <Content className='p-5 bg-white flex-1'>
+          <Outlet />
+        </Content>
         <Footer className='text-center bg-white py-4'>Content Provider Portal ©2023</Footer>
       </div>
     </div>
