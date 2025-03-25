@@ -1,20 +1,22 @@
-import { AuthProvider, useAuth } from './contexts/AuthContext'
-import { BrowserRouter, Route, Routes, Navigate, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AdminLayout from './components/layout/AdminLayout'
 import ContentProviderLayout from './components/layout/ContentProviderLayout'
-import LoginPage from './components/pages/LoginPage'
-import DashboardPage from './components/pages/DashboardPage'
-import ContentPage from './components/pages/ContentPage'
-import LoadingScreen from './components/pages/LoadingScreen'
-import TransactionHistoryPage from './components/pages/TransactionHistoryPage'
-import DoctorsPage from './components/pages/DoctorsPage'
-import ContentProvidersPage from './components/pages/ContentProvidersPage'
-import FamilyMembersPage from './components/pages/FamilyMembersPage'
-import UsersPage from './components/pages/UsersPage'
-import ExercisesPage from './components/pages/ExercisesPage'
 import BooksPage from './components/pages/BooksPage'
+import ContentPage from './components/pages/ContentPage'
+import ContentProvidersPage from './components/pages/ContentProvidersPage'
+import DashboardPage from './components/pages/DashboardPage'
+import DetailDoctorPage from './components/pages/DetailDoctorPage'
+import DoctorCreateForm from './components/pages/DoctorCreateForm'
+import DoctorsPage from './components/pages/DoctorsPage'
+import ExercisesPage from './components/pages/ExercisesPage'
+import FamilyMembersPage from './components/pages/FamilyMembersPage'
+import LoadingScreen from './components/pages/LoadingScreen'
+import LoginPage from './components/pages/LoginPage'
 import MusicPage from './components/pages/MusicPage'
 import SubscriptionPackagesPage from './components/pages/SubscriptionPackagesPage'
+import TransactionHistoryPage from './components/pages/TransactionHistoryPage'
+import UsersPage from './components/pages/UsersPage'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 
 function ProtectedRoutes() {
   const { isAuthenticated, isAdmin, isContentProvider, initialized } = useAuth()
@@ -44,6 +46,8 @@ function ProtectedRoutes() {
           <Route path='dashboard' element={<DashboardPage />} />
           <Route path='transaction-history' element={<TransactionHistoryPage />} />
           <Route path='doctors' element={<DoctorsPage />} />
+          <Route path='doctors/:id' element={<DetailDoctorPage />} />
+          <Route path='doctors/add' element={<DoctorCreateForm />} />
           <Route path='content-providers' element={<ContentProvidersPage />} />
           <Route path='family-members' element={<FamilyMembersPage />} />
           <Route path='users' element={<UsersPage />} />

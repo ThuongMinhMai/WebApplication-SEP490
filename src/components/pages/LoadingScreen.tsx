@@ -1,5 +1,5 @@
 // components/LoadingScreen.tsx
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import loading from '../../assets/loading.gif'
 const LoadingScreen = () => {
   const [progress, setProgress] = useState(0)

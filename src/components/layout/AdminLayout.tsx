@@ -1,3 +1,4 @@
+import { useAuth } from '@/contexts/AuthContext'
 import {
   BellOutlined,
   DesktopOutlined,
@@ -7,15 +8,12 @@ import {
   PieChartOutlined,
   SettingOutlined,
   SnippetsOutlined,
-  TeamOutlined,
   UserOutlined
 } from '@ant-design/icons'
 import { Avatar, Badge, Dropdown, Layout, Menu, Modal } from 'antd'
 import { useEffect, useState } from 'react'
-import Logo from '../../assets/Logo.png'
-import DashboardPage from '../pages/DashboardPage'
-import { useAuth } from '@/contexts/AuthContext'
 import { Outlet, useNavigate } from 'react-router-dom'
+import Logo from '../../assets/Logo.png'
 
 const { Header, Content, Footer, Sider } = Layout
 const { SubMenu } = Menu
@@ -25,6 +23,14 @@ const AdminLayout = () => {
   // const [selectedKeys, setSelectedKeys] = useState(['1'])
   // Hàm ánh xạ route sang menu key
   const getSelectedKeyFromPath = (pathname: string): string => {
+    const pathSegments = pathname.split('/')
+    const lastSegment = pathSegments.pop() || 'dashboard'
+    const secondLastSegment = pathSegments.pop() || ''
+
+    // Xử lý các route có dạng /admin/doctors/:id
+    if (secondLastSegment === 'doctors') {
+      return '3' // key của menu Doctors
+    }
     const path = pathname.split('/').pop() || 'dashboard'
 
     const routeToKeyMap: Record<string, string> = {

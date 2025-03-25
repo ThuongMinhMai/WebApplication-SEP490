@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Table, Input, Button, Layout, Avatar, Tag } from 'antd'
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
-import type { TablePaginationConfig, ColumnType } from 'antd/es/table'
+import { MoreOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
+import { Avatar, Button, Input, Layout, Table, Tag } from 'antd'
+import type { ColumnType, TablePaginationConfig } from 'antd/es/table'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const { Content } = Layout
 
@@ -27,6 +28,8 @@ interface ApiResponse {
 const DoctorsPage = () => {
   const [data, setData] = useState<User[]>([])
   const [filteredData, setFilteredData] = useState<User[]>([])
+  const navigate = useNavigate()
+
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -214,6 +217,19 @@ const DoctorsPage = () => {
       width: '25%',
       ...getColumnSearchProps('email'),
       render: (email: string) => <a href={`mailto:${email}`}>{email}</a>
+    },
+    {
+      title: 'Hành động',
+      key: 'action',
+      width: '15%',
+      render: (_, record) => (
+        <Button
+          type='text'
+          icon={<MoreOutlined />}
+          onClick={() => navigate(`/admin/doctors/${record.accountId}`)}
+          style={{ color: '#ec4899' }}
+        />
+      )
     }
   ]
 
@@ -224,10 +240,8 @@ const DoctorsPage = () => {
         <Button
           type='primary'
           className='bg-pink-600 border-pink-600 font-bold hover:bg-pink-700 hover:border-pink-700'
-          onClick={() => {
-            // Xử lý khi click nút thêm bác sĩ
-            console.log('Thêm bác sĩ')
-          }}
+          onClick={() => navigate(`/admin/doctors/add`)}
+
           icon={<PlusOutlined />}
         >
           Thêm bác sĩ
