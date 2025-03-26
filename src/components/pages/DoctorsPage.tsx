@@ -139,7 +139,7 @@ const DoctorsPage = () => {
         <th
           {...props}
           style={{
-            backgroundColor: '#fff0f5',
+            // backgroundColor: '#fff0f5',
             color: '#ec4899'
           }}
         />
@@ -148,6 +148,9 @@ const DoctorsPage = () => {
   }
   const getGenderLabel = (gender: string) => {
     return gender === 'Male' ? 'Nam' : 'Nữ'
+  }
+  const getStatusLabel = (gender: string) => {
+    return gender === 'Active' ? 'Đang hoạt động' : 'Ngưng hoạt động'
   }
   const columns: ColumnType<User>[] = [
     {
@@ -204,11 +207,11 @@ const DoctorsPage = () => {
       key: 'status',
       width: '15%',
       filters: [
-        { text: 'Active', value: 'Active' },
-        { text: 'Inactive', value: 'Inactive' }
+        { text: 'Đang hoạt động', value: 'Active' },
+        { text: 'Ngưng hoạt động', value: 'Inactive' }
       ],
       onFilter: (value, record) => record.status === value,
-      render: (status: string) => <Tag color={status === 'Active' ? 'green' : 'red'}>{status}</Tag>
+      render: (status: string) => <Tag color={status === 'Active' ? 'green' : 'red'}>{getStatusLabel(status)}</Tag>
     },
     {
       title: 'Email',
@@ -219,7 +222,7 @@ const DoctorsPage = () => {
       render: (email: string) => <a href={`mailto:${email}`}>{email}</a>
     },
     {
-      title: 'Hành động',
+      title: 'Chi tiết',
       key: 'action',
       width: '15%',
       render: (_, record) => (
@@ -241,7 +244,6 @@ const DoctorsPage = () => {
           type='primary'
           className='bg-pink-600 border-pink-600 font-bold hover:bg-pink-700 hover:border-pink-700'
           onClick={() => navigate(`/admin/doctors/add`)}
-
           icon={<PlusOutlined />}
         >
           Thêm bác sĩ
