@@ -31,7 +31,7 @@ export default function ContentProviderLayout() {
       dashboard: '1',
       exercises: '2',
       books: '3',
-      music: '4'
+      musics: '4'
     }
 
     return routeToKeyMap[path] || '1'

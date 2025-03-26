@@ -31,6 +31,9 @@ const AdminLayout = () => {
     if (secondLastSegment === 'doctors') {
       return '3' // key của menu Doctors
     }
+    if (secondLastSegment === 'musics') {
+      return '9' // key của menu Doctors
+    }
     const path = pathname.split('/').pop() || 'dashboard'
 
     const routeToKeyMap: Record<string, string> = {
@@ -42,7 +45,7 @@ const AdminLayout = () => {
       users: '6',
       exercises: '7',
       books: '8',
-      music: '9',
+      musics: '9',
       'subscription-packages': '10'
     }
 
@@ -85,7 +88,7 @@ const AdminLayout = () => {
         navigate('/admin/books')
         break
       case '9':
-        navigate('/admin/music')
+        navigate('/admin/musics')
         break
       case '10':
         navigate('/admin/subscription-packages')

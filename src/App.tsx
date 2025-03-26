@@ -17,6 +17,7 @@ import SubscriptionPackagesPage from './components/pages/SubscriptionPackagesPag
 import TransactionHistoryPage from './components/pages/TransactionHistoryPage'
 import UsersPage from './components/pages/UsersPage'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import PlayListMusicDetailPage from './components/pages/PlayListMusicDetailPage'
 
 function ProtectedRoutes() {
   const { isAuthenticated, isAdmin, isContentProvider, initialized } = useAuth()
@@ -53,7 +54,8 @@ function ProtectedRoutes() {
           <Route path='users' element={<UsersPage />} />
           <Route path='exercises' element={<ExercisesPage />} />
           <Route path='books' element={<BooksPage />} />
-          <Route path='music' element={<MusicPage />} />
+          <Route path='musics' element={<MusicPage />} />
+          <Route path='musics/:id' element={<PlayListMusicDetailPage />} />
           <Route path='subscription-packages' element={<SubscriptionPackagesPage />} />
           <Route path='*' element={<Navigate to='/admin/dashboard' replace />} /> {/* Điều hướng sai URL */}
         </Route>
@@ -68,7 +70,7 @@ function ProtectedRoutes() {
           <Route path='dashboard' element={<ContentPage />} />
           <Route path='exercises' element={<ContentPage />} />
           <Route path='books' element={<ContentPage />} />
-          <Route path='music' element={<ContentPage />} />
+          <Route path='musics' element={<ContentPage />} />
           <Route path='*' element={<Navigate to='/content-provider/dashboard' replace />} /> {/* Điều hướng sai URL */}
         </Route>
       ) : (
