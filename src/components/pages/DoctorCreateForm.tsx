@@ -70,7 +70,7 @@ const DoctorCreateForm: React.FC = () => {
   return (
     <div className='p-6 bg-white rounded-lg '>
       <div className='flex justify-between items-center mb-5'>
-        <h1 className='text-2xl font-bold text-[#FF1356] mb-6'>Thêm Bác Sĩ Mới</h1>
+        <h1 className='text-2xl font-bold text-[#FF1356] mb-6'>Thêm Bác Sĩ</h1>
         <Button
           type='primary'
           className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-pink-700 hover:border-pink-700'
