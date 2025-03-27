@@ -70,10 +70,10 @@ const DoctorCreateForm: React.FC = () => {
   return (
     <div className='p-6 bg-white rounded-lg '>
       <div className='flex justify-between items-center mb-5'>
-        <h1 className='text-2xl font-bold text-pink-600 mb-6'>Thêm Bác Sĩ Mới</h1>
+        <h1 className='text-2xl font-bold text-[#FF1356] mb-6'>Thêm Bác Sĩ Mới</h1>
         <Button
           type='primary'
-          className='bg-pink-600 border-pink-600 font-bold hover:bg-pink-700 hover:border-pink-700'
+          className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-pink-700 hover:border-pink-700'
           onClick={() => navigate(`/admin/doctors`)}
           icon={<ArrowLeftOutlined />}
         >
@@ -254,7 +254,7 @@ const DoctorCreateForm: React.FC = () => {
               type='primary'
               htmlType='submit'
               loading={loading}
-              className='bg-pink-600 hover:bg-pink-700 border-pink-600'
+              className='bg-[#FF1356] hover:bg-pink-700 border-[#FF1356]'
             >
               Thêm bác sĩ
             </Button>

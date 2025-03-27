@@ -140,7 +140,7 @@ const UsersPage = () => {
           {...props}
           style={{
             // backgroundColor: '#fff0f5',
-            color: '#ec4899'
+            color: '#FF1356'
           }}
         />
       )
@@ -153,6 +153,15 @@ const UsersPage = () => {
     return gender === 'Active' ? 'Đang hoạt động' : 'Ngưng hoạt động'
   }
   const columns: ColumnType<User>[] = [
+    {
+      title: 'STT',
+      key: 'stt',
+      width: '5%',
+      render: (_, __, index) => {
+        // Tính số thứ tự dựa trên trang hiện tại và số lượng item mỗi trang
+        return (pagination.current! - 1) * pagination.pageSize! + index + 1
+      }
+    },
     {
       title: 'Ảnh đại diện',
       dataIndex: 'avatar',
@@ -221,7 +230,7 @@ const UsersPage = () => {
   return (
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
-        <h2 className='text-2xl font-bold text-pink-600 m-0'>Danh sách người dùng</h2>
+        <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách người dùng</h2>
       </div>
       <Table
         columns={columns}

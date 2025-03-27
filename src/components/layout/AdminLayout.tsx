@@ -128,7 +128,7 @@ const AdminLayout = () => {
       >
         <div className='flex flex-col items-center p-4 whitespace-nowrap overflow-hidden'>
           <img src={Logo} alt='Logo' className='w-10 h-10 mr-2' />
-          {!collapsed && <span className='text-pink-600 font-medium text-lg'>Tiện ích tuổi già</span>}
+          {!collapsed && <span className='text-[#FF1356] font-medium text-lg'>Tiện ích tuổi già</span>}
         </div>
 
         <Menu
@@ -144,10 +144,10 @@ const AdminLayout = () => {
               ant-menu-item-gradient
               [&.ant-menu-item-selected]:text-white
               [&.ant-menu-item-selected]:bg-gradient-to-r
-              [&.ant-menu-item-selected]:from-[#ec4899]
+              [&.ant-menu-item-selected]:from-[#FF1356]
               [&.ant-menu-item-selected]:to-[#ff7d47]
               [&.ant-menu-item-selected>.anticon]:text-white
-              hover:text-[#ec4899]
+              hover:text-[#FF1356]
               transition-all
               duration-300
             '
@@ -163,10 +163,10 @@ const AdminLayout = () => {
               ant-menu-item-gradient
               [&.ant-menu-item-selected]:text-white
               [&.ant-menu-item-selected]:bg-gradient-to-r
-              [&.ant-menu-item-selected]:from-[#ec4899]
+              [&.ant-menu-item-selected]:from-[#FF1356]
               [&.ant-menu-item-selected]:to-[#ff7d47]
               [&.ant-menu-item-selected>.anticon]:text-white
-              hover:text-[#ec4899]
+              hover:text-[#FF1356]
               transition-all
               duration-300
             '
@@ -188,10 +188,10 @@ const AdminLayout = () => {
               ant-submenu-gradient
               [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:text-white
               [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:bg-gradient-to-r
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:from-[#ec4899]
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:from-[#FF1356]
               [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:to-[#ff7d47]
               [&.ant-menu-submenu-selected>.ant-menu-submenu-title>.anticon]:text-white
-              hover:[>.ant-menu-submenu-title]:text-[#ec4899]
+              hover:[>.ant-menu-submenu-title]:text-[#FF1356]
               transition-all
               duration-300
             '
@@ -203,9 +203,9 @@ const AdminLayout = () => {
                 ant-menu-item-gradient
                 [&.ant-menu-item-selected]:text-white
                 [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#ec4899]
+                [&.ant-menu-item-selected]:from-[#FF1356]
                 [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#ec4899]
+                hover:text-[#FF1356]
                 transition-all
                 duration-300
               '
@@ -219,9 +219,9 @@ const AdminLayout = () => {
                 ant-menu-item-gradient
                 [&.ant-menu-item-selected]:text-white
                 [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#ec4899]
+                [&.ant-menu-item-selected]:from-[#FF1356]
                 [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#ec4899]
+                hover:text-[#FF1356]
                 transition-all
                 duration-300
               '
@@ -235,9 +235,9 @@ const AdminLayout = () => {
                 ant-menu-item-gradient
                 [&.ant-menu-item-selected]:text-white
                 [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#ec4899]
+                [&.ant-menu-item-selected]:from-[#FF1356]
                 [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#ec4899]
+                hover:text-[#FF1356]
                 transition-all
                 duration-300
               '
@@ -251,9 +251,9 @@ const AdminLayout = () => {
                 ant-menu-item-gradient
                 [&.ant-menu-item-selected]:text-white
                 [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#ec4899]
+                [&.ant-menu-item-selected]:from-[#FF1356]
                 [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#ec4899]
+                hover:text-[#FF1356]
                 transition-all
                 duration-300
               '
@@ -275,10 +275,10 @@ const AdminLayout = () => {
               ant-submenu-gradient
               [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:text-white
               [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:bg-gradient-to-r
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:from-[#ec4899]
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:from-[#FF1356]
               [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:to-[#ff7d47]
               [&.ant-menu-submenu-selected>.ant-menu-submenu-title>.anticon]:text-white
-              hover:[>.ant-menu-submenu-title]:text-[#ec4899]
+              hover:[>.ant-menu-submenu-title]:text-[#FF1356]
               transition-all
               duration-300
             '
@@ -290,9 +290,9 @@ const AdminLayout = () => {
                 ant-menu-item-gradient
                 [&.ant-menu-item-selected]:text-white
                 [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#ec4899]
+                [&.ant-menu-item-selected]:from-[#FF1356]
                 [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#ec4899]
+                hover:text-[#FF1356]
                 transition-all
                 duration-300
               '
@@ -306,9 +306,9 @@ const AdminLayout = () => {
                 ant-menu-item-gradient
                 [&.ant-menu-item-selected]:text-white
                 [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#ec4899]
+                [&.ant-menu-item-selected]:from-[#FF1356]
                 [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#ec4899]
+                hover:text-[#FF1356]
                 transition-all
                 duration-300
               '
@@ -322,9 +322,9 @@ const AdminLayout = () => {
                 ant-menu-item-gradient
                 [&.ant-menu-item-selected]:text-white
                 [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#ec4899]
+                [&.ant-menu-item-selected]:from-[#FF1356]
                 [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#ec4899]
+                hover:text-[#FF1356]
                 transition-all
                 duration-300
               '
@@ -340,10 +340,10 @@ const AdminLayout = () => {
               ant-menu-item-gradient
               [&.ant-menu-item-selected]:text-white
               [&.ant-menu-item-selected]:bg-gradient-to-r
-              [&.ant-menu-item-selected]:from-[#ec4899]
+              [&.ant-menu-item-selected]:from-[#FF1356]
               [&.ant-menu-item-selected]:to-[#ff7d47]
               [&.ant-menu-item-selected>.anticon]:text-white
-              hover:text-[#ec4899]
+              hover:text-[#FF1356]
               transition-all
               duration-300
             '
@@ -380,18 +380,18 @@ const AdminLayout = () => {
             className='mr-5'
             style={{
               color: 'white',
-              background: 'linear-gradient(135deg, #ec4899, #ff7d47)'
+              background: 'linear-gradient(135deg, #FF1356, #ff7d47)'
             }}
           >
-            <BellOutlined className='text-xl' style={{ color: '#ec4899' }} />
+            <BellOutlined className='text-xl' style={{ color: '#FF1356' }} />
           </Badge>
-          <SettingOutlined className='text-xl mr-5' style={{ color: '#ec4899' }} />
+          <SettingOutlined className='text-xl mr-5' style={{ color: '#FF1356' }} />
           <Dropdown
             overlay={
               <Menu>
                 <Menu.Item key='user-info' disabled style={{ cursor: 'default' }}>
                   <p style={{ color: '#666' }}>Xin chào!</p>
-                  <p className='text-[#ec4899] font-bold'>{user?.fullName || 'User'}</p>
+                  <p className='text-[#FF1356] font-bold'>{user?.fullName || 'User'}</p>
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item key='profile'>
@@ -413,7 +413,7 @@ const AdminLayout = () => {
           >
             <Avatar
               style={{
-                background: user?.avatar ? 'transparent' : 'linear-gradient(135deg, #ec4899, #ff7d47)',
+                background: user?.avatar ? 'transparent' : 'linear-gradient(135deg, #FF1356, #ff7d47)',
                 cursor: 'pointer',
                 color: 'white'
               }}
@@ -433,7 +433,7 @@ const AdminLayout = () => {
             maxHeight: 'calc(100vh - 64px - 64px)'
           }}
         >
-          <div className='text-lg font-semibold mb-5' style={{ color: '#ec4899' }}>
+          <div className='text-lg font-semibold mb-5' style={{ color: '#FF1356' }}>
             Bill is a cat.
           </div>
           <ClientList />
@@ -443,7 +443,7 @@ const AdminLayout = () => {
           <Outlet />
         </Content>
         {/* Footer */}
-        <Footer className='text-center bg-white py-4' style={{ color: '#ec4899' }}>
+        <Footer className='text-center bg-white py-4' style={{ color: '#FF1356' }}>
           Senior Essentials Design ©2025 Created by LUXDEN
         </Footer>
       </div>

@@ -95,7 +95,7 @@ export default function ContentProviderLayout() {
       >
         <div className='flex flex-col items-center p-4 whitespace-nowrap overflow-hidden'>
           <img src={Logo} alt='Logo' className='w-10 h-10 mr-2' />
-          {!collapsed && <span className='text-pink-600 font-medium text-lg'>Tiện ích tuổi già</span>}
+          {!collapsed && <span className='text-[#FF1356] font-medium text-lg'>Tiện ích tuổi già</span>}
         </div>
 
         <Menu

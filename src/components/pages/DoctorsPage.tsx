@@ -140,7 +140,7 @@ const DoctorsPage = () => {
           {...props}
           style={{
             // backgroundColor: '#fff0f5',
-            color: '#ec4899'
+            color: '#FF1356'
           }}
         />
       )
@@ -153,6 +153,15 @@ const DoctorsPage = () => {
     return gender === 'Active' ? 'Đang hoạt động' : 'Ngưng hoạt động'
   }
   const columns: ColumnType<User>[] = [
+    {
+      title: 'STT',
+      key: 'stt',
+      width: '5%',
+      render: (_, __, index) => {
+        // Tính số thứ tự dựa trên trang hiện tại và số lượng item mỗi trang
+        return (pagination.current! - 1) * pagination.pageSize! + index + 1
+      }
+    },
     {
       title: 'Ảnh đại diện',
       dataIndex: 'avatar',
@@ -230,7 +239,7 @@ const DoctorsPage = () => {
           type='text'
           icon={<MoreOutlined />}
           onClick={() => navigate(`/admin/doctors/${record.accountId}`)}
-          style={{ color: '#ec4899' }}
+          style={{ color: '#FF1356' }}
         />
       )
     }
@@ -239,10 +248,10 @@ const DoctorsPage = () => {
   return (
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
-        <h2 className='text-2xl font-bold text-pink-600 m-0'>Danh sách bác sĩ</h2>
+        <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách bác sĩ</h2>
         <Button
           type='primary'
-          className='bg-pink-600 border-pink-600 font-bold hover:bg-pink-700 hover:border-pink-700'
+          className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-[#FF1356] hover:border-[#FF1356]'
           onClick={() => navigate(`/admin/doctors/add`)}
           icon={<PlusOutlined />}
         >
