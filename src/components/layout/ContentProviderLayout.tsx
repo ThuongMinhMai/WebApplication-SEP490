@@ -93,9 +93,9 @@ export default function ContentProviderLayout() {
           overflow: 'auto'
         }}
       >
-        <div className='flex items-center p-4'>
+        <div className='flex flex-col items-center p-4 whitespace-nowrap overflow-hidden'>
           <img src={Logo} alt='Logo' className='w-10 h-10 mr-2' />
-          {!collapsed && <span className='text-black text-lg'>My Project</span>}
+          {!collapsed && <span className='text-pink-600 font-medium text-lg'>Tiện ích tuổi già</span>}
         </div>
 
         <Menu
