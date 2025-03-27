@@ -34,6 +34,9 @@ const AdminLayout = () => {
     if (secondLastSegment === 'musics') {
       return '9' // key của menu Doctors
     }
+    if (secondLastSegment === 'exercises') {
+      return '7' // key của menu Doctors
+    }
     const path = pathname.split('/').pop() || 'dashboard'
 
     const routeToKeyMap: Record<string, string> = {

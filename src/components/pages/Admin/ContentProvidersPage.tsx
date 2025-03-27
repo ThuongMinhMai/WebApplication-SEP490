@@ -391,7 +391,7 @@ const ContentProviderPage = () => {
       />
 
       <Modal
-        title='Thêm nhà cung cấp mới'
+        title='Thêm nhà cung cấp nội dung mới'
         visible={isModalVisible}
         onOk={handleSubmit}
         confirmLoading={modalLoading}

@@ -1,7 +1,8 @@
-import { CustomerServiceOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import { CustomerServiceOutlined, EyeFilled, PlusOutlined, SearchOutlined, StopOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
 import { Avatar, Button, Input, Layout, Table, Tag, Modal, Form, message } from 'antd'
 import type { ColumnType, TablePaginationConfig } from 'antd/es/table'
+import axios from 'axios'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,6 +13,7 @@ interface Playlist {
   playlistName: string
   imageUrl: string | null
   numberOfContent: number
+  status: string
 }
 
 interface ApiResponse {
@@ -23,8 +25,6 @@ interface ApiResponse {
 const MusicPage = () => {
   const [data, setData] = useState<Playlist[]>([])
   const [filteredData, setFilteredData] = useState<Playlist[]>([])
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [form] = Form.useForm()
   const navigate = useNavigate()
 
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -35,7 +35,6 @@ const MusicPage = () => {
     pageSizeOptions: ['10', '20', '50', '100']
   })
   const [tableLoading, setTableLoading] = useState(false)
-  const [modalLoading, setModalLoading] = useState(false)
   const searchInput = useRef<InputRef>(null)
 
   useEffect(() => {
@@ -64,43 +63,6 @@ const MusicPage = () => {
       console.error('Fetch error:', error)
       message.error('Failed to fetch playlists')
       setTableLoading(false)
-    }
-  }
-
-  const showModal = () => {
-    setIsModalVisible(true)
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false)
-    form.resetFields()
-  }
-
-  const handleSubmit = async () => {
-    try {
-      const values = await form.validateFields()
-      setModalLoading(true)
-
-      // Here you would call your API to create a new playlist
-      // For example:
-      // const response = await fetch('https://api.diavan-valuation.asia/content-management/music-playlist', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(values)
-      // })
-
-      // For now, we'll just simulate success
-      message.success('Playlist created successfully!')
-      setIsModalVisible(false)
-      form.resetFields()
-      fetchData() // Refresh the data
-    } catch (error) {
-      console.error('Error:', error)
-      message.error('Failed to create playlist')
-    } finally {
-      setModalLoading(false)
     }
   }
 
@@ -169,6 +131,58 @@ const MusicPage = () => {
     setFilteredData(paginatedData)
   }
 
+  const handleBanPlaylist = async (playlistId: number, playlistName: string) => {
+    try {
+      // Hiển thị dialog xác nhận
+      Modal.confirm({
+        title: 'Xác nhận cấm danh sách phát',
+        content: (
+          <div>
+            <p>
+              Bạn có chắc chắn muốn cấm danh sách phát <strong>{playlistName}</strong>?
+            </p>
+            <p style={{ color: 'red' }}>
+              Lưu ý: Khi cấm, tất cả bài hát trong danh sách phát này sẽ không thể sử dụng!
+            </p>
+          </div>
+        ),
+        okText: 'Đồng ý',
+        cancelText: 'Hủy',
+        okButtonProps: { danger: true },
+        async onOk() {
+          try {
+            // Gọi API cấm playlist
+            const response = await axios.delete(
+              `https://api.diavan-valuation.asia/content-management/playlist-by-admin?playlistId=${playlistId}`
+            )
+
+            // Xử lý response
+            if (response.data.status === 1) {
+              message.success(`Đã cấm danh sách phát ${playlistName} thành công`)
+              // Cập nhật lại danh sách
+              fetchData()
+            } else {
+              message.error(response.data.message || 'Cấm danh sách phát thất bại')
+            }
+          } catch (error) {
+            if (axios.isAxiosError(error)) {
+              if (error.response?.data?.status === 0) {
+                message.error(error.response.data.message || 'Danh sách phát không tồn tại')
+              } else {
+                message.error('Lỗi hệ thống khi cấm danh sách phát')
+              }
+            } else {
+              message.error('Lỗi không xác định')
+            }
+            console.error('Error banning playlist:', error)
+          }
+        }
+      })
+    } catch (error) {
+      console.error('Error showing confirmation dialog:', error)
+    }
+  }
+
   const columns: ColumnType<Playlist>[] = [
     {
       title: 'Ảnh',
@@ -187,7 +201,7 @@ const MusicPage = () => {
       title: 'Tên danh sách phát',
       dataIndex: 'playlistName',
       key: 'playlistName',
-      width: '30%',
+      width: '20%',
       sorter: (a, b) => a.playlistName.localeCompare(b.playlistName),
       ...getColumnSearchProps('playlistName'),
       render: (text: string) => <strong>{text}</strong>
@@ -196,7 +210,7 @@ const MusicPage = () => {
       title: 'Số lượng bài hát',
       dataIndex: 'numberOfContent',
       key: 'numberOfContent',
-      width: '20%',
+      width: '10%',
       sorter: (a, b) => a.numberOfContent - b.numberOfContent,
       render: (count: number) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -208,20 +222,63 @@ const MusicPage = () => {
       )
     },
     {
-      title: 'Tùy chọn',
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      key: 'status',
+      width: '10%',
+      filters: [
+        { text: 'Đang sử dụng', value: 'Active' },
+        { text: 'Ngưng sử dụng', value: 'Inactive' },
+        { text: 'Admin cấm', value: 'AdminDelete' }
+      ],
+      onFilter: (value, record) => record.status === value,
+      render: (status: string) => {
+        let color = ''
+        let text = ''
+
+        switch (status) {
+          case 'Active':
+            color = 'green'
+            text = 'Đang sử dụng'
+            break
+          case 'Inactive':
+            color = 'orange'
+            text = 'Ngưng sử dụng'
+            break
+          case 'AdminDelete':
+            color = 'red'
+            text = 'Admin cấm'
+            break
+          default:
+            color = 'gray'
+            text = 'Không xác định'
+        }
+
+        return (
+          <Tag color={color} style={{ width: '100%', textAlign: 'center' }}>
+            {text}
+          </Tag>
+        )
+      }
+    },
+
+    {
+      title: '',
       key: 'actions',
-      width: '20%',
+      width: '10%',
       render: (_, record) => (
-        <div>
+        <div className='flex'>
           <Button
             type='link'
             onClick={() => navigate(`/admin/musics/${record.playlistId}?playlistname=${record.playlistName}`)}
           >
-            Xem
+            <EyeFilled /> Xem
           </Button>
-          <Button type='link' danger>
-            Xóa
-          </Button>
+          {record.status == 'Active' && (
+            <Button type='link' danger onClick={() => handleBanPlaylist(record.playlistId, record.playlistName)}>
+              <StopOutlined /> Cấm
+            </Button>
+          )}
         </div>
       )
     }
@@ -230,15 +287,7 @@ const MusicPage = () => {
   return (
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
-        <h2 className='text-2xl font-bold text-blue-600 m-0'>Music Playlists</h2>
-        <Button
-          type='primary'
-          className='bg-blue-600 border-blue-600 font-bold hover:bg-blue-700 hover:border-blue-700'
-          icon={<PlusOutlined />}
-          onClick={showModal}
-        >
-          Add Playlist
-        </Button>
+        <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách phát nhạc</h2>
       </div>
       <Table
         columns={columns}
@@ -249,30 +298,6 @@ const MusicPage = () => {
         onChange={handleTableChange}
         bordered
       />
-
-      <Modal
-        title='Add New Playlist'
-        visible={isModalVisible}
-        onOk={handleSubmit}
-        confirmLoading={modalLoading}
-        onCancel={handleCancel}
-        okText='Add'
-        cancelText='Cancel'
-      >
-        <Form form={form} layout='vertical'>
-          <Form.Item
-            name='playlistName'
-            label='Playlist Name'
-            rules={[{ required: true, message: 'Please enter playlist name' }]}
-          >
-            <Input placeholder='Enter playlist name' />
-          </Form.Item>
-
-          <Form.Item name='imageUrl' label='Cover Image URL'>
-            <Input placeholder='Enter image URL (optional)' />
-          </Form.Item>
-        </Form>
-      </Modal>
     </Content>
   )
 }

@@ -18,6 +18,7 @@ import TransactionHistoryPage from './components/pages/Admin/TransactionHistoryP
 import UsersPage from './components/pages/Admin/UsersPage'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import PlayListMusicDetailPage from './components/pages/Admin/PlayListMusicDetailPage'
+import ExerciesDetailPage from './components/pages/Admin/ExerciesDetailPage'
 
 function ProtectedRoutes() {
   const { isAuthenticated, isAdmin, isContentProvider, initialized } = useAuth()
@@ -53,6 +54,7 @@ function ProtectedRoutes() {
           <Route path='family-members' element={<FamilyMembersPage />} />
           <Route path='users' element={<UsersPage />} />
           <Route path='exercises' element={<ExercisesPage />} />
+          <Route path='exercises/:id' element={<ExerciesDetailPage />} />
           <Route path='books' element={<BooksPage />} />
           <Route path='musics' element={<MusicPage />} />
           <Route path='musics/:id' element={<PlayListMusicDetailPage />} />
