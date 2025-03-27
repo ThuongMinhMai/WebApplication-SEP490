@@ -1,5 +1,5 @@
-import logoImage from '@/assets/Logo.png'; // Thay bằng đường dẫn ảnh của bạn
-import happyImage from '@/assets/happy.jpg'; // Thay bằng đường dẫn ảnh của bạn
+import logoImage from '@/assets/Logo.png' // Thay bằng đường dẫn ảnh của bạn
+import happyImage from '@/assets/happy.jpg' // Thay bằng đường dẫn ảnh của bạn
 import { useAuth } from '@/contexts/AuthContext'
 import { Button, Form, Input, message } from 'antd'
 import React, { useState } from 'react'
@@ -45,7 +45,7 @@ const LoginPage: React.FC = () => {
               className='h-16 mx-auto mb-4'
             />
             <h1 className='text-3xl font-bold text-gray-800'>Chào mừng bạn đến với</h1>
-            <h2 className='text-3xl font-bold text-[#ec4899] mt-1 mb-5'>Tiện ích người già</h2>
+            <h2 className='text-3xl font-bold text-[#FF1356] mt-1 mb-5'>Tiện ích người già</h2>
             <p className='text-gray-600'>Vui lòng nhập thông tin để đăng nhập</p>
           </div>
 
@@ -85,7 +85,7 @@ const LoginPage: React.FC = () => {
                 htmlType='submit'
                 loading={loading}
                 className='w-full h-12 text-lg font-medium'
-                style={{ background: 'linear-gradient(135deg, #ec4899, #ff7d47)' }}
+                style={{ background: 'linear-gradient(135deg, #ec2269, #FF1356)' }}
               >
                 Đăng nhập
               </Button>

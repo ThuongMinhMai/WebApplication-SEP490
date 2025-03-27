@@ -1,4 +1,3 @@
-
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
 import { Avatar, Button, Input, Layout, Table, Tag, Modal, Form, Select, DatePicker, message } from 'antd'
@@ -32,8 +31,9 @@ const ContentProviderPage = () => {
   const [data, setData] = useState<User[]>([])
   const [filteredData, setFilteredData] = useState<User[]>([])
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentAccount, setCurrentAccount] = useState<{ id: number; newStatus: string } | null>(null)
   const [form] = Form.useForm()
-  const navigate = useNavigate()
 
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -198,9 +198,55 @@ const ContentProviderPage = () => {
   const getGenderLabel = (gender: string) => {
     return gender === 'Male' ? 'Nam' : 'Nữ'
   }
-  const getStatusLabel = (gender: string) => {
-    return gender === 'Active' ? 'Đang hoạt động' : 'Ngưng hoạt động'
+  const handleStatusChange = (accountId: number, newStatus: string) => {
+    setCurrentAccount({ id: accountId, newStatus })
+    setIsModalOpen(true)
   }
+
+  const handleConfirmStatusChange = async () => {
+    if (!currentAccount) return
+
+    try {
+      const response = await fetch('https://api.diavan-valuation.asia/account-management/account-status', {
+        method: 'PUT',
+        headers: {
+          accept: '*/*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          accountId: currentAccount.id,
+          status: currentAccount.newStatus
+        })
+      })
+
+      const result = await response.json()
+
+      if (result.status === 1) {
+        // Giả sử status 1 là thành công
+        // Cập nhật lại dữ liệu
+        const updatedData = data.map((item) =>
+          item.accountId === currentAccount.id ? { ...item, status: currentAccount.newStatus } : item
+        )
+        setData(updatedData)
+        // Cập nhật filteredData với dữ liệu đã được paginate
+        const startIndex = (pagination.current! - 1) * pagination.pageSize!
+        const endIndex = startIndex + pagination.pageSize!
+        const updatedFilteredData = updatedData.slice(startIndex, endIndex)
+
+        setFilteredData(updatedFilteredData)
+        message.success(`Cập nhật trạng thái thành công`)
+      } else {
+        message.error(result.message || 'Cập nhật trạng thái thất bại')
+      }
+    } catch (error) {
+      message.error('Có lỗi xảy ra khi cập nhật trạng thái' + error)
+      console.error('Error:', error)
+    } finally {
+      setIsModalOpen(false)
+      setCurrentAccount(null)
+    }
+  }
+
   const columns: ColumnType<User>[] = [
     {
       title: 'STT',
@@ -263,7 +309,52 @@ const ContentProviderPage = () => {
         { text: 'Ngưng hoạt động', value: 'Inactive' }
       ],
       onFilter: (value, record) => record.status === value,
-      render: (status: string) => <Tag color={status === 'Active' ? 'green' : 'red'}>{getStatusLabel(status)}</Tag>
+      render: (status: string, record: User) => (
+        <>
+          <Select
+            value={status}
+            style={{ width: '100%' }}
+            onChange={(value) => handleStatusChange(record.accountId, value)}
+          >
+            <Option value='Active'>
+              <Tag color='green' style={{ width: '100%' }}>
+                Đang hoạt động
+              </Tag>
+            </Option>
+            <Option value='Inactive'>
+              <Tag color='red' style={{ width: '100%' }}>
+                Ngưng hoạt động
+              </Tag>
+            </Option>
+          </Select>
+          <Modal
+            title='Xác nhận thay đổi trạng thái'
+            open={isModalOpen && currentAccount?.id === record.accountId}
+            onOk={handleConfirmStatusChange}
+            onCancel={() => setIsModalOpen(false)}
+            okText='Xác nhận'
+            cancelText='Hủy'
+            okButtonProps={{
+              style: {
+                backgroundColor: '#FF1356',
+                borderColor: '#FF1356'
+              }
+            }}
+          >
+            {currentAccount?.newStatus === 'Inactive' ? (
+              <p>
+                Bạn có chắc chắn muốn ngưng hoạt động tài khoản này? Tài khoản sau khi ngưng hoạt động sẽ không thể truy
+                cập vào hệ thống.
+              </p>
+            ) : (
+              <p>
+                Bạn có chắc chắn muốn kích hoạt tài khoản này? Tài khoản sau khi kích hoạt sẽ có thể truy cập vào hệ
+                thống.
+              </p>
+            )}
+          </Modal>
+        </>
+      )
     },
     {
       title: 'Email',

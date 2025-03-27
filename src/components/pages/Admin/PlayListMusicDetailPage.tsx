@@ -194,17 +194,17 @@ const PlayListMusicDetailPage = () => {
                     )
                 },
 
-                {
-                  title: 'Thời lượng',
-                  key: 'duration',
-                  render: (_, record) => (
-                    <div className='w-24 flex justify-center'>
-                      <Text type='secondary' className='text-sm'>
-                        {formatTime(record.duration || 0)}
-                      </Text>
-                    </div>
-                  )
-                },
+                // {
+                //   title: 'Thời lượng',
+                //   key: 'duration',
+                //   render: (_, record) => (
+                //     <div className='w-24 flex justify-center'>
+                //       <Text type='secondary' className='text-sm'>
+                //         {formatTime(record.duration || 0)}
+                //       </Text>
+                //     </div>
+                //   )
+                // },
 
                 {
                   title: '',

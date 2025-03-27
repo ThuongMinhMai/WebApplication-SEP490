@@ -16,7 +16,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 .custom-sider .ant-layout-sider-trigger {
-  color: #ec4899 !important; /* Màu icon hồng */
+  color: #FF1356 !important; /* Màu icon hồng */
   background: white !important; /* Nền trắng */
   border: 1px solid #f0f0f0 !important; /* Viền nhẹ */
 }
