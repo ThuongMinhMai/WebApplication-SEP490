@@ -229,7 +229,7 @@ const MusicPage = () => {
       filters: [
         { text: 'Đang sử dụng', value: 'Active' },
         { text: 'Ngưng sử dụng', value: 'Inactive' },
-        { text: 'Admin cấm', value: 'AdminDelete' }
+        { text: 'Đã bị cấm', value: 'AdminDelete' }
       ],
       onFilter: (value, record) => record.status === value,
       render: (status: string) => {
@@ -247,7 +247,7 @@ const MusicPage = () => {
             break
           case 'AdminDelete':
             color = 'red'
-            text = 'Admin cấm'
+            text = 'Đã bị cấm'
             break
           default:
             color = 'gray'

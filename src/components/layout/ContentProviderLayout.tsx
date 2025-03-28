@@ -25,6 +25,12 @@ export default function ContentProviderLayout() {
 
   // Hàm ánh xạ route sang menu key
   const getSelectedKeyFromPath = (pathname: string): string => {
+    const pathSegments = pathname.split('/')
+    const lastSegment = pathSegments.pop() || 'dashboard'
+    const secondLastSegment = pathSegments.pop() || ''
+    if (secondLastSegment === 'books') {
+      return '3' // key của menu Doctors
+    }
     const path = pathname.split('/').pop() || 'dashboard'
 
     const routeToKeyMap: Record<string, string> = {
@@ -57,7 +63,7 @@ export default function ContentProviderLayout() {
         navigate('/content-provider/books')
         break
       case '4':
-        navigate('/content-provider/music')
+        navigate('/content-provider/musics')
         break
       default:
         navigate('/content-provider/dashboard')
@@ -139,18 +145,18 @@ export default function ContentProviderLayout() {
             className='mr-5'
             style={{
               color: 'white',
-              background: 'linear-gradient(135deg, #ec4899, #ff7d47)'
+              background: 'linear-gradient(135deg, #ec4899, #FF1356)'
             }}
           >
-            <BellOutlined className='text-xl' style={{ color: '#ec4899' }} />
+            <BellOutlined className='text-xl' style={{ color: '#FF1356' }} />
           </Badge>
-          <SettingOutlined className='text-xl mr-5' style={{ color: '#ec4899' }} />
+          <SettingOutlined className='text-xl mr-5' style={{ color: '#FF1356' }} />
           <Dropdown
             overlay={
               <Menu>
                 <Menu.Item key='user-info' disabled style={{ cursor: 'default' }}>
                   <p style={{ color: '#666' }}>Xin chào!</p>
-                  <p className='text-[#ec4899] font-bold'>{user?.fullName || 'User'}</p>
+                  <p className='text-[#FF1356] font-bold'>{user?.fullName || 'User'}</p>
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item key='profile'>
@@ -170,7 +176,7 @@ export default function ContentProviderLayout() {
           >
             <Avatar
               style={{
-                background: user?.avatar ? 'transparent' : 'linear-gradient(135deg, #ec4899, #ff7d47)',
+                background: user?.avatar ? 'transparent' : 'linear-gradient(135deg, #ec4899, ##FF1356)',
                 cursor: 'pointer',
                 color: 'white'
               }}

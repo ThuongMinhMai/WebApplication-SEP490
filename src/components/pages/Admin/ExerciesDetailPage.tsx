@@ -174,7 +174,7 @@ function ExerciesDetailPage() {
                       : lesson.status === 'Inactive'
                         ? 'Ngưng sử dụng'
                         : lesson.status === 'AdminDelete'
-                          ? 'Admin cấm'
+                          ? 'Đã bị cấm'
                           : lesson.status}
                   </Tag>
                   {lesson.status === 'Active' && (

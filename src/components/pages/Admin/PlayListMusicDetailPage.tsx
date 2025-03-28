@@ -272,7 +272,7 @@ const PlayListMusicDetailPage = () => {
                       case 'Inactive':
                         return <Tag color='orange'>Ngưng sử dụng</Tag>
                       case 'AdminDelete':
-                        return <Tag color='red'>Admin cấm</Tag>
+                        return <Tag color='red'>Đã bị cấm</Tag>
                       default:
                         return <Tag color='gray'>Không xác định</Tag>
                     }

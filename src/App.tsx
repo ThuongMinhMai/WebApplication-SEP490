@@ -19,6 +19,8 @@ import UsersPage from './components/pages/Admin/UsersPage'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import PlayListMusicDetailPage from './components/pages/Admin/PlayListMusicDetailPage'
 import ExerciesDetailPage from './components/pages/Admin/ExerciesDetailPage'
+import ManageBook from './components/pages/ContentProvider/ManageBook'
+import AddBookPage from './components/pages/ContentProvider/AddBookPage'
 
 function ProtectedRoutes() {
   const { isAuthenticated, isAdmin, isContentProvider, initialized } = useAuth()
@@ -71,7 +73,8 @@ function ProtectedRoutes() {
           <Route index element={<DashboardPage />} />
           <Route path='dashboard' element={<ContentPage />} />
           <Route path='exercises' element={<ContentPage />} />
-          <Route path='books' element={<ContentPage />} />
+          <Route path='books' element={<ManageBook />} />
+          <Route path='books/add' element={<AddBookPage />} />
           <Route path='musics' element={<ContentPage />} />
           <Route path='*' element={<Navigate to='/content-provider/dashboard' replace />} /> {/* Điều hướng sai URL */}
         </Route>
