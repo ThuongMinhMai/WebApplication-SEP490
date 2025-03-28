@@ -36,6 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(() => {
     return localStorage.getItem('token')
   })
+  const [refreshToken, setRefreshToken] = useState<string | null>(() => localStorage.getItem('refreshToken'))
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [initialized, setInitialized] = useState(false) // Thêm state để theo dõi khởi tạo
@@ -62,7 +63,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false)
     }
   }, [])
+  const refreshAccessToken = useCallback(async () => {
+    if (!refreshToken) return logout() // Không có refreshToken thì logout
 
+    try {
+      const response = await axios.post('https://api.diavan-valuation.asia/auth-management/refresh-token', {
+        token: refreshToken
+      })
+
+      if (response.data.accessToken) {
+        const newToken = response.data.accessToken
+        localStorage.setItem('token', newToken)
+        setToken(newToken)
+        await fetchUser(newToken)
+      }
+    } catch (err) {
+      console.error('Failed to refresh access token', err)
+      logout() // Refresh thất bại thì logout
+    }
+  }, [refreshToken, fetchUser])
   // Effect để khởi tạo khi component mount
   useEffect(() => {
     const initializeAuth = async () => {
@@ -72,14 +91,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           await fetchUser(storedToken)
           setToken(storedToken)
         } catch (err) {
-          console.error('Failed to initialize auth', err)
+          await refreshAccessToken()
+          // console.error('Failed to initialize auth', err)
         }
       }
       setInitialized(true) // Đánh dấu đã khởi tạo xong
     }
 
     initializeAuth()
-  }, [fetchUser])
+  }, [fetchUser, refreshAccessToken, token])
 
   const login = async (email: string, password: string) => {
     setLoading(true)
@@ -91,10 +111,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         { email, password, deviceToken: 'string' }
       )
 
-      if (loginResponse.data.isSuccess && loginResponse.data.data) {
-        const newToken = loginResponse.data.data
+      if (loginResponse.data.isSuccess && loginResponse.data.data.accessToken) {
+        const newToken = loginResponse.data.data.accessToken
+        const newRefreshToken = loginResponse.data.data.refreshToken
         localStorage.setItem('token', newToken)
+        localStorage.setItem('refreshToken', newRefreshToken)
         setToken(newToken)
+        setRefreshToken(newRefreshToken)
+
         await fetchUser(newToken)
       } else {
         message.error(loginResponse.data.data)
@@ -111,7 +135,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
     setToken(null)
+    setRefreshToken(null)
     setUser(null)
     message.success('Đăng xuất thành công!')
   }

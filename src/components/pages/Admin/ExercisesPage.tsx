@@ -91,10 +91,10 @@ const ExerciesPage = () => {
           size='small'
           style={{ width: 90, marginRight: 8 }}
         >
-          Search
+          Tìm kiếm
         </Button>
         <Button onClick={() => handleReset(clearFilters)} size='small' style={{ width: 90 }}>
-          Reset
+          Đặt lại
         </Button>
       </div>
     ),
@@ -273,16 +273,20 @@ const ExerciesPage = () => {
       width: '5%',
       render: (_, record) => (
         <div className='flex'>
-          <Button
-            type='link'
-            onClick={() => navigate(`/admin/exercises/${record.playlistId}?playlistname=${record.playlistName}`)}
-          >
-            <EyeFilled /> Xem
-          </Button>
-          {record.status == 'Active' && (
-            <Button type='link' danger onClick={() => handleBanPlaylist(record.playlistId, record.playlistName)}>
-              <StopOutlined /> Cấm
-            </Button>
+          {record.numberOfContent > 0 && (
+            <>
+              <Button
+                type='link'
+                onClick={() => navigate(`/admin/exercises/${record.playlistId}?playlistname=${record.playlistName}`)}
+              >
+                <EyeFilled /> Xem
+              </Button>
+              {record.status == 'Active' && (
+                <Button type='link' danger onClick={() => handleBanPlaylist(record.playlistId, record.playlistName)}>
+                  <StopOutlined /> Cấm
+                </Button>
+              )}
+            </>
           )}
         </div>
       )

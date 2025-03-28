@@ -60,10 +60,10 @@ class ClientList extends PureComponent<{}, State> {
           size='small'
           style={{ width: 90, marginRight: 8 }}
         >
-          Search
+          Tìm kiếm
         </Button>
         <Button onClick={() => this.handleReset(clearFilters)} size='small' style={{ width: 90 }}>
-          Reset
+          Đặt lại
         </Button>
       </div>
     ),
