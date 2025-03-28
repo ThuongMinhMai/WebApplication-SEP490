@@ -31,6 +31,9 @@ export default function ContentProviderLayout() {
     if (secondLastSegment === 'books') {
       return '3' // key của menu Doctors
     }
+    if (secondLastSegment === 'exercises') {
+      return '2' // key của menu Doctors
+    }
     const path = pathname.split('/').pop() || 'dashboard'
 
     const routeToKeyMap: Record<string, string> = {
@@ -192,7 +195,9 @@ export default function ContentProviderLayout() {
           <Outlet />
         </Content>
 
-        <Footer className='text-center bg-white py-4'>Senior Essentials Design ©2025 Created by LUXDEN</Footer>
+        <Footer style={{ color: '#FF1356' }} className='text-center bg-white py-4 '>
+          Senior Essentials Design ©2025 Created by LUXDEN
+        </Footer>
       </div>
     </div>
   )

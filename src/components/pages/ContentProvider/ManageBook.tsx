@@ -1,11 +1,11 @@
 import {
-    BookOutlined,
-    ExclamationCircleOutlined,
-    EyeOutlined,
-    LeftOutlined,
-    PlusOutlined,
-    RightOutlined,
-    SearchOutlined
+  BookOutlined,
+  ExclamationCircleOutlined,
+  EyeOutlined,
+  LeftOutlined,
+  PlusOutlined,
+  RightOutlined,
+  SearchOutlined
 } from '@ant-design/icons'
 import { Viewer, Worker } from '@react-pdf-viewer/core'
 import '@react-pdf-viewer/core/lib/styles/index.css'
@@ -152,6 +152,8 @@ function ManageBook() {
         setBooks(
           books.map((book) => (book.bookId === currentBook.bookId ? { ...book, status: currentBook.status } : book))
         )
+      } else {
+        message.error(data.data || 'Câp nhật trạng thái sách thất bại')
       }
     } catch (err) {
       message.error(err instanceof Error ? err.message : 'An unknown error occurred')
@@ -349,13 +351,13 @@ function ManageBook() {
     <div className='container mx-auto px-4 py-8'>
       <h1 className='text-3xl font-bold text-center text-[#FF1356] mb-8'>Danh sách sách</h1>
       <Button
-          type='primary'
-          className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-[#FF1356] hover:border-[#FF1356]'
-          onClick={() => navigate(`/content-provider/books/add`)}
-          icon={<PlusOutlined />}
-        >
-          Thêm sách
-        </Button>
+        type='primary'
+        className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-[#FF1356] hover:border-[#FF1356]'
+        onClick={() => navigate(`/content-provider/books/add`)}
+        icon={<PlusOutlined />}
+      >
+        Thêm sách
+      </Button>
       <Table
         columns={columns}
         dataSource={books}
@@ -391,7 +393,6 @@ function ManageBook() {
             <Worker workerUrl='https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js'>
               <Viewer fileUrl={viewingBook.bookUrl} plugins={[layoutPluginInstance]} />
             </Worker>
-          
           </div>
         )}
       </Modal>
