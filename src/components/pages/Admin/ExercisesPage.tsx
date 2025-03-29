@@ -196,7 +196,8 @@ const ExerciesPage = () => {
       width: '10%',
       render: (imageUrl: string | null) => (
         <Avatar
-          src={imageUrl || 'https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png'}
+          // src={imageUrl || 'https://preview.redd.it/q3varo58nxkz.jpg?width=640&crop=smart&auto=webp&s=3d9df6326088836eeafcf51c77d9c07de5c10bde'}
+          src={imageUrl }
           size='large'
           shape='square'
         />

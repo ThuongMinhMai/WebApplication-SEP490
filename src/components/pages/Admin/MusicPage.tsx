@@ -87,7 +87,7 @@ const MusicPage = () => {
           Tìm kiếm
         </Button>
         <Button onClick={() => handleReset(clearFilters)} size='small' style={{ width: 90 }}>
-        Đặt lại
+          Đặt lại
         </Button>
       </div>
     ),
@@ -191,7 +191,8 @@ const MusicPage = () => {
       width: '10%',
       render: (imageUrl: string | null) => (
         <Avatar
-          src={imageUrl || 'https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png'}
+          // src={imageUrl || 'https://m.media-amazon.com/images/I/31Fq-eqH4bL._AC_UF1000,1000_QL80_.jpg'}
+          src={imageUrl}
           size='large'
           shape='square'
         />
