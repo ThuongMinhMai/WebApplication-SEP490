@@ -272,12 +272,12 @@ const DoctorsPage = () => {
             onChange={(value) => handleStatusChange(record.accountId, value)}
           >
             <Option value='Active'>
-              <Tag color='green' style={{ width: '100%' }}>
+              <Tag color='green' style={{ width: '90%' }}>
                 Đang hoạt động
               </Tag>
             </Option>
             <Option value='Inactive'>
-              <Tag color='red' style={{ width: '100%' }}>
+              <Tag color='red' style={{ width: '90%' }}>
                 Ngưng hoạt động
               </Tag>
             </Option>
