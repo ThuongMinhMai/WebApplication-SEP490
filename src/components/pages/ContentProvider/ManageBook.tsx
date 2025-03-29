@@ -306,12 +306,12 @@ function ManageBook() {
         return (
           <Select value={status} style={{ width: 150 }} onChange={(value) => handleStatusChange(record, value)}>
             <Option value='Active'>
-              <Tag color='green' style={{ width: '100%' }}>
+              <Tag color='green' style={{ width: '90%' }}>
                 Đang sử dụng
               </Tag>
             </Option>
             <Option value='Inactive'>
-              <Tag color='red' style={{ width: '100%' }}>
+              <Tag color='red' style={{ width: '90%' }}>
                 Ngưng sử dụng
               </Tag>
             </Option>
