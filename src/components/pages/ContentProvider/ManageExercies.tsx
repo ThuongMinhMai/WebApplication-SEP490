@@ -1,8 +1,10 @@
 import { useAuth } from '@/contexts/AuthContext'
 import {
   DeleteOutlined,
+  EditOutlined,
   ExclamationCircleOutlined,
   EyeFilled,
+  EyeOutlined,
   PlusOutlined,
   SearchOutlined,
   UploadOutlined,
@@ -59,6 +61,15 @@ const ManageExercise = () => {
   })
   const [tableLoading, setTableLoading] = useState(false)
   const searchInput = useRef<InputRef>(null)
+  const [editForm, setEditForm] = useState<Playlist>({
+    playlistId: 0,
+    playlistName: '',
+    imageUrl: '',
+    numberOfContent: 0,
+    status: ''
+  })
+  const [editModalVisible, setEditModalVisible] = useState(false)
+  const [editLoading, setEditLoading] = useState(false)
 
   useEffect(() => {
     fetchData()
@@ -287,6 +298,59 @@ const ManageExercise = () => {
   const handleStatusChange = (playList: Playlist, status: string) => {
     setCurrentPlayList({ ...playList, status })
   }
+
+  const handleOpenEditModal = (playlist: Playlist) => {
+    setEditForm({
+      playlistId: playlist.playlistId,
+      playlistName: playlist.playlistName,
+      imageUrl: playlist.imageUrl,
+      numberOfContent: playlist.numberOfContent,
+      status: playlist.status
+    })
+    setEditModalVisible(true)
+  }
+
+  const handleEditSubmit = async () => {
+    const errors = {
+      playlistName: !addForm.playlistName.trim() ? 'Vui lòng nhập tên danh sách phát' : ''
+      // ... các validation khác nếu có
+    }
+
+    setFormErrors(errors)
+
+    // Nếu có lỗi thì dừng lại
+    if (errors.playlistName) {
+      return
+    }
+    try {
+      setEditLoading(true)
+      const response = await fetch('https://api.diavan-valuation.asia/content-management/playlist', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+          // Authorization: `Bearer ${localStorage.getItem('token')}` // Thêm token nếu cần
+        },
+        body: JSON.stringify({
+          playlistId: editForm.playlistId,
+          playlistName: editForm.playlistName
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.status === 1) {
+        message.success('Cập nhật sách thành công')
+        fetchData()
+        setEditModalVisible(false)
+      } else {
+        message.error(data.data || 'Cập nhật sách thất bại')
+      }
+    } catch (err) {
+      message.error(err instanceof Error ? err.message : 'Lỗi không xác định')
+    } finally {
+      setEditLoading(false)
+    }
+  }
   const columns: ColumnType<Playlist>[] = [
     {
       title: 'Ảnh',
@@ -395,18 +459,20 @@ const ManageExercise = () => {
       width: '5%',
       render: (_, record) => (
         <div className='flex'>
-          {record.numberOfContent > 0 && (
-            <>
-              <Button
-                type='link'
-                onClick={() =>
-                  navigate(`/content-provider/exercises/${record.playlistId}?playlistname=${record.playlistName}`)
-                }
-              >
-                <EyeFilled /> Xem
+          <>
+            <Button
+              onClick={() =>
+                navigate(`/content-provider/exercises/${record.playlistId}?playlistname=${record.playlistName}`)
+              }
+            >
+              <EyeFilled /> Chi tiết
+            </Button>
+            {record.numberOfContent === 0 && (
+              <Button icon={<EditOutlined />} onClick={() => handleOpenEditModal(record)}>
+                Chỉnh sửa
               </Button>
-            </>
-          )}
+            )}
+          </>
         </div>
       )
     }
@@ -489,6 +555,7 @@ const ManageExercise = () => {
               Tên danh sách phát <span className='text-red-500'>*</span>
             </label>
             <Input
+              required
               name='playlistName'
               value={addForm.playlistName}
               onChange={handleAddFormChange}
@@ -571,6 +638,34 @@ const ManageExercise = () => {
               />
             )} */}
             <p className='text-xs text-gray-500 mt-1'>Hỗ trợ: JPG, PNG, JPEG (tối đa 5MB)</p>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        title='Chỉnh sửa thông tin danh sách phát'
+        open={editModalVisible}
+        onOk={handleEditSubmit}
+        onCancel={() => setEditModalVisible(false)}
+        okText='Lưu thay đổi'
+        cancelText='Hủy'
+        confirmLoading={editLoading}
+        okButtonProps={{
+          style: {
+            backgroundColor: '#FF1356',
+            borderColor: '#FF1356'
+          }
+        }}
+      >
+        <div className='space-y-4'>
+          <div>
+            <label className='block mb-1 font-medium'>Tên danh sách phát</label>
+            <Input
+              required
+              value={editForm.playlistName}
+              onChange={(e) => setEditForm({ ...editForm, playlistName: e.target.value })}
+            />
+            {formErrors.playlistName && <div className='text-red-500 text-sm mt-1'>{formErrors.playlistName}</div>}
           </div>
         </div>
       </Modal>

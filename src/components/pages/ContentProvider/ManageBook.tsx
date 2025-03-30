@@ -83,6 +83,12 @@ function ManageBook() {
     author: ''
   })
 
+  const [editErrors, setEditErrors] = useState({
+    bookName: '',
+    bookType: '',
+    author: ''
+  })
+
   const [bookTypeOptions, setBookTypeOptions] = useState<BookTypeOption[]>([
     { value: 'Tiểu thuyết', label: 'Tiểu thuyết' },
     { value: 'Khoa học', label: 'Khoa học' },
@@ -249,6 +255,24 @@ function ManageBook() {
     setEditModalVisible(true)
   }
   const handleEditSubmit = async () => {
+    const errors = {
+      bookName: '',
+      bookType: '',
+      author: ''
+    }
+
+    if (!editForm.bookName.trim()) {
+      errors.bookName = 'Vui lòng nhập tên sách'
+    }
+    if (!editForm.bookType.trim()) {
+      errors.bookType = 'Vui lòng nhập loại sách'
+    }
+    if (!editForm.author.trim()) {
+      errors.author = 'Vui lòng nhập tên tác giả'
+    }
+
+    setEditErrors(errors)
+    if (errors.bookName || errors.bookType || errors.author) return
     try {
       setEditLoading(true)
       const response = await fetch('https://api.diavan-valuation.asia/content-management/book', {
@@ -534,11 +558,13 @@ function ManageBook() {
           <div>
             <label className='block mb-1 font-medium'>Tên sách</label>
             <Input value={editForm.bookName} onChange={(e) => setEditForm({ ...editForm, bookName: e.target.value })} />
+            {editErrors.bookName && <div className='text-red-500 text-sm mt-1'>{editErrors.bookName}</div>}
           </div>
 
           <div>
             <label className='block mb-1 font-medium'>Tác giả</label>
             <Input value={editForm.author} onChange={(e) => setEditForm({ ...editForm, author: e.target.value })} />
+            {editErrors.author && <div className='text-red-500 text-sm mt-1'>{editErrors.author}</div>}
           </div>
 
           <div>
@@ -557,6 +583,7 @@ function ManageBook() {
               placeholder='Nhập thể loại sách'
               allowClear
             />
+            {editErrors.bookType && <div className='text-red-500 text-sm mt-1'>{editErrors.bookType}</div>}
           </div>
           <div>
             <label className='block mb-1 font-medium'>Ngày xuất bản</label>

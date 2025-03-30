@@ -153,7 +153,7 @@ function ExerciesDetailPage() {
 
       {lessons.length === 0 ? (
         <div className='flex justify-center'>
-          <Empty description='No exercises found for this playlist' />
+          <Empty description='Không tìm thấy bài tập nào cho danh sách phát này' />
         </div>
       ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
