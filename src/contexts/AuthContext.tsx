@@ -72,9 +72,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       if (response.data.accessToken) {
+        // const newToken = response.data.accessToken
+        // localStorage.setItem('token', newToken)
+        // setToken(newToken)
+        // await fetchUser(newToken)
         const newToken = response.data.accessToken
+        const newRefreshToken = response.data.refreshToken
         localStorage.setItem('token', newToken)
+        localStorage.setItem('refreshToken', newRefreshToken)
         setToken(newToken)
+        setRefreshToken(newRefreshToken)
         await fetchUser(newToken)
       }
     } catch (err) {
@@ -86,6 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const initializeAuth = async () => {
       const storedToken = localStorage.getItem('token')
+      const storedRefreshToken = localStorage.getItem('refreshToken');
       if (storedToken) {
         try {
           await fetchUser(storedToken)

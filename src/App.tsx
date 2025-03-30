@@ -23,6 +23,7 @@ import ManageBook from './components/pages/ContentProvider/ManageBook'
 import AddBookPage from './components/pages/ContentProvider/AddBookPage'
 import ManageExercise from './components/pages/ContentProvider/ManageExercies'
 import DetailExercisePage from './components/pages/ContentProvider/DetailExercisePage'
+import DashboardProviderPage from './components/pages/ContentProvider/DashboardProviderPage'
 
 function ProtectedRoutes() {
   const { isAuthenticated, isAdmin, isContentProvider, initialized } = useAuth()
@@ -72,11 +73,10 @@ function ProtectedRoutes() {
       {/* Protected Content Provider Routes */}
       {isAuthenticated && isContentProvider ? (
         <Route path='/content-provider/*' element={<ContentProviderLayout />}>
-          <Route index element={<DashboardPage />} />
-          <Route path='dashboard' element={<ContentPage />} />
+          <Route index element={<DashboardProviderPage />} />
+          <Route path='dashboard' element={<DashboardProviderPage />} />
           <Route path='exercises' element={<ManageExercise />} />
           <Route path='exercises/:id' element={<DetailExercisePage />} />
-
           <Route path='books' element={<ManageBook />} />
           <Route path='books/add' element={<AddBookPage />} />
           <Route path='musics' element={<ContentPage />} />

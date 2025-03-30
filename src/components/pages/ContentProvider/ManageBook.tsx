@@ -1,5 +1,6 @@
 import {
   BookOutlined,
+  EditOutlined,
   ExclamationCircleOutlined,
   EyeOutlined,
   LeftOutlined,
@@ -11,7 +12,7 @@ import { Viewer, Worker } from '@react-pdf-viewer/core'
 import '@react-pdf-viewer/core/lib/styles/index.css'
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout'
 import '@react-pdf-viewer/default-layout/lib/styles/index.css'
-import { Button, Empty, Input, Modal, Select, Spin, Table, Tag, message } from 'antd'
+import { AutoComplete, Button, Empty, Input, Modal, Select, Spin, Table, Tag, message } from 'antd'
 import type { ColumnType } from 'antd/es/table'
 import * as pdfjsLib from 'pdfjs-dist'
 import 'pdfjs-dist/build/pdf.worker.entry'
@@ -48,6 +49,17 @@ const statusText: Record<string, string> = {
   Inactive: 'Ngưng sử dụng',
   AdminDelete: 'Đã bị cấm'
 }
+interface EditBookForm {
+  bookId: number
+  bookName: string
+  bookType: string
+  publishDate: string
+  author: string
+}
+interface BookTypeOption {
+  value: string
+  label: string
+}
 
 function ManageBook() {
   const [books, setBooks] = useState<Book[]>([])
@@ -62,6 +74,38 @@ function ManageBook() {
   const layoutPluginInstance = defaultLayoutPlugin()
   const [searchText, setSearchText] = useState('')
   const [searchedColumn, setSearchedColumn] = useState('')
+  const [editModalVisible, setEditModalVisible] = useState(false)
+  const [editForm, setEditForm] = useState<EditBookForm>({
+    bookId: 0,
+    bookName: '',
+    bookType: '',
+    publishDate: '',
+    author: ''
+  })
+
+  const [bookTypeOptions, setBookTypeOptions] = useState<BookTypeOption[]>([
+    { value: 'Tiểu thuyết', label: 'Tiểu thuyết' },
+    { value: 'Khoa học', label: 'Khoa học' },
+    { value: 'Kinh tế', label: 'Kinh tế' },
+    { value: 'Tâm lý', label: 'Tâm lý' },
+    { value: 'Kỹ năng sống', label: 'Kỹ năng sống' },
+    { value: 'Lịch sử', label: 'Lịch sử' },
+    { value: 'Văn học', label: 'Văn học' },
+    { value: 'Triết học', label: 'Triết học' },
+    { value: 'Tôn giáo', label: 'Tôn giáo' },
+    { value: 'Nuôi dạy con', label: 'Nuôi dạy con' },
+    { value: 'Sức khỏe', label: 'Sức khỏe' },
+    { value: 'Nghệ thuật', label: 'Nghệ thuật' },
+    { value: 'Công nghệ', label: 'Công nghệ' },
+    { value: 'Du lịch', label: 'Du lịch' },
+    { value: 'Nấu ăn', label: 'Nấu ăn' },
+    { value: 'Thể thao', label: 'Thể thao' },
+    { value: 'Truyện tranh', label: 'Truyện tranh' },
+    { value: 'Thơ ca', label: 'Thơ ca' },
+    { value: 'Kinh doanh', label: 'Kinh doanh' },
+    { value: 'Pháp luật', label: 'Pháp luật' }
+  ])
+  const [editLoading, setEditLoading] = useState(false)
   const getPdfCover = async (pdfUrl: string): Promise<string | null> => {
     try {
       const pdf = await pdfjsLib.getDocument(pdfUrl).promise
@@ -194,7 +238,43 @@ function ManageBook() {
       setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
     }
   }
+  const handleOpenEditModal = (book: Book) => {
+    setEditForm({
+      bookId: book.bookId,
+      bookName: book.bookName,
+      bookType: book.bookType,
+      publishDate: book.publishDate,
+      author: book.author
+    })
+    setEditModalVisible(true)
+  }
+  const handleEditSubmit = async () => {
+    try {
+      setEditLoading(true)
+      const response = await fetch('https://api.diavan-valuation.asia/content-management/book', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+          // Authorization: `Bearer ${localStorage.getItem('token')}` // Thêm token nếu cần
+        },
+        body: JSON.stringify(editForm)
+      })
 
+      const data = await response.json()
+
+      if (data.status === 1) {
+        message.success('Cập nhật sách thành công')
+        setBooks(books.map((book) => (book.bookId === editForm.bookId ? { ...book, ...editForm } : book)))
+        setEditModalVisible(false)
+      } else {
+        message.error(data.data || 'Cập nhật sách thất bại')
+      }
+    } catch (err) {
+      message.error(err instanceof Error ? err.message : 'Lỗi không xác định')
+    } finally {
+      setEditLoading(false)
+    }
+  }
   const getColumnSearchProps = (dataIndex: string, title: string) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
       <div style={{ padding: 8 }}>
@@ -327,6 +407,11 @@ function ManageBook() {
           <Button icon={<EyeOutlined />} onClick={() => handleViewBook(record)}>
             Xem
           </Button>
+          {record.status != 'AdminDelete' && (
+            <Button icon={<EditOutlined />} onClick={() => handleOpenEditModal(record)}>
+              Chỉnh sửa
+            </Button>
+          )}
         </div>
       )
     }
@@ -429,6 +514,64 @@ function ManageBook() {
               khả dụng với tất cả người dùng.
             </p>
           ))}
+      </Modal>
+      <Modal
+        title='Chỉnh sửa thông tin sách'
+        open={editModalVisible}
+        onOk={handleEditSubmit}
+        onCancel={() => setEditModalVisible(false)}
+        okText='Lưu thay đổi'
+        cancelText='Hủy'
+        confirmLoading={editLoading}
+        okButtonProps={{
+          style: {
+            backgroundColor: '#FF1356',
+            borderColor: '#FF1356'
+          }
+        }}
+      >
+        <div className='space-y-4'>
+          <div>
+            <label className='block mb-1 font-medium'>Tên sách</label>
+            <Input value={editForm.bookName} onChange={(e) => setEditForm({ ...editForm, bookName: e.target.value })} />
+          </div>
+
+          <div>
+            <label className='block mb-1 font-medium'>Tác giả</label>
+            <Input value={editForm.author} onChange={(e) => setEditForm({ ...editForm, author: e.target.value })} />
+          </div>
+
+          <div>
+            <label className='block mb-1 font-medium'>Thể loại</label>
+            <AutoComplete
+              className='w-full'
+              value={editForm.bookType}
+              onChange={(value) => setEditForm({ ...editForm, bookType: value })}
+              options={bookTypeOptions}
+              filterOption={(inputValue, option) =>
+                option!.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+              }
+              onSelect={(value) => {
+                setEditForm({ ...editForm, bookType: value })
+              }}
+              placeholder='Nhập thể loại sách'
+              allowClear
+            />
+          </div>
+          <div>
+            <label className='block mb-1 font-medium'>Ngày xuất bản</label>
+            <Input
+              type='date'
+              value={editForm.publishDate.split('T')[0]}
+              onChange={(e) =>
+                setEditForm({
+                  ...editForm,
+                  publishDate: e.target.value ? `${e.target.value}T00:00:00.000Z` : ''
+                })
+              }
+            />
+          </div>
+        </div>
       </Modal>
     </div>
   )
