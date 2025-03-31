@@ -1,4 +1,3 @@
-// components/LoadingScreen.tsx
 import { useEffect, useState } from 'react'
 import loading from '../../assets/loading.gif'
 const LoadingScreen = () => {

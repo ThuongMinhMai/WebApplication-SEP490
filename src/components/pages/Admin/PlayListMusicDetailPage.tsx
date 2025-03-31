@@ -1,6 +1,5 @@
 import {
   ArrowLeftOutlined,
-  ClockCircleOutlined,
   DeleteOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined
@@ -11,7 +10,6 @@ import {
   Card,
   Divider,
   Layout,
-  List,
   Modal,
   Progress,
   Skeleton,
@@ -105,11 +103,7 @@ const PlayListMusicDetailPage = () => {
       setCurrentlyPlaying(musicId)
     }
   }
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = Math.floor(seconds % 60)
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`
-  }
+  
   const handleBanMusic = async (musicId: number, musicName: string) => {
     try {
       // Hiển thị dialog xác nhận
@@ -237,7 +231,15 @@ const PlayListMusicDetailPage = () => {
                   key: 'image',
                   width: 80,
                   render: (_, record) => (
-                    <Avatar src={record.imageUrl} shape='square' size={48} className='rounded-lg shadow-sm' />
+                    <Avatar
+                      src={
+                        record.imageUrl ||
+                        'https://www.turntablelab.com/cdn/shop/products/robertomusci-towerofsilence1_1000x1000.jpg?v=1571264660'
+                      }
+                      shape='square'
+                      size={48}
+                      className='rounded-lg shadow-sm'
+                    />
                   )
                 },
                 {
@@ -246,7 +248,7 @@ const PlayListMusicDetailPage = () => {
                   key: 'name',
                   render: (text, record) => (
                     <Text strong className={currentlyPlaying === record.musicId ? 'text-pink-600' : 'text-gray-800'}>
-                      {text}
+                      {text ||"Không xác định"}
                     </Text>
                   )
                 },

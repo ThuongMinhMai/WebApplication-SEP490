@@ -1,5 +1,5 @@
-import logoImage from '@/assets/Logo.png' // Thay bằng đường dẫn ảnh của bạn
-import happyImage from '@/assets/happy.jpg' // Thay bằng đường dẫn ảnh của bạn
+import logoImage from '@/assets/Logo.png' 
+import happyImage from '@/assets/happy.jpg' 
 import { useAuth } from '@/contexts/AuthContext'
 import { Button, Form, Input, message } from 'antd'
 import React, { useState } from 'react'

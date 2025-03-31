@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { Table, Tag, Spin, Empty, Button, Modal, message, Input } from 'antd'
 import {
   BookOutlined,
-  EyeOutlined,
   ExclamationCircleOutlined,
+  EyeOutlined,
   LeftOutlined,
   RightOutlined,
   SearchOutlined,
   StopOutlined
 } from '@ant-design/icons'
+import { Button, Empty, Input, Modal, Spin, Table, Tag, message } from 'antd'
+import type { ColumnType } from 'antd/es/table'
+import { useEffect, useState } from 'react'
 import { EpubView } from 'react-reader'
-import type { ColumnType, TablePaginationConfig } from 'antd/es/table'
 
-import { Worker, Viewer } from '@react-pdf-viewer/core'
-import '@react-pdf-viewer/core/lib/styles/index.css'
+import { Viewer, Worker } from '@react-pdf-viewer/core'
 import '@react-pdf-viewer/core/lib/styles/index.css'
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout'
 import '@react-pdf-viewer/default-layout/lib/styles/index.css'

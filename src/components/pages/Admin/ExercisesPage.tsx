@@ -1,13 +1,11 @@
 import {
-  CustomerServiceOutlined,
   EyeFilled,
-  PlusOutlined,
   SearchOutlined,
   StopOutlined,
   VideoCameraOutlined
 } from '@ant-design/icons'
 import type { InputRef } from 'antd'
-import { Avatar, Button, Input, Layout, Table, Tag, Modal, Form, message } from 'antd'
+import { Avatar, Button, Input, Layout, message, Modal, Table, Tag } from 'antd'
 import type { ColumnType, TablePaginationConfig } from 'antd/es/table'
 import axios from 'axios'
 import { useEffect, useRef, useState } from 'react'

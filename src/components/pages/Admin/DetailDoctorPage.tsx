@@ -1,6 +1,5 @@
 import {
   ArrowLeftOutlined,
-  // BriefcaseOutlined,
   CalendarOutlined,
   CloseOutlined,
   CrownOutlined,

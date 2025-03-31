@@ -1,13 +1,13 @@
 import { useAuth } from '@/contexts/AuthContext'
 import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
-  EyeFilled,
-  PlusOutlined,
-  SearchOutlined,
-  UploadOutlined,
-  VideoCameraOutlined
+    CustomerServiceOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    ExclamationCircleOutlined,
+    EyeFilled,
+    PlusOutlined,
+    SearchOutlined,
+    UploadOutlined
 } from '@ant-design/icons'
 import type { InputRef } from 'antd'
 import { Avatar, Button, Input, Layout, message, Modal, Select, Table, Tag, Upload } from 'antd'
@@ -35,7 +35,7 @@ interface AddPlaylistForm {
   playlistName: string
   playlistImage: File | null
 }
-const ManageExercise = () => {
+const ManageMusicPage = () => {
   const { user } = useAuth()
   const [data, setData] = useState<Playlist[]>([])
   const [filteredData, setFilteredData] = useState<Playlist[]>([])
@@ -77,7 +77,7 @@ const ManageExercise = () => {
   const fetchData = async () => {
     setTableLoading(true)
     try {
-      const response = await fetch('https://api.diavan-valuation.asia/content-management/all-lesson-playlist')
+      const response = await fetch('https://api.diavan-valuation.asia/content-management/all-music-playlist')
       const result: ApiResponse = await response.json()
       if (result.status === 1) {
         const startIndex = (pagination.current! - 1) * pagination.pageSize!
@@ -94,7 +94,7 @@ const ManageExercise = () => {
       setTableLoading(false)
     } catch (error) {
       console.error('Fetch error:', error)
-      message.error('Failed to fetch playlists lesson')
+      message.error('Failed to fetch playlists music')
       setTableLoading(false)
     }
   }
@@ -121,9 +121,7 @@ const ManageExercise = () => {
 
       if (data.status === 1) {
         message.success('Cập nhật trạng thái danh sách phát thành công')
-        // setData(
-        //   data.map((playlist:Playlist) => (playlist.playlistId === currentPlayList.playlistId ? { ...playlist, status: currentPlayList.status } : playlist))
-        // )
+
         fetchData()
       } else {
         message.error(data.data || 'Cập nhật danh sách phát thất bại')
@@ -186,7 +184,7 @@ const ManageExercise = () => {
       }
 
       const response = await fetch(
-        `https://api.diavan-valuation.asia/content-management/playlist?AccountId=${user?.accountId}&PlaylistName=${addForm.playlistName}&IsLesson=true`,
+        `https://api.diavan-valuation.asia/content-management/playlist?AccountId=${user?.accountId}&PlaylistName=${addForm.playlistName}&IsLesson=false`,
         {
           method: 'POST',
           body: formData
@@ -381,9 +379,9 @@ const ManageExercise = () => {
       sorter: (a, b) => a.numberOfContent - b.numberOfContent,
       render: (count: number) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <VideoCameraOutlined style={{ color: count > 0 ? '#52c41a' : '#faad14' }} />
+          <CustomerServiceOutlined style={{ color: count > 0 ? '#52c41a' : '#faad14' }} />
           <Tag color={count > 0 ? 'green' : 'orange'}>
-            {count} {count === 1 ? 'video' : 'video'}
+            {count} {count === 1 ? 'bài hát' : 'bài hát'}
           </Tag>
         </div>
       )
@@ -461,7 +459,7 @@ const ManageExercise = () => {
           <>
             <Button
               onClick={() =>
-                navigate(`/content-provider/exercises/${record.playlistId}?playlistname=${record.playlistName}`)
+                navigate(`/content-provider/musics/${record.playlistId}?playlistname=${record.playlistName}`)
               }
             >
               <EyeFilled /> Chi tiết
@@ -479,7 +477,7 @@ const ManageExercise = () => {
 
   return (
     <Content style={{ padding: '50px 50px' }}>
-      <h1 className='text-3xl font-bold text-center text-[#FF1356] mb-8'>Danh sách phát bài tập</h1>
+      <h1 className='text-3xl font-bold text-center text-[#FF1356] mb-8'>Danh sách phát nhạc</h1>
       <Button
         type='primary'
         className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-[#FF1356] hover:border-[#FF1356]'
@@ -522,7 +520,7 @@ const ManageExercise = () => {
           (currentPlayList.status === 'Inactive' ? (
             <p>
               Bạn có chắc chắn muốn ngưng danh sách phát <strong>{currentPlayList.playlistName}</strong>? Hành động này
-              sẽ khiến tất cả bài học trong danh sách phát không khả dụng với người dùng.
+              sẽ khiến tất cả bài hát trong danh sách phát không khả dụng với người dùng.
             </p>
           ) : (
             <p>
@@ -672,4 +670,4 @@ const ManageExercise = () => {
   )
 }
 
-export default ManageExercise
+export default ManageMusicPage

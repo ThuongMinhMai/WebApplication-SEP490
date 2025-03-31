@@ -2,28 +2,29 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AdminLayout from './components/layout/AdminLayout'
 import ContentProviderLayout from './components/layout/ContentProviderLayout'
 import BooksPage from './components/pages/Admin/BooksPage'
-import ContentPage from './components/pages/ContentProvider/ContentPage'
 import ContentProvidersPage from './components/pages/Admin/ContentProvidersPage'
 import DashboardPage from './components/pages/Admin/DashboardAdminPage'
 import DetailDoctorPage from './components/pages/Admin/DetailDoctorPage'
 import DoctorCreateForm from './components/pages/Admin/DoctorCreateForm'
 import DoctorsPage from './components/pages/Admin/DoctorsPage'
+import ExerciesDetailPage from './components/pages/Admin/ExerciesDetailPage'
 import ExercisesPage from './components/pages/Admin/ExercisesPage'
 import FamilyMembersPage from './components/pages/Admin/FamilyMembersPage'
-import LoadingScreen from './components/pages/LoadingScreen'
-import LoginPage from './components/pages/LoginPage'
 import MusicPage from './components/pages/Admin/MusicPage'
+import PlayListMusicDetailPage from './components/pages/Admin/PlayListMusicDetailPage'
 import SubscriptionPackagesPage from './components/pages/Admin/SubscriptionPackagesPage'
 import TransactionHistoryPage from './components/pages/Admin/TransactionHistoryPage'
 import UsersPage from './components/pages/Admin/UsersPage'
-import { AuthProvider, useAuth } from './contexts/AuthContext'
-import PlayListMusicDetailPage from './components/pages/Admin/PlayListMusicDetailPage'
-import ExerciesDetailPage from './components/pages/Admin/ExerciesDetailPage'
-import ManageBook from './components/pages/ContentProvider/ManageBook'
 import AddBookPage from './components/pages/ContentProvider/AddBookPage'
-import ManageExercise from './components/pages/ContentProvider/ManageExercies'
-import DetailExercisePage from './components/pages/ContentProvider/DetailExercisePage'
 import DashboardProviderPage from './components/pages/ContentProvider/DashboardProviderPage'
+import DetailExercisePage from './components/pages/ContentProvider/DetailExercisePage'
+import DetailMusicPage from './components/pages/ContentProvider/DetailMusicPage'
+import ManageBook from './components/pages/ContentProvider/ManageBook'
+import ManageExercise from './components/pages/ContentProvider/ManageExercies'
+import ManageMusicPage from './components/pages/ContentProvider/ManageMusicPage'
+import LoadingScreen from './components/pages/LoadingScreen'
+import LoginPage from './components/pages/LoginPage'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 
 function ProtectedRoutes() {
   const { isAuthenticated, isAdmin, isContentProvider, initialized } = useAuth()
@@ -79,7 +80,8 @@ function ProtectedRoutes() {
           <Route path='exercises/:id' element={<DetailExercisePage />} />
           <Route path='books' element={<ManageBook />} />
           <Route path='books/add' element={<AddBookPage />} />
-          <Route path='musics' element={<ContentPage />} />
+          <Route path='musics' element={<ManageMusicPage />} />
+          <Route path='musics/:id' element={<DetailMusicPage />} />
           <Route path='*' element={<Navigate to='/content-provider/dashboard' replace />} /> {/* Điều hướng sai URL */}
         </Route>
       ) : (

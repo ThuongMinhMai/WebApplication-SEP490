@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { Card, Tag, Spin, Empty, message, Image, Button, Modal } from 'antd'
 import {
-  PlayCircleOutlined,
+  ArrowLeftOutlined,
   ClockCircleOutlined,
   ExclamationCircleOutlined,
-  StopOutlined,
-  ArrowLeftOutlined
+  StopOutlined
 } from '@ant-design/icons'
+import { Button, Card, Empty, message, Modal, Spin, Tag } from 'antd'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 // Ảnh mặc định
 const DEFAULT_THUMBNAIL =
