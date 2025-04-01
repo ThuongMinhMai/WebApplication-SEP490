@@ -25,6 +25,7 @@ import ManageMusicPage from './components/pages/ContentProvider/ManageMusicPage'
 import LoadingScreen from './components/pages/LoadingScreen'
 import LoginPage from './components/pages/LoginPage'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import HistoryEmergencyAlert from './components/pages/Admin/HistoryEmergencyAlert'
 
 function ProtectedRoutes() {
   const { isAuthenticated, isAdmin, isContentProvider, initialized } = useAuth()
@@ -53,6 +54,7 @@ function ProtectedRoutes() {
           <Route index element={<Navigate to='dashboard' replace />} />
           <Route path='dashboard' element={<DashboardPage />} />
           <Route path='transaction-history' element={<TransactionHistoryPage />} />
+          <Route path='history-emergency' element={<HistoryEmergencyAlert />} />
           <Route path='doctors' element={<DoctorsPage />} />
           <Route path='doctors/:id' element={<DetailDoctorPage />} />
           <Route path='doctors/add' element={<DoctorCreateForm />} />

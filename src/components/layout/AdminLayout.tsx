@@ -49,7 +49,8 @@ const AdminLayout = () => {
       exercises: '7',
       books: '8',
       musics: '9',
-      'subscription-packages': '10'
+      'subscription-packages': '10',
+      'history-emergency': '11'
     }
 
     return routeToKeyMap[path] || '1'
@@ -95,6 +96,9 @@ const AdminLayout = () => {
         break
       case '10':
         navigate('/admin/subscription-packages')
+        break
+      case '11':
+        navigate('/admin/history-emergency')
         break
       default:
         navigate('/admin/dashboard')
@@ -160,6 +164,24 @@ const AdminLayout = () => {
             <span>Dashboard</span>
           </Menu.Item>
 
+          <Menu.Item
+            key='11'
+            className='
+              ant-menu-item-gradient
+              [&.ant-menu-item-selected]:text-white
+              [&.ant-menu-item-selected]:bg-gradient-to-r
+              [&.ant-menu-item-selected]:from-[#FF1356]
+              [&.ant-menu-item-selected]:to-[#ff7d47]
+              [&.ant-menu-item-selected>.anticon]:text-white
+              hover:text-[#FF1356]
+              transition-all
+              duration-300
+            '
+            onClick={({ key }) => handleMenuClick(key)}
+          >
+            <HistoryOutlined />
+            <span>Báo động khẩn cấp</span>
+          </Menu.Item>
           <Menu.Item
             key='2'
             className='
