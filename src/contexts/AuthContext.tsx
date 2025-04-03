@@ -105,7 +105,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       setInitialized(true) // Đánh dấu đã khởi tạo xong
     }
-
     initializeAuth()
   }, [fetchUser, refreshAccessToken, token])
 

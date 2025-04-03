@@ -107,9 +107,7 @@ function ProtectedRoutes() {
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <ProtectedRoutes />
-      </AuthProvider>
+      <ProtectedRoutes />
     </BrowserRouter>
   )
 }

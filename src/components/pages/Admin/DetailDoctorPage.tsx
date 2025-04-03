@@ -29,9 +29,11 @@ import {
   Row,
   Spin,
   Tag,
+  Tabs,
   Typography,
   Upload
 } from 'antd'
+import TabPane from 'antd/es/tabs/TabPane'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -54,6 +56,10 @@ interface ProfessorData {
   knowledge: string[]
   career: string[]
   achievement: string[]
+}
+
+interface ProfessorDataResponse {
+  
 }
 
 const DetailDoctorPage = () => {
@@ -299,58 +305,80 @@ const DetailDoctorPage = () => {
       </Col>
 
       <Col span={16}>
-        <Card>
-          <Descriptions title='Thông tin bác sĩ' column={1} bordered>
-            <Descriptions.Item label='Địa chỉ phòng khám'>{professor?.clinicAddress}</Descriptions.Item>
-            <Descriptions.Item label='Phí tư vấn'>{professor?.consultationFee}</Descriptions.Item>
-          </Descriptions>
+        <Tabs defaultActiveKey='1'>
+          <TabPane tab='Thông tin chi tiết' key='1'>
+            <Card>
+              <Descriptions title='Thông tin bác sĩ' column={1} bordered>
+                <Descriptions.Item label='Địa chỉ phòng khám'>{professor?.clinicAddress}</Descriptions.Item>
+                <Descriptions.Item label='Phí tư vấn'>{professor?.consultationFee}</Descriptions.Item>
+              </Descriptions>
 
-          <Divider orientation='left' className='mt-6 text-gray-800 before:bg-[#FF1356]'>
-            <ExperimentOutlined /> Chuyên ngành
-          </Divider>
-          <div className='mb-6 ml-4'>
-            {professor?.specialization?.map((item, index) => (
-              <Tag color='blue' key={index} className='mb-2'>
-                {item}
-              </Tag>
-            ))}
-          </div>
+              <Divider orientation='left' className='mt-6 text-gray-800 before:bg-[#FF1356]'>
+                <ExperimentOutlined /> Chuyên ngành
+              </Divider>
+              <div className='mb-6 ml-4'>
+                {professor?.specialization?.map((item, index) => (
+                  <Tag color='blue' key={index} className='mb-2'>
+                    {item}
+                  </Tag>
+                ))}
+              </div>
 
-          <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
-            <MedicineBoxOutlined /> Trình độ chuyên môn
-          </Divider>
-          <List
-            size='small'
-            dataSource={professor?.qualification}
-            renderItem={(item) => <List.Item>{item}</List.Item>}
-            className='mb-6'
-          />
+              <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
+                <MedicineBoxOutlined /> Trình độ chuyên môn
+              </Divider>
+              <List
+                size='small'
+                dataSource={professor?.qualification}
+                renderItem={(item) => <List.Item>{item}</List.Item>}
+                className='mb-6'
+              />
 
-          <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
-            <ReadOutlined /> Kiến thức chuyên môn
-          </Divider>
-          <List
-            size='small'
-            dataSource={professor?.knowledge}
-            renderItem={(item) => <List.Item>{item}</List.Item>}
-            className='mb-6'
-          />
+              <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
+                <ReadOutlined /> Kiến thức chuyên môn
+              </Divider>
+              <List
+                size='small'
+                dataSource={professor?.knowledge}
+                renderItem={(item) => <List.Item>{item}</List.Item>}
+                className='mb-6'
+              />
 
-          <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
-            <CrownOutlined /> Sự nghiệp
-          </Divider>
-          <List
-            size='small'
-            dataSource={professor?.career}
-            renderItem={(item) => <List.Item>{item}</List.Item>}
-            className='mb-6'
-          />
+              <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
+                <CrownOutlined /> Sự nghiệp
+              </Divider>
+              <List
+                size='small'
+                dataSource={professor?.career}
+                renderItem={(item) => <List.Item>{item}</List.Item>}
+                className='mb-6'
+              />
 
-          <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
-            <TrophyOutlined /> Thành tích
-          </Divider>
-          <List size='small' dataSource={professor?.achievement} renderItem={(item) => <List.Item>{item}</List.Item>} />
-        </Card>
+              <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
+                <TrophyOutlined /> Thành tích
+              </Divider>
+              <List
+                size='small'
+                dataSource={professor?.achievement}
+                renderItem={(item) => <List.Item>{item}</List.Item>}
+              />
+            </Card>
+          </TabPane>
+          <TabPane tab='Đánh giá' key='2'>
+            <Card>
+              <div className='flex justify-center items-center h-96'>
+                <Text type='secondary'>Chưa có đánh giá nào</Text>
+              </div>
+            </Card>
+          </TabPane>
+          <TabPane tab='Lịch làm việc' key='3'>
+            <Card>
+              <div className='flex justify-center items-center h-96'>
+                <Text type='secondary'>Chưa có lịch khám nào</Text>
+              </div>
+            </Card>
+          </TabPane>
+        </Tabs>
       </Col>
     </Row>
   )
