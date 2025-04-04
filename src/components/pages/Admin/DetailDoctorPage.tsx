@@ -31,12 +31,14 @@ import {
   Tag,
   Tabs,
   Typography,
-  Upload
+  Upload,
+  DatePicker
 } from 'antd'
 import TabPane from 'antd/es/tabs/TabPane'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import dayjs from 'dayjs'
 
 const { TextArea } = Input
 const { Title, Text } = Typography
@@ -58,8 +60,20 @@ interface ProfessorData {
   achievement: string[]
 }
 
-interface ProfessorDataResponse {
-  
+interface Slot {
+  startTime: string
+  endTime: string
+}
+
+interface ProfessorAppointment {
+  elderlyId: number
+  elderlyName: string
+  avatar: string
+  phoneNumber: string
+  dateTime: string
+  status: string
+  isOnline: boolean
+  accountId: number[]
 }
 
 const DetailDoctorPage = () => {
@@ -72,6 +86,9 @@ const DetailDoctorPage = () => {
   const [isUploading, setIsUploading] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const [selectedDay, setSelectedDay] = useState<string | null>(null)
+  const [slots, setSlots] = useState<Slot[]>([])
+  const [appointments, setAppointments] = useState<ProfessorAppointment[]>([])
 
   useEffect(() => {
     const fetchProfessor = async () => {
@@ -80,6 +97,7 @@ const DetailDoctorPage = () => {
         const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/by-account/${professorId}`)
         setProfessor(response.data.data)
         setPreviewImage(response.data.data.avatar)
+        getProfessorAppointment()
         form.setFieldsValue({
           ...response.data.data,
           specialization: response.data.data.specialization?.join('\n') || '',
@@ -97,6 +115,36 @@ const DetailDoctorPage = () => {
 
     fetchProfessor()
   }, [professorId, form])
+
+  const getProfessorSchedule = async (date: string) => {
+    if (!date) return
+    try {
+      const response = await axios.get(
+        `https://api.diavan-valuation.asia/api/Professor/time-slot?professorId=${professor?.professorId}&date=${date}`
+      )
+      if (response.data.status === 1) {
+        setSlots(response.data.data.timeEachSlots)
+      } else {
+        message.error('Failed to load schedule')
+      }
+    } catch (error) {
+      console.error('Error fetching schedule:', error)
+      message.error('Failed to load schedule')
+    }
+  }
+
+  const getProfessorAppointment = async () => {
+    try {
+      const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/appointment/${professorId}`)
+      if (response.data.status === 1) {
+        setAppointments([...response.data.data, ...response.data.data])
+      } else {
+        message.error('Không thể tải lịch hẹn')
+      }
+    } catch (error) {
+      message.error('Không thể tải lịch hẹn')
+    }
+  }
 
   const handleImageChange = (info: any) => {
     const file = info.file
@@ -308,7 +356,9 @@ const DetailDoctorPage = () => {
         <Tabs defaultActiveKey='1'>
           <TabPane tab='Thông tin chi tiết' key='1'>
             <Card>
-              <Descriptions title='Thông tin bác sĩ' column={1} bordered>
+              <Text className='text-xl font-bold'>Thông tin bác sĩ</Text>
+
+              <Descriptions column={1} bordered className='mt-4'>
                 <Descriptions.Item label='Địa chỉ phòng khám'>{professor?.clinicAddress}</Descriptions.Item>
                 <Descriptions.Item label='Phí tư vấn'>{professor?.consultationFee}</Descriptions.Item>
               </Descriptions>
@@ -373,8 +423,79 @@ const DetailDoctorPage = () => {
           </TabPane>
           <TabPane tab='Lịch làm việc' key='3'>
             <Card>
-              <div className='flex justify-center items-center h-96'>
-                <Text type='secondary'>Chưa có lịch khám nào</Text>
+              <div className='flex flex-col justify-start items-start mb-4'>
+                <Text className='font-bold text-xl'>Lịch làm việc</Text>
+                <DatePicker
+                  className='w-1/3 mt-4'
+                  format='YYYY-MM-DD'
+                  value={selectedDay ? dayjs(selectedDay) : null}
+                  placeholder='Chọn ngày'
+                  onChange={(date, dateString) => {
+                    setSelectedDay(dateString as string)
+                    getProfessorSchedule(dateString as string)
+                  }}
+                />
+                <div className='flex flex-wrap mt-4'>
+                  {slots.length > 0 ? (
+                    slots.map((slot, index) => (
+                      <Tag
+                        key={index}
+                        className='px-4 py-2 text-base cursor-pointer hover:bg-green-100'
+                        color='green'
+                        onClick={() => {
+                          return
+                        }}
+                      >
+                        {`${slot.startTime} - ${slot.endTime}`}
+                      </Tag>
+                    ))
+                  ) : (
+                    <Text type='secondary' className='text-base'>
+                      Không có lịch làm việc cho ngày đã chọn
+                    </Text>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </TabPane>
+          <TabPane tab='Lịch hẹn' key='4'>
+            <Card>
+              <div className='flex flex-col justify-start items-start mb-4'>
+                <Text className='font-bold text-xl'>Lịch hẹn</Text>
+                <div className='flex flex-wrap mt-4'>
+                  {appointments.length > 0 ? (
+                    appointments.map((appointment, index) => (
+                      <Card key={index} className='mb-5 mx-4 p-0'>
+                        <Descriptions column={1} bordered>
+                          <Descriptions.Item label='Ảnh đại diện'>
+                            <div className='text-center'>
+                              <Avatar src={appointment.avatar} size={64} />
+                            </div>
+                          </Descriptions.Item>
+                          <Descriptions.Item label='Tên bệnh nhân'>{appointment.elderlyName}</Descriptions.Item>
+                          <Descriptions.Item label='Số điện thoại'>{appointment.phoneNumber}</Descriptions.Item>
+                          <Descriptions.Item label='Thời gian'>
+                            {appointment.dateTime.split(' ')[1]} ngày {appointment.dateTime.split(' ')[0]}
+                          </Descriptions.Item>
+                          <Descriptions.Item label='Trạng thái'>
+                            {appointment.status == 'NotYet'
+                              ? 'Chưa tham gia'
+                              : appointment.status == 'Joined'
+                                ? 'Đã tham gia'
+                                : 'Đã hủy'}
+                          </Descriptions.Item>
+                          <Descriptions.Item label='Loại'>
+                            {appointment.isOnline ? 'Trực tuyến' : 'Tại phòng khám'}
+                          </Descriptions.Item>
+                        </Descriptions>
+                      </Card>
+                    ))
+                  ) : (
+                    <Text type='secondary' className='text-base'>
+                      Không có lịch hẹn nào
+                    </Text>
+                  )}
+                </div>
               </div>
             </Card>
           </TabPane>

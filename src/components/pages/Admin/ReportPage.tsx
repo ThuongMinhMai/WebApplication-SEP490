@@ -1,37 +1,25 @@
-import { MoreOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
-import type { InputRef } from 'antd'
-import { Avatar, Button, Input, Layout, message, Modal, Select, Table, Tag } from 'antd'
-import type { ColumnType, TablePaginationConfig } from 'antd/es/table'
+import { SearchOutlined } from '@ant-design/icons'
+import { Avatar, Button, Image, Input, InputRef, Modal, Select, TablePaginationConfig, Tag } from 'antd'
+import Table, { ColumnType } from 'antd/es/table'
+import axios from 'axios'
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { format } from 'date-fns'
+import { Content } from 'antd/es/layout/layout'
 
-const { Content } = Layout
-
-interface User {
+interface ReportPageProps {
+  reportId: number
   accountId: number
-  roleId: number
-  email: string
-  fullName: string
-  avatar: string
-  gender: string
-  phoneNumber: string
+  reportTitle: string
+  reportContent: string
+  attachmentUrl: string
+  reportType: string
   status: string
-  // ... các trường khác nếu cần
+  createdAt: string
 }
 
-interface ApiResponse {
-  status: number
-  message: string
-  data: User[]
-}
-
-const DoctorsPage = () => {
-  const [data, setData] = useState<User[]>([])
-  const [filteredData, setFilteredData] = useState<User[]>([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentAccount, setCurrentAccount] = useState<{ id: number; newStatus: string } | null>(null)
-
-  const navigate = useNavigate()
+function ReportPage() {
+  const [data, setData] = useState<ReportPageProps[]>([])
+  const [filteredData, setFilteredData] = useState<ReportPageProps[]>([])
   const { Option } = Select
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -50,18 +38,17 @@ const DoctorsPage = () => {
   const fetchData = async () => {
     setTableLoading(true)
     try {
-      const response = await fetch('https://api.diavan-valuation.asia/account-management/4')
-      const result: ApiResponse = await response.json()
-      if (result.status === 1) {
+      const response = await axios.get('https://api.diavan-valuation.asia/api/Report')
+      if (response.data.status === 1) {
         const startIndex = (pagination.current! - 1) * pagination.pageSize!
         const endIndex = startIndex + pagination.pageSize!
-        const paginatedData = result.data.slice(startIndex, endIndex)
+        const paginatedData = response.data.data.slice(startIndex, endIndex)
 
-        setData(result.data)
+        setData(response.data.data)
         setFilteredData(paginatedData)
         setPagination({
           ...pagination,
-          total: result.data.length
+          total: response.data.data.length
         })
       }
       setTableLoading(false)
@@ -70,57 +57,8 @@ const DoctorsPage = () => {
       setTableLoading(false)
     }
   }
-  
-  const handleStatusChange = (accountId: number, newStatus: string) => {
-    setCurrentAccount({ id: accountId, newStatus })
-    setIsModalOpen(true)
-  }
 
-  const handleConfirmStatusChange = async () => {
-    if (!currentAccount) return
-
-    try {
-      const response = await fetch('https://api.diavan-valuation.asia/account-management/account-status', {
-        method: 'PUT',
-        headers: {
-          accept: '*/*',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          accountId: currentAccount.id,
-          status: currentAccount.newStatus
-        })
-      })
-
-      const result = await response.json()
-
-      if (result.status === 1) {
-        // Giả sử status 1 là thành công
-        // Cập nhật lại dữ liệu
-        const updatedData = data.map((item) =>
-          item.accountId === currentAccount.id ? { ...item, status: currentAccount.newStatus } : item
-        )
-        setData(updatedData)
-        // Cập nhật filteredData với dữ liệu đã được paginate
-        const startIndex = (pagination.current! - 1) * pagination.pageSize!
-        const endIndex = startIndex + pagination.pageSize!
-        const updatedFilteredData = updatedData.slice(startIndex, endIndex)
-
-        setFilteredData(updatedFilteredData)
-        message.success(`Cập nhật trạng thái thành công`)
-      } else {
-        message.error(result.message || 'Cập nhật trạng thái thất bại')
-      }
-    } catch (error) {
-      message.error('Có lỗi xảy ra khi cập nhật trạng thái' + error)
-      console.error('Error:', error)
-    } finally {
-      setIsModalOpen(false)
-      setCurrentAccount(null)
-    }
-  }
-
-  const getColumnSearchProps = (dataIndex: keyof User): ColumnType<User> => ({
+  const getColumnSearchProps = (dataIndex: keyof ReportPageProps): ColumnType<ReportPageProps> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }}>
         <Input
@@ -158,7 +96,7 @@ const DoctorsPage = () => {
     }
   })
 
-  const handleSearch = (selectedKeys: string[], confirm: () => void, dataIndex: keyof User) => {
+  const handleSearch = (selectedKeys: string[], confirm: () => void, dataIndex: keyof ReportPageProps) => {
     confirm()
     const searchText = selectedKeys[0].toLowerCase()
     const filtered = data.filter((item) => {
@@ -172,7 +110,20 @@ const DoctorsPage = () => {
     setFilteredData(data)
   }
 
-  const handleTableChange = (newPagination: TablePaginationConfig) => {
+  const handleTableChange = (newPagination: TablePaginationConfig, filters: any, sorter: any) => {
+    let sortedData = [...filteredData]
+    if (sorter.field) {
+      sortedData = sortedData.sort((a, b) => {
+        const aValue = a[sorter.field as keyof ReportPageProps]
+        const bValue = b[sorter.field as keyof ReportPageProps]
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sorter.order === 'ascend' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
+        }
+        return 0
+      })
+    }
+
     setPagination({
       ...pagination,
       ...newPagination
@@ -198,62 +149,56 @@ const DoctorsPage = () => {
       )
     }
   }
+
   const getGenderLabel = (gender: string) => {
-    return gender === 'Male' ? 'Nam' : 'Nữ'
+    return gender === 'string' ? 'Khác' : 'Này'
   }
 
-  const columns: ColumnType<User>[] = [
+  const columns: ColumnType<ReportPageProps>[] = [
     {
       title: 'STT',
       key: 'stt',
       width: '5%',
       render: (_, __, index) => {
-        // Tính số thứ tự dựa trên trang hiện tại và số lượng item mỗi trang
         return (pagination.current! - 1) * pagination.pageSize! + index + 1
       }
     },
     {
-      title: 'Ảnh đại diện',
-      dataIndex: 'avatar',
-      key: 'avatar',
-      width: '10%',
-      render: (avatar: string, record: User) => (
-        <Avatar
-          src={avatar || 'https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png'}
-          alt={record.fullName}
-          size='large'
-        />
-      )
-    },
-    {
-      title: 'Tên đầy đủ',
-      dataIndex: 'fullName',
-      key: 'fullName',
-      width: '25%',
-      sorter: (a, b) => a.fullName.localeCompare(b.fullName),
-      ...getColumnSearchProps('fullName'),
+      title: 'Tiêu đề',
+      dataIndex: 'reportTitle',
+      key: 'reportTitle',
+      width: '20%',
+      sorter: (a, b) => a.reportTitle.localeCompare(b.reportTitle),
+      ...getColumnSearchProps('reportTitle'),
       render: (text: string) => <strong>{text}</strong>
     },
     {
-      title: 'Giới tính',
-      dataIndex: 'gender',
-      key: 'gender',
-      width: '15%',
-
-      filters: [
-        { text: 'Nam', value: 'Male' },
-        { text: 'Nữ', value: 'Female' }
-      ],
-      onFilter: (value, record) => record.gender === value,
-      render: (gender: string) => <Tag color={gender === 'Male' ? 'blue' : 'pink'}>{getGenderLabel(gender)}</Tag>
+      title: 'Nội dung báo cáo',
+      dataIndex: 'reportContent',
+      key: 'reportContent',
+      width: '25%',
+      sorter: (a, b) => a.reportContent.localeCompare(b.reportContent),
+      ...getColumnSearchProps('reportContent'),
+      render: (text: string) => <strong>{text}</strong>
     },
     {
-      title: 'Số điện thoại',
-      dataIndex: 'phoneNumber',
-      key: 'phoneNumber',
-      width: '20%',
-      ...getColumnSearchProps('phoneNumber'),
-      render: (phone: string) => <a href={`tel:${phone}`}>{phone}</a>
+      title: 'Ảnh báo cáo',
+      dataIndex: 'attachmentUrl',
+      key: 'attachmentUrl',
+      width: '10%',
+      render: (attachmentUrl: string, record: ReportPageProps) => (
+        <ImageCell attachmentUrl={attachmentUrl} reportTitle={record.reportTitle} />
+      )
+    },
+    {
+      title: 'Loại báo cáo',
+      dataIndex: 'reportType',
+      key: 'reportType',
+      width: '10%',
+
+      filters: [{ text: 'Khác', value: 'string' }],
+      onFilter: (value, record) => record.reportType === value,
+      render: (gender: string) => <Tag color={gender === 'string' ? 'blue' : 'pink'}>{getGenderLabel(gender)}</Tag>
     },
     {
       title: 'Trạng thái',
@@ -265,13 +210,9 @@ const DoctorsPage = () => {
         { text: 'Ngưng hoạt động', value: 'Inactive' }
       ],
       onFilter: (value, record) => record.status === value,
-      render: (status: string, record: User) => (
+      render: (status: string, record: ReportPageProps) => (
         <>
-          <Select
-            value={status}
-            style={{ width: '100%' }}
-            onChange={(value) => handleStatusChange(record.accountId, value)}
-          >
+          <Select value={status} style={{ width: '100%' }} onChange={(value) => {}}>
             <Option value='Active'>
               <Tag color='green' style={{ width: '90%' }}>
                 Đang hoạt động
@@ -283,7 +224,7 @@ const DoctorsPage = () => {
               </Tag>
             </Option>
           </Select>
-          <Modal
+          {/* <Modal
             title='Xác nhận thay đổi trạng thái'
             open={isModalOpen && currentAccount?.id === record.accountId}
             onOk={handleConfirmStatusChange}
@@ -306,51 +247,85 @@ const DoctorsPage = () => {
               <p>
                 Bạn có chắc chắn muốn kích hoạt tài khoản này? Tài khoản sau khi kích hoạt sẽ có thể truy cập vào hệ
                 thống.
-              </p>
+              </p>  
             )}
-          </Modal>
+          </Modal> */}
         </>
       )
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: 'Thời gian tạo',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: '25%',
-      ...getColumnSearchProps('email'),
-      render: (email: string) => <a href={`mailto:${email}`}>{email}</a>
-    },
-    {
-      title: 'Chi tiết',
-      key: 'action',
-      width: '15%',
-      render: (_, record) => (
-        <Button
-          type='text'
-          icon={<MoreOutlined />}
-          onClick={() => navigate(`/admin/doctors/${record.accountId}`)}
-          style={{ color: '#FF1356' }}
-        />
-      )
+      sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      render: (text: string) => <div>{format(new Date(text), 'HH:mm:ss dd/MM/yyyy')}</div>
     }
   ]
+
+  const ImageCell = ({ attachmentUrl, reportTitle }: { attachmentUrl: string; reportTitle: string }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    return (
+      <>
+        {attachmentUrl && attachmentUrl !== 'string' ? (
+          <>
+            <Image
+              width={50}
+              height={50}
+              src={attachmentUrl}
+              alt={`Ảnh báo cáo ${reportTitle}`}
+              preview={{
+                visible: false // Disable default preview
+              }}
+              onClick={() => setIsModalOpen(true)}
+              style={{
+                borderRadius: '4px',
+                objectFit: 'cover',
+                cursor: 'pointer'
+              }}
+            />
+            <Modal
+              title={`Ảnh báo cáo: ${reportTitle}`}
+              open={isModalOpen}
+              onCancel={() => setIsModalOpen(false)}
+              footer={null}
+              width='80%'
+              styles={{
+                body: {
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: 0
+                }
+              }}
+            >
+              <img
+                src={attachmentUrl}
+                alt={`Ảnh báo cáo ${reportTitle}`}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '80vh',
+                  objectFit: 'contain'
+                }}
+              />
+            </Modal>
+          </>
+        ) : (
+          <div>Không có ảnh</div>
+        )}
+      </>
+    )
+  }
 
   return (
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
-        <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách bác sĩ</h2>
-        <Button
-          type='primary'
-          className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-[#FF1356] hover:border-[#FF1356]'
-          onClick={() => navigate(`/admin/doctors/add`)}
-          icon={<PlusOutlined />}
-        >
-          Thêm bác sĩ
-        </Button>
+        <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách báo cáo</h2>
       </div>
       <Table
         columns={columns}
-        rowKey={(record) => record.accountId.toString()}
+        rowKey={(record) => record.reportId.toString()}
         dataSource={filteredData}
         pagination={pagination}
         loading={tableLoading}
@@ -362,4 +337,4 @@ const DoctorsPage = () => {
   )
 }
 
-export default DoctorsPage
+export default ReportPage

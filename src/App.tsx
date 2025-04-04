@@ -26,6 +26,7 @@ import LoadingScreen from './components/pages/LoadingScreen'
 import LoginPage from './components/pages/LoginPage'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import HistoryEmergencyAlert from './components/pages/Admin/HistoryEmergencyAlert'
+import ReportPage from './components/pages/Admin/ReportPage'
 
 function ProtectedRoutes() {
   const { isAuthenticated, isAdmin, isContentProvider, initialized } = useAuth()
@@ -64,6 +65,7 @@ function ProtectedRoutes() {
           <Route path='exercises' element={<ExercisesPage />} />
           <Route path='exercises/:id' element={<ExerciesDetailPage />} />
           <Route path='books' element={<BooksPage />} />
+          <Route path='report' element={<ReportPage />} />
           <Route path='musics' element={<MusicPage />} />
           <Route path='musics/:id' element={<PlayListMusicDetailPage />} />
           <Route path='subscription-packages' element={<SubscriptionPackagesPage />} />
