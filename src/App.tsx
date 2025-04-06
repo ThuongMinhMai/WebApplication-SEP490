@@ -24,7 +24,7 @@ import ManageExercise from './components/pages/ContentProvider/ManageExercies'
 import ManageMusicPage from './components/pages/ContentProvider/ManageMusicPage'
 import LoadingScreen from './components/pages/LoadingScreen'
 import LoginPage from './components/pages/LoginPage'
-import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { useAuth } from './contexts/AuthContext'
 import HistoryEmergencyAlert from './components/pages/Admin/HistoryEmergencyAlert'
 import ReportPage from './components/pages/Admin/ReportPage'
 

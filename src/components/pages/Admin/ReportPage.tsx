@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@ant-design/icons'
-import { Avatar, Button, Image, Input, InputRef, Modal, Select, TablePaginationConfig, Tag } from 'antd'
+import { Button, Image, Input, InputRef, message, Modal, Select, TablePaginationConfig, Tag } from 'antd'
 import Table, { ColumnType } from 'antd/es/table'
 import axios from 'axios'
 import { useEffect, useRef, useState } from 'react'
@@ -9,6 +9,8 @@ import { Content } from 'antd/es/layout/layout'
 interface ReportPageProps {
   reportId: number
   accountId: number
+  fullName: string
+  phoneNumber: string
   reportTitle: string
   reportContent: string
   attachmentUrl: string
@@ -30,6 +32,8 @@ function ReportPage() {
   })
   const [tableLoading, setTableLoading] = useState(false)
   const searchInput = useRef<InputRef>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentAccount, setCurrentAccount] = useState<{ id: number; newStatus: string } | null>(null)
 
   useEffect(() => {
     fetchData()
@@ -55,6 +59,45 @@ function ReportPage() {
     } catch (error) {
       console.error('Fetch error:', error)
       setTableLoading(false)
+    }
+  }
+
+  const handleStatusChange = (reportId: number, newStatus: string) => {
+    setCurrentAccount({ id: reportId, newStatus })
+    setIsModalOpen(true)
+  }
+
+  const handleConfirmStatusChange = async () => {
+    if (!currentAccount) return
+
+    try {
+      const response = await axios.put(`https://api.diavan-valuation.asia/api/Report/update/${currentAccount.id}`)
+
+      const result = await response.data
+
+      if (result.status === 1) {
+        // Giả sử status 1 là thành công
+        // Cập nhật lại dữ liệu
+        const updatedData = data.map((item) =>
+          item.reportId === currentAccount.id ? { ...item, status: currentAccount.newStatus } : item
+        )
+        setData(updatedData)
+        // Cập nhật filteredData với dữ liệu đã được paginate
+        const startIndex = (pagination.current! - 1) * pagination.pageSize!
+        const endIndex = startIndex + pagination.pageSize!
+        const updatedFilteredData = updatedData.slice(startIndex, endIndex)
+
+        setFilteredData(updatedFilteredData)
+        message.success(`Cập nhật trạng thái thành công`)
+      } else {
+        message.error(result.message || 'Cập nhật trạng thái thất bại')
+      }
+    } catch (error) {
+      message.error('Có lỗi xảy ra khi cập nhật trạng thái' + error)
+      console.error('Error:', error)
+    } finally {
+      setIsModalOpen(false)
+      setCurrentAccount(null)
     }
   }
 
@@ -110,7 +153,7 @@ function ReportPage() {
     setFilteredData(data)
   }
 
-  const handleTableChange = (newPagination: TablePaginationConfig, filters: any, sorter: any) => {
+  const handleTableChange = (newPagination: TablePaginationConfig, sorter: any) => {
     let sortedData = [...filteredData]
     if (sorter.field) {
       sortedData = sortedData.sort((a, b) => {
@@ -167,7 +210,7 @@ function ReportPage() {
       title: 'Tiêu đề',
       dataIndex: 'reportTitle',
       key: 'reportTitle',
-      width: '20%',
+      width: '10%',
       sorter: (a, b) => a.reportTitle.localeCompare(b.reportTitle),
       ...getColumnSearchProps('reportTitle'),
       render: (text: string) => <strong>{text}</strong>
@@ -176,10 +219,28 @@ function ReportPage() {
       title: 'Nội dung báo cáo',
       dataIndex: 'reportContent',
       key: 'reportContent',
-      width: '25%',
+      width: '15%',
       sorter: (a, b) => a.reportContent.localeCompare(b.reportContent),
       ...getColumnSearchProps('reportContent'),
-      render: (text: string) => <strong>{text}</strong>
+      render: (text: string) => <div>{text}</div>
+    },
+    {
+      title: 'Tên người báo cáo',
+      dataIndex: 'fullName',
+      key: 'fullName',
+      width: '12%',
+      sorter: (a, b) => a.fullName.localeCompare(b.fullName),
+      ...getColumnSearchProps('fullName'),
+      render: (text: string) => <div>{text}</div>
+    },
+    {
+      title: 'Số điện thoại',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
+      width: '10%',
+      sorter: (a, b) => a.phoneNumber.localeCompare(b.phoneNumber),
+      ...getColumnSearchProps('phoneNumber'),
+      render: (text: string) => <div>{text}</div>
     },
     {
       title: 'Ảnh báo cáo',
@@ -206,25 +267,30 @@ function ReportPage() {
       key: 'status',
       width: '15%',
       filters: [
-        { text: 'Đang hoạt động', value: 'Active' },
-        { text: 'Ngưng hoạt động', value: 'Inactive' }
+        { text: 'Đã xử lí', value: 'Đã xử lí' },
+        { text: 'Đang chờ xử lí', value: 'Đang chờ xử lí' }
       ],
       onFilter: (value, record) => record.status === value,
       render: (status: string, record: ReportPageProps) => (
         <>
-          <Select value={status} style={{ width: '100%' }} onChange={(value) => {}}>
-            <Option value='Active'>
+          <Select
+            value={status}
+            disabled={status == 'Đã xử lí'}
+            style={{ width: '100%' }}
+            onChange={() => handleStatusChange(record.reportId, 'Đã xử lí')}
+          >
+            <Option value='Đã xử lí'>
               <Tag color='green' style={{ width: '90%' }}>
-                Đang hoạt động
+                Đã xử lí
               </Tag>
             </Option>
-            <Option value='Inactive'>
+            <Option value='Đang chờ xử lí'>
               <Tag color='red' style={{ width: '90%' }}>
-                Ngưng hoạt động
+                Đang chờ xử lí
               </Tag>
             </Option>
           </Select>
-          {/* <Modal
+          <Modal
             title='Xác nhận thay đổi trạng thái'
             open={isModalOpen && currentAccount?.id === record.accountId}
             onOk={handleConfirmStatusChange}
@@ -238,18 +304,11 @@ function ReportPage() {
               }
             }}
           >
-            {currentAccount?.newStatus === 'Inactive' ? (
-              <p>
-                Bạn có chắc chắn muốn ngưng hoạt động tài khoản này? Tài khoản sau khi ngưng hoạt động sẽ không thể truy
-                cập vào hệ thống.
-              </p>
-            ) : (
-              <p>
-                Bạn có chắc chắn muốn kích hoạt tài khoản này? Tài khoản sau khi kích hoạt sẽ có thể truy cập vào hệ
-                thống.
-              </p>  
-            )}
-          </Modal> */}
+            <p>
+              Bạn có chắc chắn rằng báo cáo này đã được xử lí thành công? Khi báo cáo được xử lí, nó sẽ không thể đổi
+              trạng lại về lại đang chờ xử lí
+            </p>
+          </Modal>
         </>
       )
     },

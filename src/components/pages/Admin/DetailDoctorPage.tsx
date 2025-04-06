@@ -65,6 +65,11 @@ interface Slot {
   endTime: string
 }
 
+interface TimeSlots {
+  date: string
+  timeEachSlots: Slot[]
+}
+
 interface ProfessorAppointment {
   elderlyId: number
   elderlyName: string
@@ -87,7 +92,7 @@ const DetailDoctorPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const [selectedDay, setSelectedDay] = useState<string | null>(null)
-  const [slots, setSlots] = useState<Slot[]>([])
+  const [timeSlots, setTimeSlots] = useState<TimeSlots[]>([])
   const [appointments, setAppointments] = useState<ProfessorAppointment[]>([])
 
   useEffect(() => {
@@ -98,6 +103,7 @@ const DetailDoctorPage = () => {
         setProfessor(response.data.data)
         setPreviewImage(response.data.data.avatar)
         getProfessorAppointment()
+        getProfessorSchedule()
         form.setFieldsValue({
           ...response.data.data,
           specialization: response.data.data.specialization?.join('\n') || '',
@@ -116,14 +122,12 @@ const DetailDoctorPage = () => {
     fetchProfessor()
   }, [professorId, form])
 
-  const getProfessorSchedule = async (date: string) => {
-    if (!date) return
+  const getProfessorSchedule = async () => {
     try {
-      const response = await axios.get(
-        `https://api.diavan-valuation.asia/api/Professor/time-slot?professorId=${professor?.professorId}&date=${date}`
-      )
+      const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/time-slot/week?professorId=1`)
       if (response.data.status === 1) {
-        setSlots(response.data.data.timeEachSlots)
+        setTimeSlots(response.data.data)
+        console.log(response.data.data)
       } else {
         message.error('Failed to load schedule')
       }
@@ -131,6 +135,21 @@ const DetailDoctorPage = () => {
       console.error('Error fetching schedule:', error)
       message.error('Failed to load schedule')
     }
+  }
+
+  //check TimeSlots have all day with Slots is empty
+  const checkTimeSlots = (timeSlots: TimeSlots[]): boolean => {
+    var flag = 0
+    timeSlots.forEach((slot) => {
+      if (slot.timeEachSlots.length > 0) {
+        flag = 1
+        return
+      }
+    })
+    if (flag === 1) {
+      return true
+    }
+    return false
   }
 
   const getProfessorAppointment = async () => {
@@ -425,29 +444,28 @@ const DetailDoctorPage = () => {
             <Card>
               <div className='flex flex-col justify-start items-start mb-4'>
                 <Text className='font-bold text-xl'>Lịch làm việc</Text>
-                <DatePicker
-                  className='w-1/3 mt-4'
-                  format='YYYY-MM-DD'
-                  value={selectedDay ? dayjs(selectedDay) : null}
-                  placeholder='Chọn ngày'
-                  onChange={(date, dateString) => {
-                    setSelectedDay(dateString as string)
-                    getProfessorSchedule(dateString as string)
-                  }}
-                />
-                <div className='flex flex-wrap mt-4'>
-                  {slots.length > 0 ? (
-                    slots.map((slot, index) => (
-                      <Tag
-                        key={index}
-                        className='px-4 py-2 text-base cursor-pointer hover:bg-green-100'
-                        color='green'
-                        onClick={() => {
-                          return
-                        }}
-                      >
-                        {`${slot.startTime} - ${slot.endTime}`}
-                      </Tag>
+                <div className='flex flex-wrap justify-evenly mt-8'>
+                  {timeSlots.length > 0 && checkTimeSlots(timeSlots) ? (
+                    timeSlots.map((slot, index) => (
+                      <div className='mr-4 mb-4 flex flex-col items-center gap-4' key={index}>
+                        <Text className='text-xl'>{index < 6 ? `Thứ ${index + 2}` : 'Chủ nhật'}</Text>
+                        {slot.timeEachSlots.length > 0 ? (
+                          slot.timeEachSlots.map((element) => (
+                            <Tag
+                              key={index}
+                              className='px-4 py-2 text-base cursor-pointer hover:bg-green-100'
+                              color='green'
+                              onClick={() => {
+                                return
+                              }}
+                            >
+                              {`${element.startTime} - ${element.endTime}`}
+                            </Tag>
+                          ))
+                        ) : (
+                          <div className='w-32'></div>
+                        )}
+                      </div>
                     ))
                   ) : (
                     <Text type='secondary' className='text-base'>
@@ -462,7 +480,7 @@ const DetailDoctorPage = () => {
             <Card>
               <div className='flex flex-col justify-start items-start mb-4'>
                 <Text className='font-bold text-xl'>Lịch hẹn</Text>
-                <div className='flex flex-wrap mt-4'>
+                <div className='flex flex-wrap justify-evenly mt-4'>
                   {appointments.length > 0 ? (
                     appointments.map((appointment, index) => (
                       <Card key={index} className='mb-5 mx-4 p-0'>

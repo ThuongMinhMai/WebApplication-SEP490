@@ -1,9 +1,11 @@
 import { useAuth } from '@/contexts/AuthContext'
 import {
+  AlertOutlined,
   BellOutlined,
   DesktopOutlined,
   ExclamationCircleOutlined,
   HistoryOutlined,
+  InfoCircleOutlined,
   LogoutOutlined,
   PieChartOutlined,
   SettingOutlined,
@@ -183,7 +185,7 @@ const AdminLayout = () => {
             '
             onClick={({ key }) => handleMenuClick(key)}
           >
-            <HistoryOutlined />
+            <AlertOutlined />
             <span>Báo động khẩn cấp</span>
           </Menu.Item>
           <Menu.Item
@@ -401,8 +403,7 @@ const AdminLayout = () => {
             onClick={({ key }) => handleMenuClick(key)}
           >
             <span>
-              <SnippetsOutlined />
-
+              <InfoCircleOutlined />
               <span> Báo cáo sự cố</span>
             </span>
           </Menu.Item>
