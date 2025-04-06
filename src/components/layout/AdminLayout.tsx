@@ -1,9 +1,11 @@
 import { useAuth } from '@/contexts/AuthContext'
 import {
+  AlertOutlined,
   BellOutlined,
   DesktopOutlined,
   ExclamationCircleOutlined,
   HistoryOutlined,
+  InfoCircleOutlined,
   LogoutOutlined,
   PieChartOutlined,
   SettingOutlined,
@@ -50,7 +52,8 @@ const AdminLayout = () => {
       books: '8',
       musics: '9',
       'subscription-packages': '10',
-      'history-emergency': '11'
+      'history-emergency': '11',
+      report: '12' 
     }
 
     return routeToKeyMap[path] || '1'
@@ -99,6 +102,9 @@ const AdminLayout = () => {
         break
       case '11':
         navigate('/admin/history-emergency')
+        break
+      case '12':
+        navigate('/admin/report')
         break
       default:
         navigate('/admin/dashboard')
@@ -179,7 +185,7 @@ const AdminLayout = () => {
             '
             onClick={({ key }) => handleMenuClick(key)}
           >
-            <HistoryOutlined />
+            <AlertOutlined />
             <span>Báo động khẩn cấp</span>
           </Menu.Item>
           <Menu.Item
@@ -378,6 +384,27 @@ const AdminLayout = () => {
               <SnippetsOutlined />
 
               <span> Gói sử dụng</span>
+            </span>
+          </Menu.Item>
+
+          <Menu.Item
+            key='12'
+            className='
+              ant-menu-item-gradient
+              [&.ant-menu-item-selected]:text-white
+              [&.ant-menu-item-selected]:bg-gradient-to-r
+              [&.ant-menu-item-selected]:from-[#FF1356]
+              [&.ant-menu-item-selected]:to-[#ff7d47]
+              [&.ant-menu-item-selected>.anticon]:text-white
+              hover:text-[#FF1356]
+              transition-all
+              duration-300
+            '
+            onClick={({ key }) => handleMenuClick(key)}
+          >
+            <span>
+              <InfoCircleOutlined />
+              <span> Báo cáo sự cố</span>
             </span>
           </Menu.Item>
         </Menu>
