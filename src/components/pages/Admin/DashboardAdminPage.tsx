@@ -1,243 +1,369 @@
-import React, { useState, useEffect } from 'react'
-import { Card, Row, Col, Statistic, Table, Spin } from 'antd'
-import { UserOutlined, VideoCameraOutlined, AlertOutlined, FileTextOutlined, DollarOutlined } from '@ant-design/icons'
-import { Bar, Line, Pie } from 'react-chartjs-2'
+import { AlertOutlined, DollarOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons'
+import { Card, Spin, Statistic, Table } from 'antd'
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
   ArcElement,
-  Title,
-  Tooltip,
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
   Legend,
-  PointElement
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip
 } from 'chart.js'
+import { useEffect, useState } from 'react'
+import { Bar, Line, Pie } from 'react-chartjs-2'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, ArcElement, Title, Tooltip, Legend, PointElement)
 
-// Dữ liệu giả (mock data)
-const mockData = {
-  totalUsers: 1200,
-  totalDoctor: 120,
-  totalContentProvider: 10,
-  totalFamilyMember: 10,
-  totalElderly: 10,
-  videoCalls: 150,
-  emergencyAlerts: 12,
-  newContent: 25,
-  revenue: 50000,
-  subscriptions: 350,
-  monthlyGrowth: [
-    { month: 'Tháng 1', value: 5 },
-    { month: 'Tháng 2', value: 10 },
-    { month: 'Tháng 3', value: -8 },
-    { month: 'Tháng 4', value: 12 },
-    { month: 'Tháng 5', value: 15 },
-    { month: 'Tháng 6', value: 10 },
-    { month: 'Tháng 7', value: 18 }
-  ],
-  packageA: 150,
-  packageB: 120,
-  packageC: 80,
-  revenueByMonth: [
-    { month: 'Tháng 1', value: 4000 },
-    { month: 'Tháng 2', value: 4500 },
-    { month: 'Tháng 3', value: 4800 },
-    { month: 'Tháng 4', value: 5000 },
-    { month: 'Tháng 5', value: 5200 },
-    { month: 'Tháng 6', value: 5300 },
-    { month: 'Tháng 7', value: 5400 }
-  ]
-}
-
-// Định nghĩa kiểu dữ liệu cho state
 interface DashboardData {
   totalUsers: number
   totalDoctor: number
   totalContentProvider: number
   totalFamilyMember: number
   totalElderly: number
-  videoCalls: number
+  appointments: number
   emergencyAlerts: number
-  newContent: number
   revenue: number
   subscriptions: number
   monthlyGrowth: { month: string; value: number }[]
-  packageA: number
-  packageB: number
-  packageC: number
+  boughtPackages: { packageName: string; packagePrice: number; boughtQuantity: number }[]
   revenueByMonth: { month: string; value: number }[]
 }
 
-const DashboardAdmin = () => {
-  const [data, setData] = useState<DashboardData | null>(null) // Sử dụng kiểu DashboardData hoặc null
-  const [loading, setLoading] = useState(true)
+interface ApiResponse {
+  status: number
+  message: string
+  data: DashboardData
+}
 
-  // Giả lập lấy dữ liệu từ API
+const DashboardAdmin = () => {
+  const [data, setData] = useState<DashboardData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
   useEffect(() => {
-    setTimeout(() => {
-      setData(mockData) // Cập nhật dữ liệu vào state
-      setLoading(false)
-    }, 1000) // Giả lập thời gian tải 1 giây
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://api.diavan-valuation.asia/dashboard-management/admin-dashboard')
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const result: ApiResponse = await response.json()
+        if (result.status === 1) {
+          setData(result.data)
+        } else {
+          throw new Error(result.message)
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred')
+        console.error('Error fetching data:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
   }, [])
 
   if (loading) {
-    return <Spin size='large' style={{ display: 'block', margin: '50px auto' }} />
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        <Spin size='large' />
+      </div>
+    )
+  }
+
+  if (error) {
+    return <div className='flex items-center justify-center h-screen text-red-500'>Error: {error}</div>
+  }
+
+  if (!data) {
+    return <div className='flex items-center justify-center h-screen'>No data available</div>
   }
 
   const barChartData = {
-    labels: ['Users', 'Video Calls', 'Emergency Alerts', 'New Content'],
+    labels: ['Tổng', 'Nhà cung cấp nội dung', 'Bác sĩ', 'Người thân', 'Người cao tuổi'],
     datasets: [
       {
-        label: 'Statistics',
-        data: [data?.totalUsers, data?.videoCalls, data?.emergencyAlerts, data?.newContent],
-        backgroundColor: ['#1890ff', '#faad14', '#ff4d4f', '#722ed1']
+        label: 'Thống kê người dùng',
+        data: [data.totalUsers, data.totalContentProvider, data.totalDoctor, data.totalFamilyMember, data.totalElderly],
+        backgroundColor: ['#3B82F6', '#EF4444', '#F59E0B', '#10B981', '#8B5CF6']
       }
     ]
   }
 
   const lineChartData = {
-    labels: data?.monthlyGrowth.map((item) => item.month),
+    labels: data.monthlyGrowth.map((item) => item.month),
     datasets: [
       {
-        label: 'Monthly Growth (%)',
-        data: data?.monthlyGrowth.map((item) => item.value),
-        borderColor: '#1890ff',
-        fill: false
+        label: 'Tăng trưởng hàng tháng (%)',
+        data: data.monthlyGrowth.map((item) => item.value),
+        borderColor: '#3B82F6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        tension: 0.3,
+        fill: true
       },
       {
-        label: 'Revenue ($)',
-        data: data?.revenueByMonth.map((item) => item.value),
-        borderColor: '#faad14',
-        fill: false
+        label: 'Doanh thu (VND)',
+        data: data.revenueByMonth.map((item) => item.value),
+        borderColor: '#F59E0B',
+        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+        tension: 0.3,
+        fill: true
       }
     ]
   }
 
   const pieChartData = {
-    labels: ['Free Users', 'Paid Users'],
+    labels: ['Người dùng miễn phí', 'Người dùng trả phí'],
     datasets: [
       {
-        label: 'User Distribution',
-        data: [data!.totalUsers - data!.subscriptions, data!.subscriptions],
-        backgroundColor: ['#52c41a', '#faad14']
+        label: 'Phân bổ người dùng',
+        data: [data.totalElderly - data.subscriptions, data.subscriptions],
+        backgroundColor: ['#10B981', '#F59E0B'],
+        borderWidth: 1
       }
     ]
   }
 
   const packagePieChartData = {
-    labels: ['Package A', 'Package B', 'Package C'],
+    labels: data.boughtPackages.map((pkg) => pkg.packageName),
     datasets: [
       {
         label: 'Subscription Packages',
-        data: [data?.packageA, data?.packageB, data?.packageC],
-        backgroundColor: ['#1890ff', '#faad14', '#ff4d4f']
+        data: data.boughtPackages.map((pkg) => pkg.boughtQuantity),
+        backgroundColor: ['#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6', '#10B981'],
+        borderWidth: 1
       }
     ]
   }
 
   const packageTableColumns = [
-    { title: 'Package', dataIndex: 'package', key: 'package' },
-    { title: 'Users', dataIndex: 'users', key: 'users' }
+    {
+      title: <span className='font-semibold'>Gói</span>,
+      dataIndex: 'packageName',
+      key: 'packageName'
+    },
+    {
+      title: <span className='font-semibold'>Giá (VND)</span>,
+      dataIndex: 'packagePrice',
+      key: 'packagePrice',
+      render: (price: number) => price.toLocaleString()
+    },
+    {
+      title: <span className='font-semibold'>Người đăng ký</span>,
+      dataIndex: 'boughtQuantity',
+      key: 'boughtQuantity'
+    }
   ]
 
-  const packageTableData = [
-    { key: '1', package: 'Package A', users: data?.packageA },
-    { key: '2', package: 'Package B', users: data?.packageB },
-    { key: '3', package: 'Package C', users: data?.packageC }
-  ]
+  const cardStyle = 'shadow-md rounded-lg border-0 h-full'
+  const statCardStyle = 'bg-gradient-to-br from-blue-50 to-blue-100'
+  const chartCardStyle = 'bg-white'
 
   return (
-    <div style={{ padding: 20 }}>
-      <Row gutter={16}>
-        <Col span={6}>
-          <Card>
-            <Statistic title='Total Users' value={data?.totalUsers} prefix={<UserOutlined />} />
+    <div className='p-5 bg-gray-50 min-h-screen'>
+      <h1 className='text-2xl font-bold text-gray-800 mb-6'>Tổng quan</h1>
+
+      <div className='flex flex-col lg:flex-row gap-5 mb-6'>
+        <div className='lg:w-1/4'>
+          <Card
+            className={`${cardStyle} bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-300 shadow-lg shadow-amber-200/50 hover:shadow-amber-200/70 transition-all duration-300 h-full flex flex-col justify-center items-center text-center`}
+          >
+            <Statistic
+              title={<span className='text-amber-800 font-medium'>TỔNG DOANH THU</span>}
+              value={data.revenue.toLocaleString()}
+              suffix={<span className='text-amber-700'>VND</span>}
+              prefix={<DollarOutlined className='text-amber-600 text-xl' />}
+              valueStyle={{
+                color: '#B45309',
+                fontSize: '1.5rem',
+                fontWeight: 'bold'
+              }}
+              className='text-center'
+            />
           </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic title='Total Doctors' value={data?.totalDoctor} prefix={<UserOutlined />} />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic title='Total Content Providers' value={data?.totalContentProvider} prefix={<UserOutlined />} />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic title='Total Family Members' value={data?.totalFamilyMember} prefix={<UserOutlined />} />
-          </Card>
-        </Col>
-      </Row>
-      <Row gutter={16} style={{ marginTop: 20 }}>
-        <Col span={6}>
-          <Card>
-            <Statistic title='Total Elderly' value={data?.totalElderly} prefix={<UserOutlined />} />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic title='Video Calls' value={data?.videoCalls} prefix={<VideoCameraOutlined />} />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic title='Emergency Alerts' value={data?.emergencyAlerts} prefix={<AlertOutlined />} />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic title='New Content' value={data?.newContent} prefix={<FileTextOutlined />} />
-          </Card>
-        </Col>
-      </Row>
-      <Row gutter={16} style={{ marginTop: 20 }}>
-        <Col span={6}>
-          <Card>
-            <Statistic title='Total Revenue' value={`$${data?.revenue}`} prefix={<DollarOutlined />} />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic title='Paid Subscriptions' value={data?.subscriptions} prefix={<UserOutlined />} />
-          </Card>
-        </Col>
-      </Row>
-      <Row style={{ marginTop: 30 }}>
-        <Col span={12}>
-          <Card title='System Overview Chart'>
-            <Bar data={barChartData} />
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card title='Monthly Growth & Revenue'>
-            <Line data={lineChartData} />
-          </Card>
-        </Col>
-      </Row>
-      <Row style={{ marginTop: 30 }}>
-        <Col span={12}>
-          <Card title='User Distribution'>
-            <Pie data={pieChartData} />
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card title='Subscription Packages'>
-            <Pie data={packagePieChartData} />
-          </Card>
-        </Col>
-      </Row>
-      <Row style={{ marginTop: 30 }}>
-        <Col span={24}>
-          <Card title='Subscription Package Details'>
-            <Table columns={packageTableColumns} dataSource={packageTableData} pagination={false} />
-          </Card>
-        </Col>
-      </Row>
+        </div>
+
+        <div className='lg:w-3/4 flex flex-col gap-5'>
+          <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5'>
+            <Card className={`${cardStyle} bg-gradient-to-br from-blue-50 to-blue-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Tổng người dùng</span>}
+                value={data.totalUsers}
+                prefix={<UserOutlined className='text-blue-600' />}
+                valueStyle={{ color: '#2563EB' }}
+              />
+            </Card>
+
+            <Card className={`${cardStyle} bg-gradient-to-br from-purple-50 to-purple-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Tổng NCC nội dung</span>}
+                value={data.totalContentProvider}
+                prefix={<UserOutlined className='text-purple-600' />}
+                valueStyle={{ color: '#7C3AED' }}
+              />
+            </Card>
+
+            <Card className={`${cardStyle} bg-gradient-to-br from-purple-50 to-purple-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Tổng bác sĩ</span>}
+                value={data.totalDoctor}
+                prefix={<UserOutlined className='text-purple-600' />}
+                valueStyle={{ color: '#7C3AED' }}
+              />
+            </Card>
+
+            <Card className={`${cardStyle} bg-gradient-to-br from-pink-50 to-pink-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Người thân hỗ trợ</span>}
+                value={data.totalFamilyMember}
+                prefix={<UserOutlined className='text-pink-600' />}
+                valueStyle={{ color: '#DB2777' }}
+              />
+            </Card>
+
+            <Card className={`${cardStyle} bg-gradient-to-br from-indigo-50 to-indigo-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Người cao tuổi</span>}
+                value={data.totalElderly}
+                prefix={<UserOutlined className='text-indigo-600' />}
+                valueStyle={{ color: '#4F46E5' }}
+              />
+            </Card>
+          </div>
+
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
+            <Card className={`${cardStyle} bg-gradient-to-br from-cyan-50 to-cyan-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Cuộc hẹn tư vấn</span>}
+                value={data.appointments}
+                prefix={<VideoCameraOutlined className='text-cyan-600' />}
+                valueStyle={{ color: '#0891B2' }}
+              />
+            </Card>
+
+            <Card className={`${cardStyle} bg-gradient-to-br from-red-50 to-red-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Cảnh báo khẩn cấp</span>}
+                value={data.emergencyAlerts}
+                prefix={<AlertOutlined className='text-red-600' />}
+                valueStyle={{ color: '#DC2626' }}
+              />
+            </Card>
+
+            <Card className={`${cardStyle} bg-gradient-to-br from-emerald-50 to-emerald-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Đăng kí trả phí</span>}
+                value={data.subscriptions}
+                prefix={<UserOutlined className='text-emerald-600' />}
+                valueStyle={{ color: '#059669' }}
+              />
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Charts Row 1 */}
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6'>
+        <Card
+          className={`${cardStyle} ${chartCardStyle}`}
+          title={<span className='font-semibold text-gray-700'>Thống kê người dùng</span>}
+        >
+          <div className='h-80'>
+            <Bar
+              data={barChartData}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: 'top' as const
+                  }
+                }
+              }}
+            />
+          </div>
+        </Card>
+        <Card
+          className={`${cardStyle} ${chartCardStyle}`}
+          title={<span className='font-semibold text-gray-700'>Tăng trưởng & Doanh thu hàng tháng</span>}
+        >
+          <div className='h-80'>
+            <Line
+              data={lineChartData}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: 'top' as const
+                  }
+                }
+              }}
+            />
+          </div>
+        </Card>
+      </div>
+
+      {/* Charts Row 2 */}
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6'>
+        <Card
+          className={`${cardStyle} ${chartCardStyle}`}
+          title={<span className='font-semibold text-gray-700'>Phân bổ người dùng</span>}
+        >
+          <div className='h-80'>
+            <Pie
+              data={pieChartData}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: 'right' as const
+                  }
+                }
+              }}
+            />
+          </div>
+        </Card>
+        <Card
+          className={`${cardStyle} ${chartCardStyle}`}
+          title={<span className='font-semibold text-gray-700'>Gói đăng ký</span>}
+        >
+          <div className='h-80'>
+            <Pie
+              data={packagePieChartData}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: 'right' as const
+                  }
+                }
+              }}
+            />
+          </div>
+        </Card>
+      </div>
+
+      {/* Package Table */}
+      <Card
+        className={`${cardStyle} ${chartCardStyle}`}
+        title={<span className='font-semibold text-gray-700'>Chi tiết gói đăng ký</span>}
+      >
+        <Table
+          columns={packageTableColumns}
+          dataSource={data.boughtPackages}
+          pagination={false}
+          rowKey='packageName'
+          className='rounded-lg overflow-hidden'
+          bordered
+        />
+      </Card>
     </div>
   )
 }
