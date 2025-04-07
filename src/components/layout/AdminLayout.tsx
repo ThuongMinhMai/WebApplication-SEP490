@@ -14,13 +14,14 @@ import {
 } from '@ant-design/icons'
 import { Avatar, Badge, Dropdown, Layout, Menu, Modal } from 'antd'
 import { useEffect, useState } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Logo from '../../assets/Logo.png'
 
 const { Header, Content, Footer, Sider } = Layout
 const { SubMenu } = Menu
 
 const AdminLayout = () => {
+  const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
   // const [selectedKeys, setSelectedKeys] = useState(['1'])
   // Hàm ánh xạ route sang menu key
@@ -53,7 +54,7 @@ const AdminLayout = () => {
       musics: '9',
       'subscription-packages': '10',
       'history-emergency': '11',
-      report: '12' 
+      report: '12'
     }
 
     return routeToKeyMap[path] || '1'
@@ -136,7 +137,7 @@ const AdminLayout = () => {
           height: '100vh',
           position: 'fixed',
           left: 0,
-          overflow: 'auto'
+          overflow: 'hidden'
         }}
       >
         <div className='flex flex-col items-center p-4 whitespace-nowrap overflow-hidden'>
@@ -149,7 +150,8 @@ const AdminLayout = () => {
           mode='inline'
           selectedKeys={selectedKeys}
           onSelect={({ key }) => setSelectedKeys([key])}
-          className='bg-white'
+          className='bg-white h-full border-r-0' // Thêm h-full và border-r-0
+          style={{ minHeight: '100%' }} // Đảm bảo menu chiếm đủ chiều cao
         >
           <Menu.Item
             key='1'
