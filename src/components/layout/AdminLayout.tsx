@@ -5,6 +5,7 @@ import {
   DesktopOutlined,
   ExclamationCircleOutlined,
   HistoryOutlined,
+  InfoCircleOutlined,
   LogoutOutlined,
   PieChartOutlined,
   SettingOutlined,
@@ -52,7 +53,8 @@ const AdminLayout = () => {
       books: '8',
       musics: '9',
       'subscription-packages': '10',
-      'history-emergency': '11'
+      'history-emergency': '11',
+      report: '12'
     }
 
     return routeToKeyMap[path] || '1'
@@ -102,6 +104,9 @@ const AdminLayout = () => {
       case '11':
         navigate('/admin/history-emergency')
         break
+      case '12':
+        navigate('/admin/report')
+        break
       default:
         navigate('/admin/dashboard')
     }
@@ -139,258 +144,272 @@ const AdminLayout = () => {
           <img src={Logo} alt='Logo' className='w-10 h-10 mr-2' />
           {!collapsed && <span className='text-[#FF1356] font-medium text-lg'>Tiện ích tuổi già</span>}
         </div>
-        <div
-          style={{
-            height: 'calc(100vh - 64px)',
-            overflowY: 'auto',
-            overflowX: 'hidden'
-          }}
+
+        <Menu
+          theme='light'
+          mode='inline'
+          selectedKeys={selectedKeys}
+          onSelect={({ key }) => setSelectedKeys([key])}
+          className='bg-white h-full border-r-0' // Thêm h-full và border-r-0
+          style={{ minHeight: '100%' }} // Đảm bảo menu chiếm đủ chiều cao
         >
-          <Menu
-            theme='light'
-            mode='inline'
-            selectedKeys={selectedKeys}
-            onSelect={({ key }) => setSelectedKeys([key])}
-            className='bg-white h-full border-r-0' // Thêm h-full và border-r-0
-            style={{ minHeight: '100%' }} // Đảm bảo menu chiếm đủ chiều cao
+          <Menu.Item
+            key='1'
+            className='
+              ant-menu-item-gradient
+              [&.ant-menu-item-selected]:text-white
+              [&.ant-menu-item-selected]:bg-gradient-to-r
+              [&.ant-menu-item-selected]:from-[#FF1356]
+              [&.ant-menu-item-selected]:to-[#ff7d47]
+              [&.ant-menu-item-selected>.anticon]:text-white
+              hover:text-[#FF1356]
+              transition-all
+              duration-300
+            '
+            onClick={({ key }) => handleMenuClick(key)}
+          >
+            <PieChartOutlined />
+            <span>Dashboard</span>
+          </Menu.Item>
+
+          <Menu.Item
+            key='11'
+            className='
+              ant-menu-item-gradient
+              [&.ant-menu-item-selected]:text-white
+              [&.ant-menu-item-selected]:bg-gradient-to-r
+              [&.ant-menu-item-selected]:from-[#FF1356]
+              [&.ant-menu-item-selected]:to-[#ff7d47]
+              [&.ant-menu-item-selected>.anticon]:text-white
+              hover:text-[#FF1356]
+              transition-all
+              duration-300
+            '
+            onClick={({ key }) => handleMenuClick(key)}
+          >
+            <AlertOutlined />
+            <span>Báo động khẩn cấp</span>
+          </Menu.Item>
+          <Menu.Item
+            key='2'
+            className='
+              ant-menu-item-gradient
+              [&.ant-menu-item-selected]:text-white
+              [&.ant-menu-item-selected]:bg-gradient-to-r
+              [&.ant-menu-item-selected]:from-[#FF1356]
+              [&.ant-menu-item-selected]:to-[#ff7d47]
+              [&.ant-menu-item-selected>.anticon]:text-white
+              hover:text-[#FF1356]
+              transition-all
+              duration-300
+            '
+            onClick={({ key }) => handleMenuClick(key)}
+          >
+            <HistoryOutlined />
+            <span>Lịch sử giao dịch</span>
+          </Menu.Item>
+
+          <SubMenu
+            key='sub1'
+            title={
+              <span>
+                <UserOutlined />
+                <span>Quản lí tài khoản</span>
+              </span>
+            }
+            className='
+              ant-submenu-gradient
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:text-white
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:bg-gradient-to-r
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:from-[#FF1356]
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:to-[#ff7d47]
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title>.anticon]:text-white
+              hover:[>.ant-menu-submenu-title]:text-[#FF1356]
+              transition-all
+              duration-300
+            '
+            onClick={({ key }) => handleMenuClick(key)}
           >
             <Menu.Item
-              key='1'
+              key='3'
               className='
-              ant-menu-item-gradient
-              [&.ant-menu-item-selected]:text-white
-              [&.ant-menu-item-selected]:bg-gradient-to-r
-              [&.ant-menu-item-selected]:from-[#FF1356]
-              [&.ant-menu-item-selected]:to-[#ff7d47]
-              [&.ant-menu-item-selected>.anticon]:text-white
-              hover:text-[#FF1356]
-              transition-all
-              duration-300
-            '
+                ant-menu-item-gradient
+                [&.ant-menu-item-selected]:text-white
+                [&.ant-menu-item-selected]:bg-gradient-to-r
+                [&.ant-menu-item-selected]:from-[#FF1356]
+                [&.ant-menu-item-selected]:to-[#ff7d47]
+                hover:text-[#FF1356]
+                transition-all
+                duration-300
+              '
               onClick={({ key }) => handleMenuClick(key)}
             >
-              <PieChartOutlined />
-              <span>Dashboard</span>
-            </Menu.Item>
-
-            <Menu.Item
-              key='11'
-              className='
-              ant-menu-item-gradient
-              [&.ant-menu-item-selected]:text-white
-              [&.ant-menu-item-selected]:bg-gradient-to-r
-              [&.ant-menu-item-selected]:from-[#FF1356]
-              [&.ant-menu-item-selected]:to-[#ff7d47]
-              [&.ant-menu-item-selected>.anticon]:text-white
-              hover:text-[#FF1356]
-              transition-all
-              duration-300
-            '
-              onClick={({ key }) => handleMenuClick(key)}
-            >
-              <AlertOutlined />
-              <span>Báo động khẩn cấp</span>
+              Bác sĩ
             </Menu.Item>
             <Menu.Item
-              key='2'
+              key='4'
               className='
-              ant-menu-item-gradient
-              [&.ant-menu-item-selected]:text-white
-              [&.ant-menu-item-selected]:bg-gradient-to-r
-              [&.ant-menu-item-selected]:from-[#FF1356]
-              [&.ant-menu-item-selected]:to-[#ff7d47]
-              [&.ant-menu-item-selected>.anticon]:text-white
-              hover:text-[#FF1356]
-              transition-all
-              duration-300
-            '
+                ant-menu-item-gradient
+                [&.ant-menu-item-selected]:text-white
+                [&.ant-menu-item-selected]:bg-gradient-to-r
+                [&.ant-menu-item-selected]:from-[#FF1356]
+                [&.ant-menu-item-selected]:to-[#ff7d47]
+                hover:text-[#FF1356]
+                transition-all
+                duration-300
+              '
               onClick={({ key }) => handleMenuClick(key)}
             >
-              <HistoryOutlined />
-              <span>Lịch sử giao dịch</span>
+              Nhà cung cấp nội dung
             </Menu.Item>
-
-            <SubMenu
-              key='sub1'
-              title={
-                <span>
-                  <UserOutlined />
-                  <span>Quản lí tài khoản</span>
-                </span>
-              }
-              className='
-              ant-submenu-gradient
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:text-white
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:bg-gradient-to-r
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:from-[#FF1356]
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:to-[#ff7d47]
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title>.anticon]:text-white
-              hover:[>.ant-menu-submenu-title]:text-[#FF1356]
-              transition-all
-              duration-300
-            '
-              onClick={({ key }) => handleMenuClick(key)}
-            >
-              <Menu.Item
-                key='3'
-                className='
-                ant-menu-item-gradient
-                [&.ant-menu-item-selected]:text-white
-                [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#FF1356]
-                [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#FF1356]
-                transition-all
-                duration-300
-              '
-                onClick={({ key }) => handleMenuClick(key)}
-              >
-                Bác sĩ
-              </Menu.Item>
-              <Menu.Item
-                key='4'
-                className='
-                ant-menu-item-gradient
-                [&.ant-menu-item-selected]:text-white
-                [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#FF1356]
-                [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#FF1356]
-                transition-all
-                duration-300
-              '
-                onClick={({ key }) => handleMenuClick(key)}
-              >
-                Nhà cung cấp nội dung
-              </Menu.Item>
-              <Menu.Item
-                key='5'
-                className='
-                ant-menu-item-gradient
-                [&.ant-menu-item-selected]:text-white
-                [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#FF1356]
-                [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#FF1356]
-                transition-all
-                duration-300
-              '
-                onClick={({ key }) => handleMenuClick(key)}
-              >
-                Người thân
-              </Menu.Item>
-              <Menu.Item
-                key='6'
-                className='
-                ant-menu-item-gradient
-                [&.ant-menu-item-selected]:text-white
-                [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#FF1356]
-                [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#FF1356]
-                transition-all
-                duration-300
-              '
-                onClick={({ key }) => handleMenuClick(key)}
-              >
-                Người dùng
-              </Menu.Item>
-            </SubMenu>
-
-            <SubMenu
-              key='sub2'
-              title={
-                <span>
-                  <DesktopOutlined />
-                  <span>Nội dung</span>
-                </span>
-              }
-              className='
-              ant-submenu-gradient
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:text-white
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:bg-gradient-to-r
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:from-[#FF1356]
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:to-[#ff7d47]
-              [&.ant-menu-submenu-selected>.ant-menu-submenu-title>.anticon]:text-white
-              hover:[>.ant-menu-submenu-title]:text-[#FF1356]
-              transition-all
-              duration-300
-            '
-              onClick={({ key }) => handleMenuClick(key)}
-            >
-              <Menu.Item
-                key='7'
-                className='
-                ant-menu-item-gradient
-                [&.ant-menu-item-selected]:text-white
-                [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#FF1356]
-                [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#FF1356]
-                transition-all
-                duration-300
-              '
-                onClick={({ key }) => handleMenuClick(key)}
-              >
-                Bài tập
-              </Menu.Item>
-              <Menu.Item
-                key='8'
-                className='
-                ant-menu-item-gradient
-                [&.ant-menu-item-selected]:text-white
-                [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#FF1356]
-                [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#FF1356]
-                transition-all
-                duration-300
-              '
-                onClick={({ key }) => handleMenuClick(key)}
-              >
-                Sách
-              </Menu.Item>
-              <Menu.Item
-                key='9'
-                className='
-                ant-menu-item-gradient
-                [&.ant-menu-item-selected]:text-white
-                [&.ant-menu-item-selected]:bg-gradient-to-r
-                [&.ant-menu-item-selected]:from-[#FF1356]
-                [&.ant-menu-item-selected]:to-[#ff7d47]
-                hover:text-[#FF1356]
-                transition-all
-                duration-300
-              '
-                onClick={({ key }) => handleMenuClick(key)}
-              >
-                Âm Nhạc
-              </Menu.Item>
-            </SubMenu>
-
             <Menu.Item
-              key='10'
+              key='5'
               className='
-              ant-menu-item-gradient
-              [&.ant-menu-item-selected]:text-white
-              [&.ant-menu-item-selected]:bg-gradient-to-r
-              [&.ant-menu-item-selected]:from-[#FF1356]
-              [&.ant-menu-item-selected]:to-[#ff7d47]
-              [&.ant-menu-item-selected>.anticon]:text-white
-              hover:text-[#FF1356]
-              transition-all
-              duration-300
-            '
+                ant-menu-item-gradient
+                [&.ant-menu-item-selected]:text-white
+                [&.ant-menu-item-selected]:bg-gradient-to-r
+                [&.ant-menu-item-selected]:from-[#FF1356]
+                [&.ant-menu-item-selected]:to-[#ff7d47]
+                hover:text-[#FF1356]
+                transition-all
+                duration-300
+              '
               onClick={({ key }) => handleMenuClick(key)}
             >
+              Người thân
+            </Menu.Item>
+            <Menu.Item
+              key='6'
+              className='
+                ant-menu-item-gradient
+                [&.ant-menu-item-selected]:text-white
+                [&.ant-menu-item-selected]:bg-gradient-to-r
+                [&.ant-menu-item-selected]:from-[#FF1356]
+                [&.ant-menu-item-selected]:to-[#ff7d47]
+                hover:text-[#FF1356]
+                transition-all
+                duration-300
+              '
+              onClick={({ key }) => handleMenuClick(key)}
+            >
+              Người dùng
+            </Menu.Item>
+          </SubMenu>
+
+          <SubMenu
+            key='sub2'
+            title={
               <span>
-                <SnippetsOutlined />
-
-                <span> Gói sử dụng</span>
+                <DesktopOutlined />
+                <span>Nội dung</span>
               </span>
+            }
+            className='
+              ant-submenu-gradient
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:text-white
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:bg-gradient-to-r
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:from-[#FF1356]
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title]:to-[#ff7d47]
+              [&.ant-menu-submenu-selected>.ant-menu-submenu-title>.anticon]:text-white
+              hover:[>.ant-menu-submenu-title]:text-[#FF1356]
+              transition-all
+              duration-300
+            '
+            onClick={({ key }) => handleMenuClick(key)}
+          >
+            <Menu.Item
+              key='7'
+              className='
+                ant-menu-item-gradient
+                [&.ant-menu-item-selected]:text-white
+                [&.ant-menu-item-selected]:bg-gradient-to-r
+                [&.ant-menu-item-selected]:from-[#FF1356]
+                [&.ant-menu-item-selected]:to-[#ff7d47]
+                hover:text-[#FF1356]
+                transition-all
+                duration-300
+              '
+              onClick={({ key }) => handleMenuClick(key)}
+            >
+              Bài tập
             </Menu.Item>
-          </Menu>
-        </div>
+            <Menu.Item
+              key='8'
+              className='
+                ant-menu-item-gradient
+                [&.ant-menu-item-selected]:text-white
+                [&.ant-menu-item-selected]:bg-gradient-to-r
+                [&.ant-menu-item-selected]:from-[#FF1356]
+                [&.ant-menu-item-selected]:to-[#ff7d47]
+                hover:text-[#FF1356]
+                transition-all
+                duration-300
+              '
+              onClick={({ key }) => handleMenuClick(key)}
+            >
+              Sách
+            </Menu.Item>
+            <Menu.Item
+              key='9'
+              className='
+                ant-menu-item-gradient
+                [&.ant-menu-item-selected]:text-white
+                [&.ant-menu-item-selected]:bg-gradient-to-r
+                [&.ant-menu-item-selected]:from-[#FF1356]
+                [&.ant-menu-item-selected]:to-[#ff7d47]
+                hover:text-[#FF1356]
+                transition-all
+                duration-300
+              '
+              onClick={({ key }) => handleMenuClick(key)}
+            >
+              Âm Nhạc
+            </Menu.Item>
+          </SubMenu>
+
+          <Menu.Item
+            key='10'
+            className='
+              ant-menu-item-gradient
+              [&.ant-menu-item-selected]:text-white
+              [&.ant-menu-item-selected]:bg-gradient-to-r
+              [&.ant-menu-item-selected]:from-[#FF1356]
+              [&.ant-menu-item-selected]:to-[#ff7d47]
+              [&.ant-menu-item-selected>.anticon]:text-white
+              hover:text-[#FF1356]
+              transition-all
+              duration-300
+            '
+            onClick={({ key }) => handleMenuClick(key)}
+          >
+            <span>
+              <SnippetsOutlined />
+
+              <span> Gói sử dụng</span>
+            </span>
+          </Menu.Item>
+
+          <Menu.Item
+            key='12'
+            className='
+              ant-menu-item-gradient
+              [&.ant-menu-item-selected]:text-white
+              [&.ant-menu-item-selected]:bg-gradient-to-r
+              [&.ant-menu-item-selected]:from-[#FF1356]
+              [&.ant-menu-item-selected]:to-[#ff7d47]
+              [&.ant-menu-item-selected>.anticon]:text-white
+              hover:text-[#FF1356]
+              transition-all
+              duration-300
+            '
+            onClick={({ key }) => handleMenuClick(key)}
+          >
+            <span>
+              <InfoCircleOutlined />
+              <span> Báo cáo sự cố</span>
+            </span>
+          </Menu.Item>
+        </Menu>
       </Sider>
 
       {/* Main Content Area */}

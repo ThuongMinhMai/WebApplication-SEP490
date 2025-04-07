@@ -29,12 +29,16 @@ import {
   Row,
   Spin,
   Tag,
+  Tabs,
   Typography,
-  Upload
+  Upload,
+  DatePicker
 } from 'antd'
+import TabPane from 'antd/es/tabs/TabPane'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import dayjs from 'dayjs'
 
 const { TextArea } = Input
 const { Title, Text } = Typography
@@ -56,6 +60,27 @@ interface ProfessorData {
   achievement: string[]
 }
 
+interface Slot {
+  startTime: string
+  endTime: string
+}
+
+interface TimeSlots {
+  date: string
+  timeEachSlots: Slot[]
+}
+
+interface ProfessorAppointment {
+  elderlyId: number
+  elderlyName: string
+  avatar: string
+  phoneNumber: string
+  dateTime: string
+  status: string
+  isOnline: boolean
+  accountId: number[]
+}
+
 const DetailDoctorPage = () => {
   const { id: professorId } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -66,6 +91,9 @@ const DetailDoctorPage = () => {
   const [isUploading, setIsUploading] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const [selectedDay, setSelectedDay] = useState<string | null>(null)
+  const [timeSlots, setTimeSlots] = useState<TimeSlots[]>([])
+  const [appointments, setAppointments] = useState<ProfessorAppointment[]>([])
 
   useEffect(() => {
     const fetchProfessor = async () => {
@@ -74,6 +102,8 @@ const DetailDoctorPage = () => {
         const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/by-account/${professorId}`)
         setProfessor(response.data.data)
         setPreviewImage(response.data.data.avatar)
+        getProfessorAppointment()
+        getProfessorSchedule()
         form.setFieldsValue({
           ...response.data.data,
           specialization: response.data.data.specialization?.join('\n') || '',
@@ -91,6 +121,49 @@ const DetailDoctorPage = () => {
 
     fetchProfessor()
   }, [professorId, form])
+
+  const getProfessorSchedule = async () => {
+    try {
+      const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/time-slot/week?professorId=1`)
+      if (response.data.status === 1) {
+        setTimeSlots(response.data.data)
+        console.log(response.data.data)
+      } else {
+        message.error('Failed to load schedule')
+      }
+    } catch (error) {
+      console.error('Error fetching schedule:', error)
+      message.error('Failed to load schedule')
+    }
+  }
+
+  //check TimeSlots have all day with Slots is empty
+  const checkTimeSlots = (timeSlots: TimeSlots[]): boolean => {
+    var flag = 0
+    timeSlots.forEach((slot) => {
+      if (slot.timeEachSlots.length > 0) {
+        flag = 1
+        return
+      }
+    })
+    if (flag === 1) {
+      return true
+    }
+    return false
+  }
+
+  const getProfessorAppointment = async () => {
+    try {
+      const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/appointment/${professorId}`)
+      if (response.data.status === 1) {
+        setAppointments([...response.data.data, ...response.data.data])
+      } else {
+        message.error('Không thể tải lịch hẹn')
+      }
+    } catch (error) {
+      message.error('Không thể tải lịch hẹn')
+    }
+  }
 
   const handleImageChange = (info: any) => {
     const file = info.file
@@ -299,58 +372,152 @@ const DetailDoctorPage = () => {
       </Col>
 
       <Col span={16}>
-        <Card>
-          <Descriptions title='Thông tin bác sĩ' column={1} bordered>
-            <Descriptions.Item label='Địa chỉ phòng khám'>{professor?.clinicAddress}</Descriptions.Item>
-            <Descriptions.Item label='Phí tư vấn'>{professor?.consultationFee}</Descriptions.Item>
-          </Descriptions>
+        <Tabs defaultActiveKey='1'>
+          <TabPane tab='Thông tin chi tiết' key='1'>
+            <Card>
+              <Text className='text-xl font-bold'>Thông tin bác sĩ</Text>
 
-          <Divider orientation='left' className='mt-6 text-gray-800 before:bg-[#FF1356]'>
-            <ExperimentOutlined /> Chuyên ngành
-          </Divider>
-          <div className='mb-6 ml-4'>
-            {professor?.specialization?.map((item, index) => (
-              <Tag color='blue' key={index} className='mb-2'>
-                {item}
-              </Tag>
-            ))}
-          </div>
+              <Descriptions column={1} bordered className='mt-4'>
+                <Descriptions.Item label='Địa chỉ phòng khám'>{professor?.clinicAddress}</Descriptions.Item>
+                <Descriptions.Item label='Phí tư vấn'>{professor?.consultationFee}</Descriptions.Item>
+              </Descriptions>
 
-          <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
-            <MedicineBoxOutlined /> Trình độ chuyên môn
-          </Divider>
-          <List
-            size='small'
-            dataSource={professor?.qualification}
-            renderItem={(item) => <List.Item>{item}</List.Item>}
-            className='mb-6'
-          />
+              <Divider orientation='left' className='mt-6 text-gray-800 before:bg-[#FF1356]'>
+                <ExperimentOutlined /> Chuyên ngành
+              </Divider>
+              <div className='mb-6 ml-4'>
+                {professor?.specialization?.map((item, index) => (
+                  <Tag color='blue' key={index} className='mb-2'>
+                    {item}
+                  </Tag>
+                ))}
+              </div>
 
-          <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
-            <ReadOutlined /> Kiến thức chuyên môn
-          </Divider>
-          <List
-            size='small'
-            dataSource={professor?.knowledge}
-            renderItem={(item) => <List.Item>{item}</List.Item>}
-            className='mb-6'
-          />
+              <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
+                <MedicineBoxOutlined /> Trình độ chuyên môn
+              </Divider>
+              <List
+                size='small'
+                dataSource={professor?.qualification}
+                renderItem={(item) => <List.Item>{item}</List.Item>}
+                className='mb-6'
+              />
 
-          <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
-            <CrownOutlined /> Sự nghiệp
-          </Divider>
-          <List
-            size='small'
-            dataSource={professor?.career}
-            renderItem={(item) => <List.Item>{item}</List.Item>}
-            className='mb-6'
-          />
+              <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
+                <ReadOutlined /> Kiến thức chuyên môn
+              </Divider>
+              <List
+                size='small'
+                dataSource={professor?.knowledge}
+                renderItem={(item) => <List.Item>{item}</List.Item>}
+                className='mb-6'
+              />
 
-          <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
-            <TrophyOutlined /> Thành tích
-          </Divider>
-          <List size='small' dataSource={professor?.achievement} renderItem={(item) => <List.Item>{item}</List.Item>} />
-        </Card>
+              <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
+                <CrownOutlined /> Sự nghiệp
+              </Divider>
+              <List
+                size='small'
+                dataSource={professor?.career}
+                renderItem={(item) => <List.Item>{item}</List.Item>}
+                className='mb-6'
+              />
+
+              <Divider orientation='left' className='text-gray-800 before:bg-[#FF1356]'>
+                <TrophyOutlined /> Thành tích
+              </Divider>
+              <List
+                size='small'
+                dataSource={professor?.achievement}
+                renderItem={(item) => <List.Item>{item}</List.Item>}
+              />
+            </Card>
+          </TabPane>
+          <TabPane tab='Đánh giá' key='2'>
+            <Card>
+              <div className='flex justify-center items-center h-96'>
+                <Text type='secondary'>Chưa có đánh giá nào</Text>
+              </div>
+            </Card>
+          </TabPane>
+          <TabPane tab='Lịch làm việc' key='3'>
+            <Card>
+              <div className='flex flex-col justify-start items-start mb-4'>
+                <Text className='font-bold text-xl'>Lịch làm việc</Text>
+                <div className='flex flex-wrap justify-evenly mt-8'>
+                  {timeSlots.length > 0 && checkTimeSlots(timeSlots) ? (
+                    timeSlots.map((slot, index) => (
+                      <div className='mr-4 mb-4 flex flex-col items-center gap-4' key={index}>
+                        <Text className='text-xl'>{index < 6 ? `Thứ ${index + 2}` : 'Chủ nhật'}</Text>
+                        {slot.timeEachSlots.length > 0 ? (
+                          slot.timeEachSlots.map((element) => (
+                            <Tag
+                              key={index}
+                              className='px-4 py-2 text-base cursor-pointer hover:bg-green-100'
+                              color='green'
+                              onClick={() => {
+                                return
+                              }}
+                            >
+                              {`${element.startTime} - ${element.endTime}`}
+                            </Tag>
+                          ))
+                        ) : (
+                          <div className='w-32'></div>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <Text type='secondary' className='text-base'>
+                      Không có lịch làm việc cho ngày đã chọn
+                    </Text>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </TabPane>
+          <TabPane tab='Lịch hẹn' key='4'>
+            <Card>
+              <div className='flex flex-col justify-start items-start mb-4'>
+                <Text className='font-bold text-xl'>Lịch hẹn</Text>
+                <div className='flex flex-wrap justify-evenly mt-4'>
+                  {appointments.length > 0 ? (
+                    appointments.map((appointment, index) => (
+                      <Card key={index} className='mb-5 mx-4 p-0'>
+                        <Descriptions column={1} bordered>
+                          <Descriptions.Item label='Ảnh đại diện'>
+                            <div className='text-center'>
+                              <Avatar src={appointment.avatar} size={64} />
+                            </div>
+                          </Descriptions.Item>
+                          <Descriptions.Item label='Tên bệnh nhân'>{appointment.elderlyName}</Descriptions.Item>
+                          <Descriptions.Item label='Số điện thoại'>{appointment.phoneNumber}</Descriptions.Item>
+                          <Descriptions.Item label='Thời gian'>
+                            {appointment.dateTime.split(' ')[1]} ngày {appointment.dateTime.split(' ')[0]}
+                          </Descriptions.Item>
+                          <Descriptions.Item label='Trạng thái'>
+                            {appointment.status == 'NotYet'
+                              ? 'Chưa tham gia'
+                              : appointment.status == 'Joined'
+                                ? 'Đã tham gia'
+                                : 'Đã hủy'}
+                          </Descriptions.Item>
+                          <Descriptions.Item label='Loại'>
+                            {appointment.isOnline ? 'Trực tuyến' : 'Tại phòng khám'}
+                          </Descriptions.Item>
+                        </Descriptions>
+                      </Card>
+                    ))
+                  ) : (
+                    <Text type='secondary' className='text-base'>
+                      Không có lịch hẹn nào
+                    </Text>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </TabPane>
+        </Tabs>
       </Col>
     </Row>
   )

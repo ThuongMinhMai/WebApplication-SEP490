@@ -70,6 +70,7 @@ const DoctorsPage = () => {
       setTableLoading(false)
     }
   }
+  
   const handleStatusChange = (accountId: number, newStatus: string) => {
     setCurrentAccount({ id: accountId, newStatus })
     setIsModalOpen(true)
