@@ -379,7 +379,7 @@ const DetailDoctorPage = () => {
 
               <Descriptions column={1} bordered className='mt-4'>
                 <Descriptions.Item label='Địa chỉ phòng khám'>{professor?.clinicAddress}</Descriptions.Item>
-                <Descriptions.Item label='Phí tư vấn'>{professor?.consultationFee}</Descriptions.Item>
+                <Descriptions.Item label='Phí tư vấn'>{professor?.consultationFee.toLocaleString()} VNĐ</Descriptions.Item>
               </Descriptions>
 
               <Divider orientation='left' className='mt-6 text-gray-800 before:bg-[#FF1356]'>

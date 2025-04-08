@@ -1,32 +1,32 @@
 import { useAuth } from '@/contexts/AuthContext'
 import {
-    ArrowLeftOutlined,
-    ExclamationCircleOutlined,
-    PauseCircleOutlined,
-    PlayCircleOutlined,
-    PlusOutlined,
-    UploadOutlined
+  ArrowLeftOutlined,
+  ExclamationCircleOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  PlusOutlined,
+  UploadOutlined
 } from '@ant-design/icons'
 import {
-    Avatar,
-    Button,
-    Card,
-    Divider,
-    Form,
-    Layout,
-    Modal,
-    Progress,
-    Select,
-    Skeleton,
-    Table,
-    Tag,
-    Typography,
-    Upload,
-    message
+  Avatar,
+  Button,
+  Card,
+  Divider,
+  Form,
+  Layout,
+  Modal,
+  Progress,
+  Select,
+  Skeleton,
+  Table,
+  Tag,
+  Typography,
+  Upload,
+  message
 } from 'antd'
 import type { RcFile } from 'antd/es/upload/interface'
 import React, { useEffect, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 const { Content } = Layout
 const { Title, Text } = Typography
@@ -66,6 +66,7 @@ const DetailMusicPage = () => {
   const playlistName = searchParams.get('playlistname')
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
+  const navigate = useNavigate()
   const [fileList, setFileList] = useState<RcFile[]>([])
   const [addloading, setAddLoading] = useState(false)
   useEffect(() => {
@@ -212,6 +213,7 @@ const DetailMusicPage = () => {
       <audio ref={audioRef} onEnded={() => setCurrentlyPlaying(null)} />
       <div className='flex justify-between items-center'>
         <Button
+          onClick={() => navigate(-1)}
           type='primary'
           className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-pink-700 hover:border-pink-700 mb-5'
           icon={<ArrowLeftOutlined />}

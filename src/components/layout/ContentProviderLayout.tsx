@@ -31,6 +31,9 @@ export default function ContentProviderLayout() {
     if (secondLastSegment === 'books') {
       return '3' // key của menu Doctors
     }
+    if (secondLastSegment === 'musics') {
+      return '4' // key của menu Doctors
+    }
     if (secondLastSegment === 'exercises') {
       return '2' // key của menu Doctors
     }

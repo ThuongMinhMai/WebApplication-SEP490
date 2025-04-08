@@ -197,9 +197,7 @@ const UsersPage = () => {
   const getGenderLabel = (gender: string) => {
     return gender === 'Male' ? 'Nam' : 'Nữ'
   }
-  const getStatusLabel = (gender: string) => {
-    return gender === 'Active' ? 'Đang hoạt động' : 'Ngưng hoạt động'
-  }
+ 
   const columns: ColumnType<User>[] = [
     {
       title: 'STT',
