@@ -129,7 +129,7 @@ const AdminLayout = () => {
     })
   }
   return (
-    <div className='flex min-h-screen bg-white'>
+    <div className='flex min-h-screen bg-white z-[100]'>
       {/* Sidebar - Fixed position */}
       <Sider
         collapsible
@@ -425,7 +425,7 @@ const AdminLayout = () => {
       >
         {/* Header */}
         <Header
-          className='px-5 flex justify-end items-center bg-white shadow-md'
+          className='px-5 flex justify-end items-center bg-white shadow-md z-[-10]'
           style={{
             position: 'sticky',
             top: 0,

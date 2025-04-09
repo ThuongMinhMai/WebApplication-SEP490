@@ -352,8 +352,8 @@ const SubscriptionPackagesPage = () => {
       console.error('Error showing confirmation dialog:', error)
     }
   }
-  const getStatusLabel = (gender: string) => {
-    return gender === 'Active' ? 'Đang hoạt động' : gender === 'Inactive' ? 'Ngưng hoạt động' : gender
+  const getStatusLabel = (status: string) => {
+    return status === 'Active' ? 'Đang hoạt động' : status === 'Inactive' ? 'Ngưng hoạt động' : status
   }
   const columns: ColumnType<SubscriptionPackage>[] = [
     {

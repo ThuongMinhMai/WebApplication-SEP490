@@ -33,6 +33,7 @@ interface Subscription {
   subscriptionId: number
   purchaseDate: string
   subName: string
+  paymentCode: string
   validityPeriod: number
   numberOfMeeting: number
   numberOfMeetingLeft: number
@@ -70,6 +71,20 @@ const SubscriptionPackagesDetailPage: React.FC = () => {
   }, [id])
 
   const columns = [
+    {
+      title: (
+        <div className='flex gap-1'>
+          <Text>Mã giao dịch</Text>
+        </div>
+      ),
+      dataIndex: 'paymentCode',
+      key: 'paymentCode',
+      render: (code: string, record: Subscription) => (
+        <Space direction='vertical'>
+          <Text strong>{code}</Text>
+        </Space>
+      )
+    },
     {
       title: (
         <div className='flex gap-1'>
