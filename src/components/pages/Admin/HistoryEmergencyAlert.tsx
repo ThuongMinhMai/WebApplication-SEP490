@@ -330,7 +330,7 @@ function HistoryEmergencyAlert() {
       sorter: (a, b) => a.elderlyName.localeCompare(b.elderlyName),
       ...getColumnSearchProps('elderlyName'),
       render: (text: string) =>
-        text != '' ? <Text type='secondary'>{text}</Text> : <Text type='secondary'>Chưa xác nhận</Text>
+        text != '' ? <strong>{text}</strong> : <strong>Chưa xác nhận</strong>
     },
     {
       title: 'Trạng thái',
