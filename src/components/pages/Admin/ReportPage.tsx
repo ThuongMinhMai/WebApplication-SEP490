@@ -259,7 +259,7 @@ function ReportPage() {
 
       filters: [{ text: 'Khác', value: 'string' }],
       onFilter: (value, record) => record.reportType === value,
-      render: (gender: string) => <Tag color={gender === 'string' ? 'blue' : 'pink'}>{getGenderLabel(gender)}</Tag>
+      render: (gender: string) => <Tag color={gender === 'string' ? 'blue' : 'pink'}>{gender == 'string' ? 'Khác' : gender}</Tag>
     },
     {
       title: 'Trạng thái',
@@ -290,25 +290,6 @@ function ReportPage() {
               </Tag>
             </Option>
           </Select>
-          <Modal
-            title='Xác nhận thay đổi trạng thái'
-            open={isModalOpen && currentAccount?.id === record.accountId}
-            onOk={handleConfirmStatusChange}
-            onCancel={() => setIsModalOpen(false)}
-            okText='Xác nhận'
-            cancelText='Hủy'
-            okButtonProps={{
-              style: {
-                backgroundColor: '#FF1356',
-                borderColor: '#FF1356'
-              }
-            }}
-          >
-            <p>
-              Bạn có chắc chắn rằng báo cáo này đã được xử lí thành công? Khi báo cáo được xử lí, nó sẽ không thể đổi
-              trạng lại về lại đang chờ xử lí
-            </p>
-          </Modal>
         </>
       )
     },
@@ -392,6 +373,25 @@ function ReportPage() {
         components={components}
         bordered
       />
+      <Modal
+        title='Xác nhận thay đổi trạng thái'
+        open={isModalOpen}
+        onOk={handleConfirmStatusChange}
+        onCancel={() => setIsModalOpen(false)}
+        okText='Xác nhận'
+        cancelText='Hủy'
+        okButtonProps={{
+          style: {
+            backgroundColor: '#FF1356',
+            borderColor: '#FF1356'
+          }
+        }}
+      >
+        <p>
+          Bạn có chắc chắn rằng báo cáo này đã được xử lí thành công? Khi báo cáo được xử lí, nó sẽ không thể đổi trạng
+          lại về lại đang chờ xử lí
+        </p>
+      </Modal>
     </Content>
   )
 }

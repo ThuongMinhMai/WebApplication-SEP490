@@ -184,10 +184,25 @@ function HistoryEmergencyAlert() {
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div className='flex flex-col'>
-            <Text type='secondary'>{`Trạng thái: ${selectedEmergency.isConfirmed ? 'Đã xác nhận hỗ trợ' : 'Đang chờ hỗ trợ'}`}</Text>
-            <Text type='secondary'>{`Ngày gửi tín hiệu: ${selectedEmergency.emergencyTime}  ${selectedEmergency.emergencyDate}`}</Text>
-            <Text type='secondary'>{`Ngày xác nhận hỗ trợ: ${selectedEmergency.confirmationDate != null ? `${hours}:${minutes} ${day}-${month}-${year}` : 'Chưa xác định'}   `}</Text>
-            <Text type='secondary'>{`Người hỗ trợ: ${selectedEmergency.confirmationAccountName != '' ? selectedEmergency.confirmationAccountName : 'Chưa xác định'}   `}</Text>
+            <div>
+              <Text type='secondary'>{'Trạng thái:  '}</Text>{' '}
+              <strong>{`${selectedEmergency.isConfirmed ? 'Đã xác nhận hỗ trợ' : 'Đang chờ hỗ trợ'}`}</strong>
+            </div>
+
+            <div>
+              <Text type='secondary'>{'Ngày gửi tín hiệu:  '}</Text>{' '}
+              <strong>{`${selectedEmergency.emergencyTime} ${selectedEmergency.emergencyDate}`}</strong>
+            </div>
+
+            <div>
+              <Text type='secondary'>{'Ngày xác nhận hỗ trợ:  '}</Text>{' '}
+              <strong>{`${selectedEmergency.confirmationDate != null ? `${hours}:${minutes} ${day}-${month}-${year}` : 'Chưa xác định'}`}</strong>
+            </div>
+
+            <div>
+              <Text type='secondary'>{'Người hỗ trợ:  '}</Text>{' '}
+              <strong>{`${selectedEmergency.confirmationAccountName != '' ? selectedEmergency.confirmationAccountName : 'Chưa xác định'}`}</strong>
+            </div>
           </div>
           {/* Emergency Information Section */}
           <Card title='Thông tin khẩn cấp'>
@@ -329,8 +344,7 @@ function HistoryEmergencyAlert() {
       width: '20%',
       sorter: (a, b) => a.elderlyName.localeCompare(b.elderlyName),
       ...getColumnSearchProps('elderlyName'),
-      render: (text: string) =>
-        text != '' ? <strong>{text}</strong> : <strong>Chưa xác nhận</strong>
+      render: (text: string) => (text != '' ? <strong>{text}</strong> : <strong>Chưa xác nhận</strong>)
     },
     {
       title: 'Trạng thái',

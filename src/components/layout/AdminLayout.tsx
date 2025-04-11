@@ -432,17 +432,6 @@ const AdminLayout = () => {
             zIndex: 1
           }}
         >
-          <Badge
-            count={5}
-            className='mr-5'
-            style={{
-              color: 'white',
-              background: 'linear-gradient(135deg, #FF1356, #ff7d47)'
-            }}
-          >
-            <BellOutlined className='text-xl' style={{ color: '#FF1356' }} />
-          </Badge>
-          <SettingOutlined className='text-xl mr-5' style={{ color: '#FF1356' }} />
           <Dropdown
             overlay={
               <Menu>
