@@ -59,7 +59,7 @@ interface ApiResponse {
 }
 
 function ProfilePage() {
-  const { user } = useAuth()
+  const { user, token, fetchUser } = useAuth()
   const [profile, setProfile] = useState<ProfileData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -145,6 +145,7 @@ function ProfilePage() {
         message.success('Cập nhật hồ sơ thành công')
         setEditing(false)
         fetchProfile()
+        await fetchUser()
       } else {
         message.error(data.message || 'Cập nhật hồ sơ thất bại')
       }
@@ -155,20 +156,6 @@ function ProfilePage() {
     }
   }
 
-  const uploadProps: UploadProps = {
-    onRemove: (file) => {
-      const index = fileList.indexOf(file)
-      const newFileList = fileList.slice()
-      newFileList.splice(index, 1)
-      setFileList(newFileList)
-    },
-    beforeUpload: (file) => {
-      setFileList([file])
-      return false
-    },
-    fileList,
-    maxCount: 1
-  }
   const handleImageChange = (info: any) => {
     const file = info.file
     if (!file) return

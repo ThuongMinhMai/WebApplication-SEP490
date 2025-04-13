@@ -27,6 +27,7 @@ interface AuthContextType {
   loading: boolean
   error: string | null
   initialized: boolean // Thêm trạng thái initialized
+  fetchUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -41,28 +42,58 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null)
   const [initialized, setInitialized] = useState(false) // Thêm state để theo dõi khởi tạo
 
-  const fetchUser = useCallback(async (authToken: string) => {
-    try {
-      setLoading(true)
-      const response = await axios.get('https://api.diavan-valuation.asia/auth-management', {
-        headers: {
-          Authorization: `Bearer ${authToken}`
-        }
-      })
+  // const fetchUser = useCallback(async (authToken: string) => {
+  //   try {
+  //     setLoading(true)
+  //     const response = await axios.get('https://api.diavan-valuation.asia/auth-management', {
+  //       headers: {
+  //         Authorization: `Bearer ${authToken}`
+  //       }
+  //     })
 
-      if (response.data.user) {
-        setUser(response.data.user)
+  //     if (response.data.user) {
+  //       setUser(response.data.user)
+  //     }
+  //   } catch (err) {
+  //     console.error('Failed to fetch user data', err)
+  //     localStorage.removeItem('token')
+  //     setToken(null)
+  //     setUser(null)
+  //     throw err
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }, [])
+  const fetchUser = useCallback(
+    async (authToken?: string) => {
+      try {
+        setLoading(true)
+        const tokenToUse = authToken || token // Sử dụng token được truyền vào hoặc token từ state
+        if (!tokenToUse) {
+          throw new Error('No token available')
+        }
+
+        const response = await axios.get('https://api.diavan-valuation.asia/auth-management', {
+          headers: {
+            Authorization: `Bearer ${tokenToUse}`
+          }
+        })
+
+        if (response.data.user) {
+          setUser(response.data.user)
+        }
+      } catch (err) {
+        console.error('Failed to fetch user data', err)
+        localStorage.removeItem('token')
+        setToken(null)
+        setUser(null)
+        throw err
+      } finally {
+        setLoading(false)
       }
-    } catch (err) {
-      console.error('Failed to fetch user data', err)
-      localStorage.removeItem('token')
-      setToken(null)
-      setUser(null)
-      throw err
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+    },
+    [token]
+  )
   const refreshAccessToken = useCallback(async () => {
     if (!refreshToken) return logout() // Không có refreshToken thì logout
 
@@ -93,7 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const initializeAuth = async () => {
       const storedToken = localStorage.getItem('token')
-      const storedRefreshToken = localStorage.getItem('refreshToken');
+      const storedRefreshToken = localStorage.getItem('refreshToken')
       if (storedToken) {
         try {
           await fetchUser(storedToken)
@@ -159,7 +190,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isContentProvider: user?.roleId === 5,
     loading,
     error,
-    initialized // Thêm vào context value
+    initialized, // Thêm vào context value
+    fetchUser: () => fetchUser()
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
