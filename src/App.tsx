@@ -28,6 +28,7 @@ import { useAuth } from './contexts/AuthContext'
 import HistoryEmergencyAlert from './components/pages/Admin/HistoryEmergencyAlert'
 import ReportPage from './components/pages/Admin/ReportPage'
 import SubscriptionPackagesDetailPage from './components/pages/Admin/SubscriptionPackagesDetailPage'
+import ProfilePage from './components/pages/ProfilePage'
 
 function ProtectedRoutes() {
   const { isAuthenticated, isAdmin, isContentProvider, initialized } = useAuth()
@@ -71,6 +72,7 @@ function ProtectedRoutes() {
           <Route path='musics/:id' element={<PlayListMusicDetailPage />} />
           <Route path='subscription-packages' element={<SubscriptionPackagesPage />} />
           <Route path='subscription-packages/:id' element={<SubscriptionPackagesDetailPage />} />
+          <Route path='profile' element={<ProfilePage />} />
           <Route path='*' element={<Navigate to='/admin/dashboard' replace />} /> {/* Điều hướng sai URL */}
         </Route>
       ) : (
@@ -88,6 +90,7 @@ function ProtectedRoutes() {
           <Route path='books/add' element={<AddBookPage />} />
           <Route path='musics' element={<ManageMusicPage />} />
           <Route path='musics/:id' element={<DetailMusicPage />} />
+          <Route path='profile' element={<ProfilePage />} />
           <Route path='*' element={<Navigate to='/content-provider/dashboard' replace />} /> {/* Điều hướng sai URL */}
         </Route>
       ) : (

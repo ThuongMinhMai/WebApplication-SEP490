@@ -60,7 +60,7 @@ const AdminLayout = () => {
       report: '12'
     }
 
-    return routeToKeyMap[path] || '1'
+    return routeToKeyMap[path] || '0'
   }
 
   const [selectedKeys, setSelectedKeys] = useState([getSelectedKeyFromPath(location.pathname)])
@@ -440,7 +440,7 @@ const AdminLayout = () => {
                   <p className='text-[#FF1356] font-bold'>{user?.fullName || 'User'}</p>
                 </Menu.Item>
                 <Menu.Divider />
-                <Menu.Item key='profile'>
+                <Menu.Item key='profile' onClick={() => navigate('/admin/profile')}>
                   <span>
                     <UserOutlined />
 

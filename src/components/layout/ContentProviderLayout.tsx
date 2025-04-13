@@ -37,6 +37,7 @@ export default function ContentProviderLayout() {
     if (secondLastSegment === 'exercises') {
       return '2' // key của menu Doctors
     }
+
     const path = pathname.split('/').pop() || 'dashboard'
 
     const routeToKeyMap: Record<string, string> = {
@@ -46,7 +47,7 @@ export default function ContentProviderLayout() {
       musics: '4'
     }
 
-    return routeToKeyMap[path] || '1'
+    return routeToKeyMap[path] || '0'
   }
 
   const [selectedKeys, setSelectedKeys] = useState([getSelectedKeyFromPath(location.pathname)])
@@ -146,17 +147,6 @@ export default function ContentProviderLayout() {
             zIndex: 1
           }}
         >
-          <Badge
-            count={5}
-            className='mr-5'
-            style={{
-              color: 'white',
-              background: 'linear-gradient(135deg, #ec4899, #FF1356)'
-            }}
-          >
-            <BellOutlined className='text-xl' style={{ color: '#FF1356' }} />
-          </Badge>
-          <SettingOutlined className='text-xl mr-5' style={{ color: '#FF1356' }} />
           <Dropdown
             overlay={
               <Menu>
@@ -165,7 +155,7 @@ export default function ContentProviderLayout() {
                   <p className='text-[#FF1356] font-bold'>{user?.fullName || 'User'}</p>
                 </Menu.Item>
                 <Menu.Divider />
-                <Menu.Item key='profile'>
+                <Menu.Item key='profile' onClick={() => navigate('/content-provider/profile')}>
                   <span>
                     <UserOutlined />
                     <span> Hồ sơ người dùng</span>
