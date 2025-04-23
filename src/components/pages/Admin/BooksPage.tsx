@@ -3,6 +3,7 @@ import {
   ExclamationCircleOutlined,
   EyeOutlined,
   LeftOutlined,
+  RedoOutlined,
   RightOutlined,
   SearchOutlined,
   StopOutlined
@@ -81,42 +82,41 @@ function BooksPage() {
       return null
     }
   }
+  const fetchBooks = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('https://api.diavan-valuation.asia/content-management/all-book')
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: ApiResponse = await response.json()
+
+      if (data.status === 1) {
+        const booksWithCovers = await Promise.all(
+          data.data.map(async (book) => {
+            if (book.bookUrl.endsWith('.pdf')) {
+              const cover = await getPdfCover(book.bookUrl)
+              return { ...book, cover }
+            }
+            return book
+          })
+        )
+
+        setBooks(booksWithCovers)
+        // setBooks(data.data)
+      } else {
+        setError(data.message || 'Failed to fetch books')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch('https://api.diavan-valuation.asia/content-management/all-book')
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-
-        const data: ApiResponse = await response.json()
-
-        if (data.status === 1) {
-          const booksWithCovers = await Promise.all(
-            data.data.map(async (book) => {
-              if (book.bookUrl.endsWith('.pdf')) {
-                const cover = await getPdfCover(book.bookUrl)
-                return { ...book, cover }
-              }
-              return book
-            })
-          )
-
-          setBooks(booksWithCovers)
-          // setBooks(data.data)
-        } else {
-          setError(data.message || 'Failed to fetch books')
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred')
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchBooks()
   }, [])
 
@@ -333,6 +333,9 @@ function BooksPage() {
   return (
     <div className='container mx-auto px-4 py-8'>
       <h1 className='text-3xl font-bold text-center text-[#FF1356] mb-8'>Danh sách sách</h1>
+      <Button type='text' icon={<RedoOutlined />} onClick={fetchBooks} className='flex items-center'>
+        Tải lại
+      </Button>
 
       <Table
         columns={columns}

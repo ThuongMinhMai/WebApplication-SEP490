@@ -1,4 +1,4 @@
-import { MoreOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import { MoreOutlined, PlusOutlined, RedoOutlined, SearchOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
 import { Avatar, Button, Input, Layout, message, Modal, Select, Table, Tag } from 'antd'
 import type { ColumnType, TablePaginationConfig } from 'antd/es/table'
@@ -70,7 +70,7 @@ const DoctorsPage = () => {
       setTableLoading(false)
     }
   }
-  
+
   const handleStatusChange = (accountId: number, newStatus: string) => {
     setCurrentAccount({ id: accountId, newStatus })
     setIsModalOpen(true)
@@ -339,14 +339,19 @@ const DoctorsPage = () => {
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
         <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách bác sĩ</h2>
-        <Button
-          type='primary'
-          className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-[#FF1356] hover:border-[#FF1356]'
-          onClick={() => navigate(`/admin/doctors/add`)}
-          icon={<PlusOutlined />}
-        >
-          Thêm bác sĩ
-        </Button>
+        <div className='flex justify-between items-center gap-5 mb-5'>
+          <Button type='text' icon={<RedoOutlined />} onClick={fetchData} className='flex items-center'>
+            Tải lại
+          </Button>
+          <Button
+            type='primary'
+            className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-[#FF1356] hover:border-[#FF1356]'
+            onClick={() => navigate(`/admin/doctors/add`)}
+            icon={<PlusOutlined />}
+          >
+            Thêm bác sĩ
+          </Button>
+        </div>
       </div>
       <Table
         columns={columns}

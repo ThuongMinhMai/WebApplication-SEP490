@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Row, Col, Spin, Empty, Alert, Statistic, Typography } from 'antd'
+import { Card, Row, Col, Spin, Empty, Alert, Statistic, Typography, Button } from 'antd'
 import {
   BookOutlined,
   CustomerServiceOutlined,
   VideoCameraOutlined,
   PlaySquareOutlined,
-  FileTextOutlined
+  FileTextOutlined,
+  RedoOutlined
 } from '@ant-design/icons'
 
 const { Title } = Typography
@@ -34,25 +35,26 @@ function DashboardProviderPage() {
   const [stats, setStats] = useState<ApiResponse['data'] | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const [lastUpdated, setLastUpdated] = useState<string>('')
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await fetch('https://api.diavan-valuation.asia/content-management/all-content')
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('https://api.diavan-valuation.asia/content-management/all-content')
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-
-        const data: ApiResponse = await response.json()
-        setStats(data.data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred')
-      } finally {
-        setLoading(false)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-    }
 
+      const data: ApiResponse = await response.json()
+      setStats(data.data)
+      setLastUpdated(new Date().toLocaleTimeString())
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
+  useEffect(() => {
     fetchStats()
   }, [])
 
@@ -114,9 +116,16 @@ function DashboardProviderPage() {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2} style={{ marginBottom: '24px', color: '#1d1d1d' }}>
-        Content Management Dashboard
-      </Title>
+      <div className='flex justify-between items-center'>
+        <Title level={2} style={{ marginBottom: '24px', color: '#1d1d1d' }}>
+          Tổng quan nội dung
+        </Title>
+        <div className='text-sm text-gray-500 mt-1'>Cập nhật lúc: {lastUpdated || '--:--:--'}</div>
+
+        <Button type='text' icon={<RedoOutlined />} onClick={fetchStats} className='flex items-center'>
+          Tải lại
+        </Button>
+      </div>
 
       {stats ? (
         <Row gutter={[16, 16]}>

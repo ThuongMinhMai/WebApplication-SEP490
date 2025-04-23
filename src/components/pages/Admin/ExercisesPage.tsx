@@ -1,9 +1,4 @@
-import {
-  EyeFilled,
-  SearchOutlined,
-  StopOutlined,
-  VideoCameraOutlined
-} from '@ant-design/icons'
+import { EyeFilled, RedoOutlined, SearchOutlined, StopOutlined, VideoCameraOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
 import { Avatar, Button, Input, Layout, message, Modal, Table, Tag } from 'antd'
 import type { ColumnType, TablePaginationConfig } from 'antd/es/table'
@@ -188,14 +183,23 @@ const ExerciesPage = () => {
 
   const columns: ColumnType<Playlist>[] = [
     {
+      title: 'STT',
+      key: 'stt',
+      width: '5%',
+      render: (_, __, index) => {
+        // Tính số thứ tự dựa trên trang hiện tại và số lượng item mỗi trang
+        return (pagination.current! - 1) * pagination.pageSize! + index + 1
+      }
+    },
+    {
       title: 'Ảnh',
       dataIndex: 'imageUrl',
       key: 'imageUrl',
-      width: '10%',
+      width: '5%',
       render: (imageUrl: string | null) => (
         <Avatar
           // src={imageUrl || 'https://preview.redd.it/q3varo58nxkz.jpg?width=640&crop=smart&auto=webp&s=3d9df6326088836eeafcf51c77d9c07de5c10bde'}
-          src={imageUrl }
+          src={imageUrl}
           size='large'
           shape='square'
         />
@@ -296,6 +300,9 @@ const ExerciesPage = () => {
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
         <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách phát bài tập</h2>
+        <Button type='text' icon={<RedoOutlined />} onClick={fetchData} className='flex items-center'>
+          Tải lại
+        </Button>
       </div>
       <Table
         columns={columns}

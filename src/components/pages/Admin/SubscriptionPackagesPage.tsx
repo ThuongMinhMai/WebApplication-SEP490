@@ -4,6 +4,7 @@ import {
   PlusOutlined,
   PoweroffOutlined,
   QuestionOutlined,
+  RedoOutlined,
   SearchOutlined,
   StopOutlined
 } from '@ant-design/icons'
@@ -513,14 +514,19 @@ const SubscriptionPackagesPage = () => {
         <Title level={2} style={{ color: '#FF1356', margin: 0 }}>
           Gói đăng ký
         </Title>
-        <Button
-          type='primary'
-          icon={<PlusOutlined />}
-          onClick={showModal}
-          style={{ background: '#FF1356', borderColor: '#FF1356' }}
-        >
-          Thêm gói
-        </Button>
+        <div className='flex justify-between items-center gap-5 mb-5'>
+          <Button type='text' icon={<RedoOutlined />} onClick={fetchData} className='flex items-center'>
+            Tải lại
+          </Button>
+          <Button
+            type='primary'
+            icon={<PlusOutlined />}
+            onClick={showModal}
+            style={{ background: '#FF1356', borderColor: '#FF1356' }}
+          >
+            Thêm gói
+          </Button>
+        </div>
       </div>
       <Table
         columns={columns}

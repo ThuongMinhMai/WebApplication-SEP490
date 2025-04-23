@@ -5,6 +5,7 @@ import {
   ExclamationCircleOutlined,
   EyeFilled,
   PlusOutlined,
+  RedoOutlined,
   SearchOutlined,
   UploadOutlined,
   VideoCameraOutlined
@@ -352,10 +353,19 @@ const ManageExercise = () => {
   }
   const columns: ColumnType<Playlist>[] = [
     {
+      title: 'STT',
+      key: 'stt',
+      width: '5%',
+      render: (_, __, index) => {
+        // Tính số thứ tự dựa trên trang hiện tại và số lượng item mỗi trang
+        return (pagination.current! - 1) * pagination.pageSize! + index + 1
+      }
+    },
+    {
       title: 'Ảnh',
       dataIndex: 'imageUrl',
       key: 'imageUrl',
-      width: '10%',
+      width: '5%',
       render: (imageUrl: string | null) => (
         <Avatar
           src={imageUrl || 'https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png'}
@@ -480,14 +490,19 @@ const ManageExercise = () => {
   return (
     <Content style={{ padding: '50px 50px' }}>
       <h1 className='text-3xl font-bold text-center text-[#FF1356] mb-8'>Danh sách phát bài tập</h1>
-      <Button
-        type='primary'
-        className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-[#FF1356] hover:border-[#FF1356]'
-        onClick={handleOpenAddModal}
-        icon={<PlusOutlined />}
-      >
-        Thêm danh sách phát
-      </Button>
+      <div className='flex justify-between items-center mb-5 '>
+        <Button type='text' icon={<RedoOutlined />} onClick={fetchData} className='flex items-center'>
+          Tải lại
+        </Button>
+        <Button
+          type='primary'
+          className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-[#FF1356] hover:border-[#FF1356]'
+          onClick={handleOpenAddModal}
+          icon={<PlusOutlined />}
+        >
+          Thêm danh sách phát
+        </Button>
+      </div>
       <Table
         columns={columns}
         rowKey={(record) => record.playlistId.toString()}

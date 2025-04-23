@@ -1,4 +1,4 @@
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import { PlusOutlined, RedoOutlined, SearchOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
 import { Avatar, Button, DatePicker, Form, Input, Layout, message, Modal, Select, Table, Tag } from 'antd'
 import type { ColumnType, TablePaginationConfig } from 'antd/es/table'
@@ -368,14 +368,19 @@ const ContentProviderPage = () => {
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
         <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách nhà cung cấp</h2>
-        <Button
-          type='primary'
-          className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-pink-700 hover:border-pink-700'
-          icon={<PlusOutlined />}
-          onClick={showModal}
-        >
-          Thêm nhà cung cấp
-        </Button>
+        <div className='flex justify-between items-center gap-5 mb-5'>
+          <Button type='text' icon={<RedoOutlined />} onClick={fetchData} className='flex items-center'>
+            Tải lại
+          </Button>
+          <Button
+            type='primary'
+            className='bg-[#FF1356] border-[#FF1356] font-bold hover:bg-pink-700 hover:border-pink-700'
+            icon={<PlusOutlined />}
+            onClick={showModal}
+          >
+            Thêm nhà cung cấp
+          </Button>
+        </div>
       </div>
       <Table
         columns={columns}

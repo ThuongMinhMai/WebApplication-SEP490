@@ -1,5 +1,5 @@
-import { AlertOutlined, DollarOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons'
-import { Card, Spin, Statistic, Table } from 'antd'
+import { AlertOutlined, DollarOutlined, RedoOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons'
+import { Button, Card, Spin, Statistic, Table } from 'antd'
 import {
   ArcElement,
   BarElement,
@@ -41,29 +41,30 @@ interface ApiResponse {
 const DashboardAdmin = () => {
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [lastUpdated, setLastUpdated] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
+  const fetchData = async () => {
+    try {
+      const response = await fetch('https://api.diavan-valuation.asia/dashboard-management/admin-dashboard')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const result: ApiResponse = await response.json()
+      if (result.status === 1) {
+        setData(result.data)
+        setLastUpdated(new Date().toLocaleTimeString())
+      } else {
+        throw new Error(result.message)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred')
+      console.error('Error fetching data:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('https://api.diavan-valuation.asia/dashboard-management/admin-dashboard')
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-        const result: ApiResponse = await response.json()
-        if (result.status === 1) {
-          setData(result.data)
-        } else {
-          throw new Error(result.message)
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred')
-        console.error('Error fetching data:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchData()
   }, [])
 
@@ -164,9 +165,21 @@ const DashboardAdmin = () => {
   const chartCardStyle = 'bg-white'
 
   return (
-    <div className='p-5 bg-gray-50 min-h-screen'>
-      <h1 className='text-2xl font-bold text-gray-800 mb-6'>Tổng quan</h1>
+    <div className='p-5 min-h-screen'>
+      <div className='flex justify-between items-center mb-6'>
+        <h1 className='text-2xl font-bold text-gray-800'>Tổng quan</h1>
+        <div className='text-sm text-gray-500 mt-1'>Cập nhật lúc: {lastUpdated || '--:--:--'}</div>
 
+        <Button
+          type='text'
+          icon={<RedoOutlined />}
+          onClick={fetchData}
+          loading={loading}
+          className='flex items-center'
+        >
+          Tải lại
+        </Button>
+      </div>
       <div className='flex flex-col lg:flex-row gap-5 mb-6'>
         <div className='lg:w-1/4'>
           <Card

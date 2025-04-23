@@ -1,4 +1,4 @@
-import { CustomerServiceOutlined, EyeFilled, SearchOutlined, StopOutlined } from '@ant-design/icons'
+import { CustomerServiceOutlined, EyeFilled, RedoOutlined, SearchOutlined, StopOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
 import { Avatar, Button, Input, Layout, message, Modal, Table, Tag } from 'antd'
 import type { ColumnType, TablePaginationConfig } from 'antd/es/table'
@@ -185,10 +185,19 @@ const MusicPage = () => {
 
   const columns: ColumnType<Playlist>[] = [
     {
+      title: 'STT',
+      key: 'stt',
+      width: '5%',
+      render: (_, __, index) => {
+        // Tính số thứ tự dựa trên trang hiện tại và số lượng item mỗi trang
+        return (pagination.current! - 1) * pagination.pageSize! + index + 1
+      }
+    },
+    {
       title: 'Ảnh',
       dataIndex: 'imageUrl',
       key: 'imageUrl',
-      width: '10%',
+      width: '5%',
       render: (imageUrl: string | null) => (
         <Avatar
           // src={imageUrl || 'https://m.media-amazon.com/images/I/31Fq-eqH4bL._AC_UF1000,1000_QL80_.jpg'}
@@ -273,7 +282,11 @@ const MusicPage = () => {
             <>
               <Button
                 type='link'
-                onClick={() => navigate(`/admin/musics/${record.playlistId}?playlistname=${record.playlistName}`)}
+                onClick={() =>
+                  navigate(
+                    `/admin/musics/${record.playlistId}?playlistname=${record.playlistName}&image=${record.imageUrl}`
+                  )
+                }
               >
                 <EyeFilled /> Xem
               </Button>
@@ -293,6 +306,9 @@ const MusicPage = () => {
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
         <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách phát nhạc</h2>
+        <Button type='text' icon={<RedoOutlined />} onClick={fetchData} className='flex items-center'>
+          Tải lại
+        </Button>
       </div>
       <Table
         columns={columns}

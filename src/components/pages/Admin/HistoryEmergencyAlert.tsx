@@ -1,4 +1,4 @@
-import { MoreOutlined, SearchOutlined } from '@ant-design/icons'
+import { MoreOutlined, RedoOutlined, SearchOutlined } from '@ant-design/icons'
 import { Button, Card, Image, Input, InputRef, Modal, TablePaginationConfig, Tag, Typography } from 'antd'
 import { Content } from 'antd/es/layout/layout'
 import Table, { ColumnType } from 'antd/es/table'
@@ -432,7 +432,15 @@ function HistoryEmergencyAlert() {
   return (
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
-        <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách báo cáo</h2>
+        <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách báo động khẩn cấp</h2>
+        <Button
+          type='text'
+          icon={<RedoOutlined />}
+          onClick={fetchData}
+          className='flex items-center'
+        >
+          Tải lại
+        </Button>
       </div>
       <Table
         columns={columns}

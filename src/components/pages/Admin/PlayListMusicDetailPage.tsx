@@ -1,23 +1,5 @@
-import {
-  ArrowLeftOutlined,
-  DeleteOutlined,
-  PauseCircleOutlined,
-  PlayCircleOutlined
-} from '@ant-design/icons'
-import {
-  Avatar,
-  Button,
-  Card,
-  Divider,
-  Layout,
-  Modal,
-  Progress,
-  Skeleton,
-  Table,
-  Tag,
-  Typography,
-  message
-} from 'antd'
+import { ArrowLeftOutlined, DeleteOutlined, PauseCircleOutlined, PlayCircleOutlined } from '@ant-design/icons'
+import { Avatar, Button, Card, Divider, Layout, Modal, Progress, Skeleton, Table, Tag, Typography, message } from 'antd'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
@@ -52,9 +34,10 @@ const PlayListMusicDetailPage = () => {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const audioRef = React.useRef<HTMLAudioElement | null>(null)
-  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const playlistName = searchParams.get('playlistname')
+  const image = searchParams.get('image')
   useEffect(() => {
     fetchPlaylistSongs()
   }, [playlistId])
@@ -103,7 +86,7 @@ const PlayListMusicDetailPage = () => {
       setCurrentlyPlaying(musicId)
     }
   }
-  
+
   const handleBanMusic = async (musicId: number, musicName: string) => {
     try {
       // Hiển thị dialog xác nhận
@@ -172,12 +155,12 @@ const PlayListMusicDetailPage = () => {
           className='lg:w-1/3 rounded-xl overflow-hidden shadow-md border-0 flex-shrink-0'
           cover={
             songs.length > 0 ? (
-              <div className='h-64 flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600 relative'>
-                <div className='absolute inset-0 bg-black opacity-20'></div>
+              <div className='h-72 flex items-center justify-center relative'>
+                {/* <div className='absolute inset-0 bg-black opacity-20'></div> */}
                 <img
                   alt='Playlist cover'
-                  src={songs[0].imageUrl}
-                  className='w-48 h-48 object-cover rounded-xl shadow-xl border-4 border-white'
+                  src={image ?? ''}
+                  className='w-full h-full object-cover rounded-xl shadow-xl border-4 '
                 />
               </div>
             ) : (
@@ -248,7 +231,7 @@ const PlayListMusicDetailPage = () => {
                   key: 'name',
                   render: (text, record) => (
                     <Text strong className={currentlyPlaying === record.musicId ? 'text-pink-600' : 'text-gray-800'}>
-                      {text ||"Không xác định"}
+                      {text || 'Không xác định'}
                     </Text>
                   )
                 },

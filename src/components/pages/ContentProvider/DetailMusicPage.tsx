@@ -64,6 +64,7 @@ const DetailMusicPage = () => {
   const [currentMusic, setCurrentMusic] = useState<Music | null>(null)
   const [changeStatusLoading, setChangeStatusLoading] = useState(false)
   const playlistName = searchParams.get('playlistname')
+  const image = searchParams.get('image')
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const navigate = useNavigate()
@@ -240,12 +241,11 @@ const DetailMusicPage = () => {
           className='lg:w-1/3 rounded-xl overflow-hidden shadow-md border-0 flex-shrink-0'
           cover={
             songs.length > 0 ? (
-              <div className='h-64 flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600 relative'>
-                <div className='absolute inset-0 bg-black opacity-20'></div>
+              <div className='h-72 flex items-center justify-center  relative'>
                 <img
                   alt='Playlist cover'
-                  src={songs[0].imageUrl}
-                  className='w-48 h-48 object-cover rounded-xl shadow-xl border-4 border-white'
+                  src={image ?? ''}
+                  className='w-full h-full object-cover rounded-xl shadow-xl border-4 '
                 />
               </div>
             ) : (

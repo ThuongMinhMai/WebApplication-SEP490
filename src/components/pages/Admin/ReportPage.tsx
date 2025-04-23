@@ -1,4 +1,4 @@
-import { SearchOutlined } from '@ant-design/icons'
+import { RedoOutlined, SearchOutlined } from '@ant-design/icons'
 import { Button, Image, Input, InputRef, message, Modal, Select, TablePaginationConfig, Tag } from 'antd'
 import Table, { ColumnType } from 'antd/es/table'
 import axios from 'axios'
@@ -259,7 +259,9 @@ function ReportPage() {
 
       filters: [{ text: 'Khác', value: 'string' }],
       onFilter: (value, record) => record.reportType === value,
-      render: (gender: string) => <Tag color={gender === 'string' ? 'blue' : 'pink'}>{gender == 'string' ? 'Khác' : gender}</Tag>
+      render: (gender: string) => (
+        <Tag color={gender === 'string' ? 'blue' : 'pink'}>{gender == 'string' ? 'Khác' : gender}</Tag>
+      )
     },
     {
       title: 'Trạng thái',
@@ -362,6 +364,9 @@ function ReportPage() {
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
         <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách báo cáo</h2>
+        <Button type='text' icon={<RedoOutlined />} onClick={fetchData} className='flex items-center'>
+          Tải lại
+        </Button>
       </div>
       <Table
         columns={columns}

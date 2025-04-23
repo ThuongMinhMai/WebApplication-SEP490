@@ -1,4 +1,4 @@
-import { SearchOutlined } from '@ant-design/icons'
+import { RedoOutlined, SearchOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
 import { Avatar, Button, Input, Layout, message, Modal, Select, Table, Tag } from 'antd'
 import type { ColumnType, TablePaginationConfig } from 'antd/es/table'
@@ -197,7 +197,7 @@ const UsersPage = () => {
   const getGenderLabel = (gender: string) => {
     return gender === 'Male' ? 'Nam' : 'Nữ'
   }
- 
+
   const columns: ColumnType<User>[] = [
     {
       title: 'STT',
@@ -321,7 +321,10 @@ const UsersPage = () => {
   return (
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
-        <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách người dùng</h2>
+        <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách người cao tuổi</h2>
+        <Button type='text' icon={<RedoOutlined />} onClick={fetchData} className='flex items-center'>
+          Tải lại
+        </Button>
       </div>
       <Table
         columns={columns}
