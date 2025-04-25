@@ -39,6 +39,7 @@ interface HistoryEmergencyAlertProps {
   confirmationDate: string | null
   isConfirmed: boolean
   emergencyInformations: EmergencyInformation[]
+  status: string
   emergencyContacts: EmergencyContact[]
 }
 
@@ -348,16 +349,28 @@ function HistoryEmergencyAlert() {
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'isConfirmed',
-      key: 'isConfirmed',
+      dataIndex: 'status',
+      key: 'status',
       width: '5%',
-      filters: [
-        { text: 'Đã xác nhận', value: true },
-        { text: 'Chưa xác nhận', value: false }
-      ],
-      onFilter: (value, record) => record.isConfirmed === value,
-      render: (isConfirmed: boolean) => (
-        <Tag color={isConfirmed ? 'green' : 'orange'}>{isConfirmed ? 'Đã xác nhận' : 'Chưa xác nhận'}</Tag>
+      // filters: [
+      //   { text: 'Đã xác nhận', value: true },
+      //   { text: 'Chưa xác nhận', value: false }
+      // ],
+      // onFilter: (value, record) => record.status === value,
+      render: (status: String) => (
+        <Tag
+          color={
+            status == 'Đã xác nhận'
+              ? 'green'
+              : status == 'Đã hủy'
+                ? 'orange'
+                : status == 'Đã quá thời gian xác nhận'
+                  ? 'blue'
+                  : 'red'
+          }
+        >
+          {status}
+        </Tag>
       )
     },
     {
@@ -433,12 +446,7 @@ function HistoryEmergencyAlert() {
     <Content style={{ padding: '50px 50px' }}>
       <div className='flex justify-between items-center mb-5'>
         <h2 className='text-2xl font-bold text-[#FF1356] m-0'>Danh sách báo động khẩn cấp</h2>
-        <Button
-          type='text'
-          icon={<RedoOutlined />}
-          onClick={fetchData}
-          className='flex items-center'
-        >
+        <Button type='text' icon={<RedoOutlined />} onClick={fetchData} className='flex items-center'>
           Tải lại
         </Button>
       </div>
