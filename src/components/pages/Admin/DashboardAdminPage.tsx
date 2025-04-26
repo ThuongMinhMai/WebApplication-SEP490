@@ -133,7 +133,7 @@ const DashboardAdmin = () => {
     labels: data.boughtPackages.map((pkg) => pkg.packageName),
     datasets: [
       {
-        label: 'Subscription Packages',
+        label: 'Gói đăng kí',
         data: data.boughtPackages.map((pkg) => pkg.boughtQuantity),
         backgroundColor: ['#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6', '#10B981'],
         borderWidth: 1

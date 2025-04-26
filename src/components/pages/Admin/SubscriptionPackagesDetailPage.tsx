@@ -239,7 +239,7 @@ const SubscriptionPackagesDetailPage: React.FC = () => {
         </Title>
 
         <Text type='secondary' style={{ maxWidth: 500, marginBottom: 24 }}>
-          Hiện tại chưa có ai đăng ký gói subscription này. Khi có người mua, thông tin sẽ được hiển thị tại đây.
+          Hiện tại chưa có ai đăng ký gói đăng kí này. Khi có người mua, thông tin sẽ được hiển thị tại đây.
         </Text>
 
         <Button
