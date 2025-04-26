@@ -96,7 +96,7 @@ const DashboardAdmin = () => {
   }
 
   const lineChartData = {
-    labels: data.monthlyGrowth.map((item) => item.month),
+    labels: data.revenueByMonth.map((item) => item.month),
     datasets: [
       {
         label: 'Tăng trưởng hàng tháng (%)',
@@ -116,7 +116,7 @@ const DashboardAdmin = () => {
       }
     ]
   }
-
+  console.log('chart nef' + data.revenueByMonth.map((item) => item.value))
   const pieChartData = {
     labels: ['Người dùng miễn phí', 'Người dùng trả phí'],
     datasets: [
@@ -170,13 +170,7 @@ const DashboardAdmin = () => {
         <h1 className='text-2xl font-bold text-gray-800'>Tổng quan</h1>
         <div className='text-sm text-gray-500 mt-1'>Cập nhật lúc: {lastUpdated || '--:--:--'}</div>
 
-        <Button
-          type='text'
-          icon={<RedoOutlined />}
-          onClick={fetchData}
-          loading={loading}
-          className='flex items-center'
-        >
+        <Button type='text' icon={<RedoOutlined />} onClick={fetchData} loading={loading} className='flex items-center'>
           Tải lại
         </Button>
       </div>
