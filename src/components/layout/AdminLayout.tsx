@@ -295,7 +295,7 @@ const AdminLayout = () => {
               '
               onClick={({ key }) => handleMenuClick(key)}
             >
-              Người dùng
+              Người cao tuổi
             </Menu.Item>
           </SubMenu>
 

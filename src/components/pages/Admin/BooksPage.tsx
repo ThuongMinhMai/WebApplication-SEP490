@@ -354,7 +354,7 @@ function BooksPage() {
         width='90%'
         footer={null}
         centered
-        closable={false}
+        // closable={false}
         bodyStyle={{ padding: 0 }}
       >
         {viewingBook?.bookUrl.endsWith('.epub') && (

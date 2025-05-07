@@ -223,7 +223,7 @@ const DashboardAdmin = () => {
             </Card>
             <Card className={`${cardStyle} bg-gradient-to-br from-purple-50 to-purple-100 h-full`}>
               <Statistic
-                title={<span className='text-gray-600'>Tổng bác sĩ</span>}
+                title={<span className='text-gray-600'>Bác sĩ</span>}
                 value={data.totalDoctor}
                 prefix={<UserOutlined className='text-purple-600' />}
                 valueStyle={{ color: '#7C3AED' }}
@@ -231,7 +231,7 @@ const DashboardAdmin = () => {
             </Card>
             <Card className={`${cardStyle} bg-gradient-to-br from-purple-50 to-purple-100 h-full`}>
               <Statistic
-                title={<span className='text-gray-600'>Tổng NCC nội dung</span>}
+                title={<span className='text-gray-600'>NCC nội dung</span>}
                 value={data.totalContentProvider}
                 prefix={<UserOutlined className='text-purple-600' />}
                 valueStyle={{ color: '#7C3AED' }}
