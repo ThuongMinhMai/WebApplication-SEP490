@@ -81,6 +81,12 @@ interface ProfessorAppointment {
   accountId: number[]
 }
 
+interface ProfessorRating {
+  createdBy: string
+  content: string
+  star: number
+}
+
 const DetailDoctorPage = () => {
   const { id: professorId } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -94,6 +100,8 @@ const DetailDoctorPage = () => {
   const [selectedDay, setSelectedDay] = useState<string | null>(null)
   const [timeSlots, setTimeSlots] = useState<TimeSlots[]>([])
   const [appointments, setAppointments] = useState<ProfessorAppointment[]>([])
+  const [reviews, setReviews] = useState<ProfessorRating[]>([])
+  const [isLoadingReviews, setIsLoadingReviews] = useState(false)
 
   useEffect(() => {
     const fetchProfessor = async () => {
@@ -103,7 +111,7 @@ const DetailDoctorPage = () => {
         setProfessor(response.data.data)
         setPreviewImage(response.data.data.avatar)
         getProfessorAppointment()
-        // getProfessorSchedule()
+        getProfessorReviews()
         form.setFieldsValue({
           ...response.data.data,
           specialization: response.data.data.specialization?.join('\n') || '',
@@ -122,24 +130,26 @@ const DetailDoctorPage = () => {
     fetchProfessor()
   }, [professorId, form])
 
-  // const getProfessorSchedule = async () => {
-  //   try {
-  //     const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/time-slot/week?professorId=1`)
-  //     if (response.data.status === 1) {
-  //       setTimeSlots(response.data.data)
-  //       console.log(response.data.data)
-  //     } else {
-  //       message.error('Failed to load schedule')
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching schedule:', error)
-  //     message.error('Failed to load schedule')
-  //   }
-  // }
+  const getProfessorReviews = async () => {
+    try {
+      setIsLoadingReviews(true)
+      const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/feedback/${professorId}`)
+      if (response.data.status === 1) {
+        setReviews(response.data.data)
+      } else {
+        message.error('Failed to load reviews')
+      }
+    } catch (error) {
+      console.error('Error fetching reviews:', error)
+      message.error('Failed to load reviews')
+    } finally {
+      setIsLoadingReviews(false)
+    }
+  }
 
   //check TimeSlots have all day with Slots is empty
   const checkTimeSlots = (timeSlots: TimeSlots[]): boolean => {
-    var flag = 0
+    let flag = 0
     timeSlots.forEach((slot) => {
       if (slot.timeEachSlots.length > 0) {
         flag = 1
@@ -435,9 +445,48 @@ const DetailDoctorPage = () => {
           </TabPane>
           <TabPane tab='Đánh giá' key='2'>
             <Card>
-              <div className='flex justify-center items-center h-96'>
-                <Text type='secondary'>Chưa có đánh giá nào</Text>
-              </div>
+              {isLoadingReviews ? (
+                <div className='flex justify-center items-center h-96'>
+                  <Spin size='large' />
+                </div>
+              ) : reviews.length > 0 ? (
+                <List
+                  itemLayout='vertical'
+                  dataSource={reviews}
+                  renderItem={(review) => (
+                    <List.Item>
+                      <div className='flex flex-col space-y-2'>
+                        <div className='flex items-center justify-between'>
+                          <div className='flex items-center space-x-2'>
+                            <Avatar>{review.createdBy.charAt(0).toUpperCase()}</Avatar>
+                            <span className='font-medium'>{review.createdBy}</span>
+                          </div>
+                          <div className='flex items-center'>
+                            {[...Array(5)].map((_, index) => (
+                              <StarFilled
+                                key={index}
+                                className={`${index < review.star ? 'text-yellow-400' : 'text-gray-300'} mx-1`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <div className='text-gray-600 py-2'>{review.content}</div>
+                        {/* <div className='text-gray-400 text-sm'>
+                          {new Date(review.createdAt).toLocaleDateString('vi-VN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </div> */}
+                      </div>
+                    </List.Item>
+                  )}
+                />
+              ) : (
+                <div className='flex justify-center items-center h-96'>
+                  <Text type='secondary'>Chưa có đánh giá nào</Text>
+                </div>
+              )}
             </Card>
           </TabPane>
           <TabPane tab='Lịch hẹn' key='3'>
