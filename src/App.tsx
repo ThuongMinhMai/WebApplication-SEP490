@@ -29,6 +29,7 @@ import HistoryEmergencyAlert from './components/pages/Admin/HistoryEmergencyAler
 import ReportPage from './components/pages/Admin/ReportPage'
 import SubscriptionPackagesDetailPage from './components/pages/Admin/SubscriptionPackagesDetailPage'
 import ProfilePage from './components/pages/ProfilePage'
+import AppointmentPage from './components/pages/Admin/AppointmentPage'
 
 function ProtectedRoutes() {
   const { isAuthenticated, isAdmin, isContentProvider, initialized } = useAuth()
@@ -72,6 +73,7 @@ function ProtectedRoutes() {
           <Route path='musics/:id' element={<PlayListMusicDetailPage />} />
           <Route path='subscription-packages' element={<SubscriptionPackagesPage />} />
           <Route path='subscription-packages/:id' element={<SubscriptionPackagesDetailPage />} />
+          <Route path='appointment' element={<AppointmentPage />} />
           <Route path='profile' element={<ProfilePage />} />
           <Route path='*' element={<Navigate to='/admin/dashboard' replace />} /> {/* Điều hướng sai URL */}
         </Route>

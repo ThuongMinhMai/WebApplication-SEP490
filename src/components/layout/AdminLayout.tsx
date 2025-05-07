@@ -8,6 +8,7 @@ import {
   InfoCircleOutlined,
   LogoutOutlined,
   PieChartOutlined,
+  ReconciliationOutlined,
   SettingOutlined,
   SnippetsOutlined,
   UserOutlined
@@ -43,6 +44,9 @@ const AdminLayout = () => {
     if (secondLastSegment === 'subscription-packages') {
       return '10' // key của menu Doctors
     }
+    if (secondLastSegment === 'appointment') {
+      return '13' // key của menu Doctors
+    }
     const path = pathname.split('/').pop() || 'dashboard'
 
     const routeToKeyMap: Record<string, string> = {
@@ -57,7 +61,8 @@ const AdminLayout = () => {
       musics: '9',
       'subscription-packages': '10',
       'history-emergency': '11',
-      report: '12'
+      report: '12',
+      appointment: '13'
     }
 
     return routeToKeyMap[path] || '0'
@@ -109,6 +114,9 @@ const AdminLayout = () => {
         break
       case '12':
         navigate('/admin/report')
+        break
+      case '13':
+        navigate('/admin/appointment')
         break
       default:
         navigate('/admin/dashboard')
@@ -389,6 +397,27 @@ const AdminLayout = () => {
               <SnippetsOutlined />
 
               <span> Gói sử dụng</span>
+            </span>
+          </Menu.Item>
+          <Menu.Item
+            key='13'
+            className='
+              ant-menu-item-gradient
+              [&.ant-menu-item-selected]:text-white
+              [&.ant-menu-item-selected]:bg-gradient-to-r
+              [&.ant-menu-item-selected]:from-[#FF1356]
+              [&.ant-menu-item-selected]:to-[#ff7d47]
+              [&.ant-menu-item-selected>.anticon]:text-white
+              hover:text-[#FF1356]
+              transition-all
+              duration-300
+            '
+            onClick={({ key }) => handleMenuClick(key)}
+          >
+            <span>
+              <ReconciliationOutlined />
+
+              <span> Tư vấn</span>
             </span>
           </Menu.Item>
 
