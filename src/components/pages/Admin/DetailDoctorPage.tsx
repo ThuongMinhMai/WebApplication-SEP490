@@ -103,7 +103,7 @@ const DetailDoctorPage = () => {
         setProfessor(response.data.data)
         setPreviewImage(response.data.data.avatar)
         getProfessorAppointment()
-        getProfessorSchedule()
+        // getProfessorSchedule()
         form.setFieldsValue({
           ...response.data.data,
           specialization: response.data.data.specialization?.join('\n') || '',
@@ -122,20 +122,20 @@ const DetailDoctorPage = () => {
     fetchProfessor()
   }, [professorId, form])
 
-  const getProfessorSchedule = async () => {
-    try {
-      const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/time-slot/week?professorId=1`)
-      if (response.data.status === 1) {
-        setTimeSlots(response.data.data)
-        console.log(response.data.data)
-      } else {
-        message.error('Failed to load schedule')
-      }
-    } catch (error) {
-      console.error('Error fetching schedule:', error)
-      message.error('Failed to load schedule')
-    }
-  }
+  // const getProfessorSchedule = async () => {
+  //   try {
+  //     const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/time-slot/week?professorId=1`)
+  //     if (response.data.status === 1) {
+  //       setTimeSlots(response.data.data)
+  //       console.log(response.data.data)
+  //     } else {
+  //       message.error('Failed to load schedule')
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching schedule:', error)
+  //     message.error('Failed to load schedule')
+  //   }
+  // }
 
   //check TimeSlots have all day with Slots is empty
   const checkTimeSlots = (timeSlots: TimeSlots[]): boolean => {
@@ -154,7 +154,7 @@ const DetailDoctorPage = () => {
 
   const getProfessorAppointment = async () => {
     try {
-      const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/appointment/${professorId}`)
+      const response = await axios.get(`https://api.diavan-valuation.asia/api/Professor/appointment/${professorId}?type=All`)
       if (response.data.status === 1) {
         setAppointments([...response.data.data, ...response.data.data])
       } else {
@@ -440,43 +440,7 @@ const DetailDoctorPage = () => {
               </div>
             </Card>
           </TabPane>
-          <TabPane tab='Lịch làm việc' key='3'>
-            <Card>
-              <div className='flex flex-col justify-start items-start mb-4'>
-                <Text className='font-bold text-xl'>Lịch làm việc</Text>
-                <div className='flex flex-wrap justify-evenly mt-8'>
-                  {timeSlots.length > 0 && checkTimeSlots(timeSlots) ? (
-                    timeSlots.map((slot, index) => (
-                      <div className='mr-4 mb-4 flex flex-col items-center gap-4' key={index}>
-                        <Text className='text-xl'>{index < 6 ? `Thứ ${index + 2}` : 'Chủ nhật'}</Text>
-                        {slot.timeEachSlots.length > 0 ? (
-                          slot.timeEachSlots.map((element) => (
-                            <Tag
-                              key={index}
-                              className='px-4 py-2 text-base cursor-pointer hover:bg-green-100'
-                              color='green'
-                              onClick={() => {
-                                return
-                              }}
-                            >
-                              {`${element.startTime} - ${element.endTime}`}
-                            </Tag>
-                          ))
-                        ) : (
-                          <div className='w-32'></div>
-                        )}
-                      </div>
-                    ))
-                  ) : (
-                    <Text type='secondary' className='text-base'>
-                      Không có lịch làm việc cho ngày đã chọn
-                    </Text>
-                  )}
-                </div>
-              </div>
-            </Card>
-          </TabPane>
-          <TabPane tab='Lịch hẹn' key='4'>
+          <TabPane tab='Lịch hẹn' key='3'>
             <Card>
               <div className='flex flex-col justify-start items-start mb-4'>
                 <Text className='font-bold text-xl'>Lịch hẹn</Text>
@@ -501,9 +465,6 @@ const DetailDoctorPage = () => {
                               : appointment.status == 'Joined'
                                 ? 'Đã tham gia'
                                 : 'Đã hủy'}
-                          </Descriptions.Item>
-                          <Descriptions.Item label='Loại'>
-                            {appointment.isOnline ? 'Trực tuyến' : 'Tại phòng khám'}
                           </Descriptions.Item>
                         </Descriptions>
                       </Card>
