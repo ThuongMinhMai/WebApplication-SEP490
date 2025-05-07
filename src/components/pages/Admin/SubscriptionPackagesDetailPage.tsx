@@ -9,11 +9,28 @@ import {
   ShoppingCartOutlined,
   StarOutlined,
   TeamOutlined,
+  UndoOutlined,
   UserOutlined
 } from '@ant-design/icons'
-import { Avatar, Button, Card, Col, Descriptions, Divider, Progress, Row, Space, Table, Tag, Typography } from 'antd'
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Descriptions,
+  Divider,
+  message,
+  Modal,
+  Progress,
+  Row,
+  Space,
+  Table,
+  Tag,
+  Typography
+} from 'antd'
 import axios from 'axios'
 import moment from 'moment'
+import { title } from 'process'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -31,6 +48,7 @@ interface User {
 
 interface Subscription {
   subscriptionId: number
+  userSubscriptionId: number
   purchaseDate: string
   subName: string
   paymentCode: string
@@ -48,6 +66,8 @@ const SubscriptionPackagesDetailPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [subscriptionData, setSubscriptionData] = useState<Subscription[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null)
+  const [isModalVisible, setIsModalVisible] = useState(false)
   const navigate = useNavigate()
   useEffect(() => {
     const fetchSubscriptionDetails = async () => {
@@ -196,6 +216,23 @@ const SubscriptionPackagesDetailPage: React.FC = () => {
         const bExpiry = moment(b.purchaseDate, 'DD-MM-YYYY').add(b.validityPeriod, 'days')
         return aExpiry.unix() - bExpiry.unix()
       }
+    },
+    {
+      title: 'Hoàn trả',
+      key: 'action',
+      render: (_: any, record: Subscription) => (
+        <div className='flex justify-center'>
+          {record.numberOfMeetingLeft < record.numberOfMeeting ? (
+            <Button
+              type='primary'
+              icon={<UndoOutlined />}
+              onClick={() => (setSelectedSubscription(record), setIsModalVisible(true))}
+            ></Button>
+          ) : (
+            <></>
+          )}
+        </div>
+      )
     }
   ]
 
@@ -268,6 +305,41 @@ const SubscriptionPackagesDetailPage: React.FC = () => {
     const latestDate = moment(latest.purchaseDate, 'DD-MM-YYYY')
     return currentDate.isAfter(latestDate) ? current : latest
   })
+
+  const handleUndoNumberOfMeeting = async () => {
+    if (!selectedSubscription) return
+
+    try {
+      const response = await axios.put(
+        `https://api.diavan-valuation.asia/combo-management/back/${selectedSubscription.userSubscriptionId}`
+      )
+
+      const result = await response.data
+
+      if (result.status === 1) {
+        setSubscriptionData((prevData) =>
+          prevData.map((sub) => {
+            if (sub.userSubscriptionId === selectedSubscription.userSubscriptionId) {
+              return {
+                ...sub,
+                numberOfMeetingLeft: sub.numberOfMeetingLeft + 1 // Hoàn trả 1 buổi hẹn
+              }
+            }
+            return sub
+          })
+        )
+        message.success(`Cập nhật trạng thái thành công`)
+      } else {
+        message.error(result.message || 'Cập nhật trạng thái thất bại')
+      }
+    } catch (error) {
+      message.error('Có lỗi xảy ra khi cập nhật trạng thái' + error)
+      console.error('Error:', error)
+    } finally {
+      setIsModalVisible(false)
+      setSelectedSubscription(null)
+    }
+  }
 
   return (
     <div style={{ padding: 24 }}>
@@ -382,6 +454,22 @@ const SubscriptionPackagesDetailPage: React.FC = () => {
         bordered
         scroll={{ x: true }}
       />
+      <Modal
+        title='Xác nhận thay đổi hoàn trả lần gặp'
+        open={isModalVisible}
+        onOk={handleUndoNumberOfMeeting}
+        onCancel={() => setIsModalVisible(false)}
+        okText='Xác nhận'
+        cancelText='Hủy'
+        okButtonProps={{
+          style: {
+            backgroundColor: '#FF1356',
+            borderColor: '#FF1356'
+          }
+        }}
+      >
+        <p>Bạn có chắc chắn rằng hoàn trả cho người dùng này 1 buổi hẹn không?</p>
+      </Modal>
     </div>
   )
 }
