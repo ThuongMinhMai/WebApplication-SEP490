@@ -25,6 +25,7 @@ interface DashboardData {
   totalElderly: number
   appointments: number
   emergencyAlerts: number
+  userUseSubs: number
   revenue: number
   subscriptions: number
   monthlyGrowth: { month: string; value: number }[]
@@ -85,11 +86,11 @@ const DashboardAdmin = () => {
   }
 
   const barChartData = {
-    labels: ['Tổng', 'Nhà cung cấp nội dung', 'Bác sĩ', 'Người thân', 'Người cao tuổi'],
+    labels: ['Tổng', 'Người cao tuổi', 'Người thân', 'Bác sĩ', 'NCC nội dung'],
     datasets: [
       {
         label: 'Thống kê người dùng',
-        data: [data.totalUsers, data.totalContentProvider, data.totalDoctor, data.totalFamilyMember, data.totalElderly],
+        data: [data.totalUsers, data.totalElderly, data.totalFamilyMember, data.totalDoctor, data.totalContentProvider],
         backgroundColor: ['#3B82F6', '#EF4444', '#F59E0B', '#10B981', '#8B5CF6']
       }
     ]
@@ -98,14 +99,14 @@ const DashboardAdmin = () => {
   const lineChartData = {
     labels: data.revenueByMonth.map((item) => item.month),
     datasets: [
-      {
-        label: 'Tăng trưởng hàng tháng (%)',
-        data: data.monthlyGrowth.map((item) => item.value),
-        borderColor: '#3B82F6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        tension: 0.3,
-        fill: true
-      },
+      // {
+      //   label: 'Tăng trưởng hàng tháng (%)',
+      //   data: data.monthlyGrowth.map((item) => item.value),
+      //   borderColor: '#3B82F6',
+      //   backgroundColor: 'rgba(59, 130, 246, 0.1)',
+      //   tension: 0.3,
+      //   fill: true
+      // },
       {
         label: 'Doanh thu (VND)',
         data: data.revenueByMonth.map((item) => item.value),
@@ -118,11 +119,11 @@ const DashboardAdmin = () => {
   }
   console.log('chart nef' + data.revenueByMonth.map((item) => item.value))
   const pieChartData = {
-    labels: ['Người dùng miễn phí', 'Người dùng trả phí'],
+    labels: ['Người cao tuổi miễn phí', 'Người cao tuổi trả phí'],
     datasets: [
       {
-        label: 'Phân bổ người dùng',
-        data: [data.totalElderly - data.subscriptions, data.subscriptions],
+        label: 'Phân bổ người cao tuổi',
+        data: [data.totalElderly - data.userUseSubs, data.userUseSubs],
         backgroundColor: ['#10B981', '#F59E0B'],
         borderWidth: 1
       }
@@ -133,7 +134,7 @@ const DashboardAdmin = () => {
     labels: data.boughtPackages.map((pkg) => pkg.packageName),
     datasets: [
       {
-        label: 'Gói đăng kí',
+        label: 'Số người cao tuổi đăng kí theo gói',
         data: data.boughtPackages.map((pkg) => pkg.boughtQuantity),
         backgroundColor: ['#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6', '#10B981'],
         borderWidth: 1
@@ -204,34 +205,6 @@ const DashboardAdmin = () => {
                 valueStyle={{ color: '#2563EB' }}
               />
             </Card>
-
-            <Card className={`${cardStyle} bg-gradient-to-br from-purple-50 to-purple-100 h-full`}>
-              <Statistic
-                title={<span className='text-gray-600'>Tổng NCC nội dung</span>}
-                value={data.totalContentProvider}
-                prefix={<UserOutlined className='text-purple-600' />}
-                valueStyle={{ color: '#7C3AED' }}
-              />
-            </Card>
-
-            <Card className={`${cardStyle} bg-gradient-to-br from-purple-50 to-purple-100 h-full`}>
-              <Statistic
-                title={<span className='text-gray-600'>Tổng bác sĩ</span>}
-                value={data.totalDoctor}
-                prefix={<UserOutlined className='text-purple-600' />}
-                valueStyle={{ color: '#7C3AED' }}
-              />
-            </Card>
-
-            <Card className={`${cardStyle} bg-gradient-to-br from-pink-50 to-pink-100 h-full`}>
-              <Statistic
-                title={<span className='text-gray-600'>Người thân hỗ trợ</span>}
-                value={data.totalFamilyMember}
-                prefix={<UserOutlined className='text-pink-600' />}
-                valueStyle={{ color: '#DB2777' }}
-              />
-            </Card>
-
             <Card className={`${cardStyle} bg-gradient-to-br from-indigo-50 to-indigo-100 h-full`}>
               <Statistic
                 title={<span className='text-gray-600'>Người cao tuổi</span>}
@@ -240,9 +213,33 @@ const DashboardAdmin = () => {
                 valueStyle={{ color: '#4F46E5' }}
               />
             </Card>
+            <Card className={`${cardStyle} bg-gradient-to-br from-pink-50 to-pink-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Người thân hỗ trợ</span>}
+                value={data.totalFamilyMember}
+                prefix={<UserOutlined className='text-pink-600' />}
+                valueStyle={{ color: '#DB2777' }}
+              />
+            </Card>
+            <Card className={`${cardStyle} bg-gradient-to-br from-purple-50 to-purple-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Tổng bác sĩ</span>}
+                value={data.totalDoctor}
+                prefix={<UserOutlined className='text-purple-600' />}
+                valueStyle={{ color: '#7C3AED' }}
+              />
+            </Card>
+            <Card className={`${cardStyle} bg-gradient-to-br from-purple-50 to-purple-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Tổng NCC nội dung</span>}
+                value={data.totalContentProvider}
+                prefix={<UserOutlined className='text-purple-600' />}
+                valueStyle={{ color: '#7C3AED' }}
+              />
+            </Card>
           </div>
 
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
+          <div className='grid grid-cols-1 md:grid-cols-4 gap-5'>
             <Card className={`${cardStyle} bg-gradient-to-br from-cyan-50 to-cyan-100 h-full`}>
               <Statistic
                 title={<span className='text-gray-600'>Cuộc hẹn tư vấn</span>}
@@ -263,10 +260,18 @@ const DashboardAdmin = () => {
 
             <Card className={`${cardStyle} bg-gradient-to-br from-emerald-50 to-emerald-100 h-full`}>
               <Statistic
-                title={<span className='text-gray-600'>Đăng kí trả phí</span>}
+                title={<span className='text-gray-600'>Số gói đăng kí</span>}
                 value={data.subscriptions}
                 prefix={<UserOutlined className='text-emerald-600' />}
                 valueStyle={{ color: '#059669' }}
+              />
+            </Card>
+            <Card className={`${cardStyle}  bg-gradient-to-br from-purple-50 to-purple-100 h-full`}>
+              <Statistic
+                title={<span className='text-gray-600'>Người cao tuổi trả phí</span>}
+                value={data.userUseSubs}
+                prefix={<UserOutlined className='text-purple-600' />}
+                valueStyle={{ color: '#7C3AED' }}
               />
             </Card>
           </div>
@@ -277,6 +282,7 @@ const DashboardAdmin = () => {
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6'>
         <Card
           className={`${cardStyle} ${chartCardStyle}`}
+          //userUseSubs
           title={<span className='font-semibold text-gray-700'>Thống kê người dùng</span>}
         >
           <div className='h-80'>
@@ -296,7 +302,7 @@ const DashboardAdmin = () => {
         </Card>
         <Card
           className={`${cardStyle} ${chartCardStyle}`}
-          title={<span className='font-semibold text-gray-700'>Tăng trưởng & Doanh thu hàng tháng</span>}
+          title={<span className='font-semibold text-gray-700'>Doanh thu hàng tháng</span>}
         >
           <div className='h-80'>
             <Line
@@ -319,7 +325,7 @@ const DashboardAdmin = () => {
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6'>
         <Card
           className={`${cardStyle} ${chartCardStyle}`}
-          title={<span className='font-semibold text-gray-700'>Phân bổ người dùng</span>}
+          title={<span className='font-semibold text-gray-700'>Phân bổ người cao tuổi</span>}
         >
           <div className='h-80'>
             <Pie
@@ -338,7 +344,7 @@ const DashboardAdmin = () => {
         </Card>
         <Card
           className={`${cardStyle} ${chartCardStyle}`}
-          title={<span className='font-semibold text-gray-700'>Gói đăng ký</span>}
+          title={<span className='font-semibold text-gray-700'>Số người cao tuổi đăng kí theo gói</span>}
         >
           <div className='h-80'>
             <Pie
