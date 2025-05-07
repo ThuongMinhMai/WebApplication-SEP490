@@ -32,7 +32,7 @@ const DoctorCreateForm: React.FC = () => {
       formData.append('FullName', values.fullName)
       formData.append('Password', values.password)
       formData.append('Email', values.email)
-      formData.append('ConsultationFee', values.consultationFee)
+      formData.append('ConsultationFee', '0')
       formData.append('Knowledge', values.knowledge)
       formData.append('Career', values.career)
 
@@ -221,7 +221,7 @@ const DoctorCreateForm: React.FC = () => {
               <TextArea rows={2} placeholder='Nhập thành tích (nếu có)' />
             </Form.Item>
 
-            <Form.Item
+            {/* <Form.Item
               label='Phí tư vấn'
               name='consultationFee'
               rules={[{ required: true, message: 'Vui lòng nhập phí tư vấn' }]}
@@ -232,7 +232,7 @@ const DoctorCreateForm: React.FC = () => {
                 placeholder='Nhập phí tư vấn'
                 formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               />
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item
               label='Kiến thức chuyên môn'

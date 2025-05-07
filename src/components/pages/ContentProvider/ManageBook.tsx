@@ -1,5 +1,6 @@
 import {
   BookOutlined,
+  CloseOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
   EyeOutlined,
@@ -488,7 +489,7 @@ function ManageBook() {
         width='90%'
         footer={null}
         centered
-        closable={false}
+        // closable={false}
         bodyStyle={{ padding: 0 }}
       >
         {viewingBook?.bookUrl.endsWith('.epub') && (

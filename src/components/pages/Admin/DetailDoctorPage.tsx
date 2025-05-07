@@ -199,7 +199,7 @@ const DetailDoctorPage = () => {
       formData.append('achievement', values.achievement.toString())
 
       formData.append('clinicAddress', values.clinicAddress)
-      formData.append('consultationFee', values.consultationFee.toString())
+      formData.append('consultationFee', '0s')
       formData.append('experienceYears', values.experienceYears.toString())
 
       // Xử lý avatar file
@@ -280,11 +280,11 @@ const DetailDoctorPage = () => {
                   <Input prefix={<EnvironmentOutlined />} />
                 </Form.Item>
               </Col>
-              <Col span={6}>
+              {/* <Col span={6}>
                 <Form.Item name='consultationFee' label='Phí tư vấn' rules={[{ required: true }]}>
                   <InputNumber min={0} prefix={<DollarOutlined />} className='w-full' />
                 </Form.Item>
-              </Col>
+              </Col> */}
               <Col span={6}>
                 <Form.Item name='experienceYears' label='Kinh nghiệm (Years)' rules={[{ required: true }]}>
                   <InputNumber min={0} max={50} prefix={<CalendarOutlined />} className='w-full' />
@@ -379,7 +379,7 @@ const DetailDoctorPage = () => {
 
               <Descriptions column={1} bordered className='mt-4'>
                 <Descriptions.Item label='Địa chỉ phòng khám'>{professor?.clinicAddress}</Descriptions.Item>
-                <Descriptions.Item label='Phí tư vấn'>{professor?.consultationFee.toLocaleString()} VNĐ</Descriptions.Item>
+                {/* <Descriptions.Item label='Phí tư vấn'>{professor?.consultationFee.toLocaleString()} VNĐ</Descriptions.Item> */}
               </Descriptions>
 
               <Divider orientation='left' className='mt-6 text-gray-800 before:bg-[#FF1356]'>
