@@ -209,7 +209,7 @@ const DetailDoctorPage = () => {
       formData.append('achievement', values.achievement.toString())
 
       formData.append('clinicAddress', values.clinicAddress)
-      formData.append('consultationFee', '0s')
+      formData.append('consultationFee', '0')
       formData.append('experienceYears', values.experienceYears.toString())
 
       // Xử lý avatar file
