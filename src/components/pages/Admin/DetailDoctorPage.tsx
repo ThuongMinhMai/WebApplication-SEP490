@@ -296,7 +296,7 @@ const DetailDoctorPage = () => {
                 </Form.Item>
               </Col> */}
               <Col span={6}>
-                <Form.Item name='experienceYears' label='Kinh nghiệm (Years)' rules={[{ required: true }]}>
+                <Form.Item name='experienceYears' label='Kinh nghiệm (Năm)' rules={[{ required: true }]}>
                   <InputNumber min={0} max={50} prefix={<CalendarOutlined />} className='w-full' />
                 </Form.Item>
               </Col>
