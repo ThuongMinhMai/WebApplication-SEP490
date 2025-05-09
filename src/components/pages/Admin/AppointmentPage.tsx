@@ -449,12 +449,27 @@ const AppointmentPage = () => {
         </div>
       )
     },
+    // {
+    //   title: 'Ngày hẹn',
+    //   dataIndex: 'dateOfAppointment',
+    //   key: 'dateOfAppointment',
+    //   width: '10%',
+    //   sorter: (a, b) => new Date(a.dateOfAppointment).getTime() - new Date(b.dateOfAppointment).getTime()
+    // },
     {
       title: 'Ngày hẹn',
       dataIndex: 'dateOfAppointment',
       key: 'dateOfAppointment',
       width: '10%',
-      sorter: (a, b) => new Date(a.dateOfAppointment).getTime() - new Date(b.dateOfAppointment).getTime()
+      sorter: (a, b) => {
+        const [dayA, monthA, yearA] = a.dateOfAppointment.split('-').map(Number)
+        const [dayB, monthB, yearB] = b.dateOfAppointment.split('-').map(Number)
+
+        const dateA = new Date(yearA, monthA - 1, dayA)
+        const dateB = new Date(yearB, monthB - 1, dayB)
+
+        return dateA.getTime() - dateB.getTime()
+      }
     },
     {
       title: 'Thời gian',
@@ -469,6 +484,7 @@ const AppointmentPage = () => {
       width: '20%',
       ...getColumnSearchProps('reasonOfMeeting')
     },
+
     {
       title: 'Trạng thái',
       dataIndex: 'status',
