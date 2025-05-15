@@ -1,30 +1,55 @@
-# React + TypeScript + Vite
+# Senior Essentials – Management Panel
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the **management dashboard** for the **Senior Essentials** project — a digital platform designed to support the health and well-being of elderly users through curated content and administrative tools.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The system includes two main user roles:
 
-## Expanding the ESLint configuration
+### Admin
+- Manage user accounts and permissions
+- Monitor emergency alerts
+- View and track transaction history
+- Approve and manage content provided by partners
+- Manage subscription packages
+- Handle appointments and user reports
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Content Provider
+- Upload and manage wellness content such as:
+  - Exercise videos
+  - Music playlists
+  - E-books and reading materials
+- View usage statistics
 
-- Configure the top-level `parserOptions` property like this:
+## Features
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+- Role-based dashboard access
+- Emergency alert and report management
+- Rich content upload and management tools
+- Appointment and transaction history tracking
+- Seamless integration with backend APIs
+- Responsive, accessible UI across all screen sizes
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Technologies Used
+
+- **React.js** with **TypeScript**
+- **Ant Design** & **Tailwind CSS** for UI
+- **ShadCN UI** for styled components
+- **Redux Toolkit** & **Context API** for state management
+- **Axios** for API calls and data handling
+
+## Live Demo
+
+🌐 [View the Management Panel](https://senior-essentials-manage.vercel.app/)
+
+## Contributing
+
+Contributions are welcome! Feel free to fork the repository, create a new branch, and submit a pull request.
+
+## License
+
+This project does not currently specify a license. All rights reserved by the contributors.
+
+## Acknowledgments
+
+Thanks to the entire development team and content partners who contributed to the success of this project.
